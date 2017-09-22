@@ -43,6 +43,7 @@
     }
     .layout-menu-left{
         background: #464c5b;
+        // min-width: 52px;
     }
     .layout-header{
         height: 60px;
@@ -51,10 +52,16 @@
     }
     .layout-logo-left{
         width: 90%;
-        height: 30px;
-        background: #5b6270;
+        height: 60px;
+        // background: #5b6270;
         border-radius: 3px;
         margin: 15px auto;
+        .logo{
+            height: 60px;
+        }
+        .logo1{
+            height: 40px;
+        }
     }
     .layout-ceiling-main a{
         color: #9ba7b5;
@@ -62,15 +69,24 @@
     .layout-hide-text .layout-text{
         display: none;
     }
+    
     .ivu-col{
         transition: width .2s ease-in-out;
     }
 </style>
+<style lang="less">
+.layout-hide-text{
+    .ivu-menu-submenu-title-icon{
+        display: none !important;
+    }
+}
+</style>
+
 <template>
     <div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
         <Row type="flex" class="layout-row">
             <Col :span="spanLeft" class="layout-menu-left">
-                <Menu active-name="1" theme="dark" width="auto">
+                <!-- <Menu active-name="1" theme="dark" width="auto">
                     <div class="layout-logo-left"></div>
                     <MenuItem name="1">
                         <Icon type="ios-navigate" :size="iconSize"></Icon>
@@ -84,6 +100,38 @@
                         <Icon type="ios-analytics" :size="iconSize"></Icon>
                         <span class="layout-text">选项 3</span>
                     </MenuItem>
+                </Menu> -->
+                <Menu theme="dark" width="auto"  active-name="1-1" :accordion="true" @on-open-change="expend">
+                    <div class="layout-logo-left">
+                        <img src="../public/img/h.jpg" alt="logo" class="logo" v-if="logoSelect">
+                        <img src="../public/img/s.jpg" alt="logo" class="logo1" v-else>
+                    </div>
+                    <Submenu name="1">
+                        <template slot="title">
+                            <Icon type="ios-navigate" :size="iconSize"></Icon>
+                            <span  class="layout-text">聚合系统</span>
+                        </template>
+                        <MenuItem name="1-1" class="layout-text">城市聚合</MenuItem>
+                        <MenuItem name="1-2" class="layout-text">酒店聚合</MenuItem>
+                        <MenuItem name="1-3" class="layout-text">房型聚合</MenuItem>
+                    </Submenu>
+                    <Submenu name="2">
+                        <template slot="title">
+                            <Icon type="ios-keypad" :size="iconSize"></Icon>
+                            <span  class="layout-text">静态管理</span>
+                        </template>
+                        <MenuItem name="2-1" class="layout-text">酒店管理</MenuItem>
+                        <MenuItem name="2-2" class="layout-text">目的地管理</MenuItem>
+                        <MenuItem name="2-2" class="layout-text">图片管理</MenuItem>
+                    </Submenu>
+                    <Submenu name="3">
+                        <template slot="title">
+                            <Icon type="ios-analytics" :size="iconSize"></Icon>
+                            <span  class="layout-text">导航三</span>
+                        </template>
+                        <MenuItem name="3-1" class="layout-text">选项 1</MenuItem>
+                        <MenuItem name="3-2" class="layout-text">选项 2</MenuItem>
+                    </Submenu>
                 </Menu>
             </Col>
             <Col :span="spanRight">
@@ -95,8 +143,8 @@
                 <div class="layout-breadcrumb">
                     <Breadcrumb>
                         <BreadcrumbItem href="#">首页</BreadcrumbItem>
-                        <BreadcrumbItem href="#">应用中心</BreadcrumbItem>
-                        <BreadcrumbItem>某应用</BreadcrumbItem>
+                        <BreadcrumbItem href="#">聚合系统</BreadcrumbItem>
+                        <BreadcrumbItem>城市聚合</BreadcrumbItem>
                     </Breadcrumb>
                 </div>
                 <div class="layout-content">
@@ -125,13 +173,22 @@
         computed: {
             iconSize () {
                 return this.spanLeft === 5 ? 14 : 24;
+            },
+            logoSelect(){
+                return this.spanLeft === 5 ? true : false;
             }
         },
         methods: {
+            expend(n){
+                if (this.spanLeft === 1) {
+                    this.spanLeft = 5;
+                    this.spanRight = 19;
+                }
+            },
             toggleClick () {
                 if (this.spanLeft === 5) {
-                    this.spanLeft = 2;
-                    this.spanRight = 22;
+                    this.spanLeft = 1;
+                    this.spanRight = 23;
                 } else {
                     this.spanLeft = 5;
                     this.spanRight = 19;
