@@ -27,7 +27,7 @@
         height: @height;
         .layout-content-main-base{
             height: @height;
-            border: 1px solid #ddd;
+            border: 1px dashed #ddd;
             padding: 2px;
         }
         .layout-content-main-left{
@@ -102,7 +102,7 @@
                         <span class="layout-text">选项 3</span>
                     </MenuItem>
                 </Menu> -->
-                <Menu theme="dark" width="auto"  active-name="1-1" :accordion="true" @on-open-change="expend">
+                <Menu theme="dark" width="auto"  active-name="1-2" :accordion="true" @on-open-change="expend">
                     <div class="layout-logo-left">
                         <img src="../../public/img/h.jpg" alt="logo" class="logo" v-if="logoSelect">
                         <img src="../../public/img/s.jpg" alt="logo" class="logo1" v-else>
@@ -145,7 +145,7 @@
                     <Breadcrumb>
                         <BreadcrumbItem href="#">首页</BreadcrumbItem>
                         <BreadcrumbItem href="#">聚合系统</BreadcrumbItem>
-                        <BreadcrumbItem>城市聚合</BreadcrumbItem>
+                        <BreadcrumbItem>酒店聚合</BreadcrumbItem>
                     </Breadcrumb>
                 </div>
                 <div class="layout-content">
