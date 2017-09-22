@@ -5,11 +5,11 @@ const routers = [{
     },
     component: (resolve) => require(['./views/index.vue'], resolve)
 },{
-    path: '/template',
+    path: '/mapping/hotel',
     meta: {
-        title: 'template'
+        title: 'hotelMapping'
     },
-    component: (resolve) => require(['./views/template.vue'], resolve)
+    component: (resolve) => require(['./views/pages/hotelMapping.vue'], resolve)
 },{
     path: '/cityExamine',
     meta: {
