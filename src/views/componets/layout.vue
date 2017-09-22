@@ -28,6 +28,7 @@
         .layout-content-main-base{
             height: @height;
             border: 1px solid #ddd;
+            padding: 2px;
         }
         .layout-content-main-left{
             .layout-content-main-base;
