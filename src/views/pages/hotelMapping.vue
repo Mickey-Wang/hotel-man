@@ -65,6 +65,9 @@
         // position: relative;
         z-index: 10;
     }
+    Row{
+        padding: 10px 0;
+    }
 </style>
 <script>
 import layout from '../componets/layout.vue'
