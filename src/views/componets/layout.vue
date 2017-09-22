@@ -103,8 +103,8 @@
                 </Menu> -->
                 <Menu theme="dark" width="auto"  active-name="1-1" :accordion="true" @on-open-change="expend">
                     <div class="layout-logo-left">
-                        <img src="../public/img/h.jpg" alt="logo" class="logo" v-if="logoSelect">
-                        <img src="../public/img/s.jpg" alt="logo" class="logo1" v-else>
+                        <img src="../../public/img/h.jpg" alt="logo" class="logo" v-if="logoSelect">
+                        <img src="../../public/img/s.jpg" alt="logo" class="logo1" v-else>
                     </div>
                     <Submenu name="1">
                         <template slot="title">
@@ -150,8 +150,8 @@
                 <div class="layout-content">
                     <div class="layout-content-main">
                         <Row class="layout-row">
-                            <Col span="18" push="6" class="layout-content-main-left">col-18 | push-6</Col>
-                            <Col span="6" pull="18" class="layout-content-main-right">col-6 | pull-18</Col>
+                            <Col span="18" push="6" class="layout-content-main-right"><slot name="main-right"></slot></Col>
+                            <Col span="6" pull="18" class="layout-content-main-left"><slot name="main-left"></slot></Col>
                         </Row>
                     </div>
                 </div>
