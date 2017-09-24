@@ -1,6 +1,6 @@
 <template>
-    <section class="wrap">
-        <div class="top" ref="top">
+    <section class="tableWrap">
+        <div class="topTable">
             <div class="title">城市审核列表</div>
             <div class="button">
                 <Button type="primary">审核通过</Button>
@@ -9,11 +9,36 @@
             </div>
             <div class="total">共计XX条</div>
             <div class="table">
-                <Table :row-class-name="rowClassName" :height="topHeight" border :columns="cityColumns" :data="cityData"></Table>
+                <div class="wrap wrapW1">
+                    <div>
+                        <table>
+                            <tr>
+                                <th><input type="checkbox" v-model="checkAll" @click="toggleCheckAll"></th>
+                                <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <table>
+                            <tr v-for="(item,index) in cityExamineData" :class="{trClass: item.status=='未聚待审'}">
+                                <td><input type="checkbox" v-model="item.checked"></td>
+                                <td>{{item.name}}</td>
+                                <td>{{item.id}}</td>
+                                <td>{{item.province}}</td>
+                                <td>{{item.country}}</td>
+                                <td>{{item.supplier}}</td>
+                                <td>{{item.status}}</td>
+                                <td>{{item.operatorMan}}</td>
+                                <td>{{item.operatorTime}}</td>
+                                <td>{{item.operator}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="bottom" ref="top">
-            <div class="title">城市审核列表</div>
+        <div class="bottomTable">
+            <div class="title">相似城市列表</div>
             <div class="button">
                 <span>城市名称</span>
                 <Input v-model="cityValue" placeholder="JD数据模糊比配" style="width: 200px"></Input>
@@ -21,256 +46,295 @@
             </div>
             <div class="total">共计XX条</div>
             <div class="table">
-                <Table :height="topHeight" border :columns="similarColumns" :data="similarData"></Table>
+                <div class="wrap wrapW2">
+                    <div>
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th v-for="(item,index) in similarHeaderData">{{item.title}}</th>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <table>
+                            <tr v-for="(item,index) in similarCityData">
+                                <td><input type="radio" v-model="similar" :value="index"></td>
+                                <td>{{item.name}}</td>
+                                <td>{{item.id}}</td>
+                                <td>{{item.province}}</td>
+                                <td>{{item.country}}</td>
+                                <td>{{item.supplier}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 </template>
 <script>
-    export default {
-        data () {
-            return {
-                cityColumns: [
-                    {
-                        type: 'selection',
-                        width: 60,
-                        align: 'center'
-                    },
-                    {
-                        title: '城市名称',
-                        key: 'name'
-                    },
-                    {
-                        title: '城市ID',
-                        key: 'id'
-                    },
-                    {
-                        title: '省份',
-                        key: 'province'
-                    },
-                    {
-                        title: '国家',
-                        key: 'country'
-                    },
-                    {
-                        title: '供应商名称',
-                        key: 'supplier'
-                    },
-                    {
-                        title: '聚合状态',
-                        key: 'status'
-                    },
-                    {
-                        title: '操作人',
-                        key: 'operatorMan'
-                    },
-                    {
-                        title: '操作时间',
-                        key: 'operatorTime'
-                    },
-                    {
-                        title: '操作',
-                        key: 'operator'
-                    }
-                ],
-                cityData: [
-                    {
-                        name: '阿尔拉',
-                        id: 'JD-H10',
-                        province:'新疆',
-                        country:'中国',
-                        supplier:'京东国内酒店',
-                        status:'',
-                        operatorMan:'',
-                        operatorTime:'',
-                        operator:''
-                    },
-                    {
-                        name: '阿尔拉市',
-                        id: 'A00067',
-                        province:'新疆',
-                        country:'中国',
-                        supplier:'酒店供应商A',
-                        status:'已聚待审',
-                        operatorMan:'system',
-                        operatorTime:'2017/08/11 17:19',
-                        operator:'查看'
-                    },
-                    {
-                        name: '阿尔拉',
-                        id: 'BUH13',
-                        province:'新疆',
-                        country:'中国',
-                        supplier:'酒店供应商B',
-                        status:'已聚待审',
-                        operatorMan:'system',
-                        operatorTime:'2017/08/12 18:00',
-                        operator:'查看'
-                    },
-                    {
-                        name: '阿尔拉',
-                        id: 'CN567',
-                        province:'新疆',
-                        country:'中国',
-                        supplier:'酒店供应商C',
-                        status:'已聚已审',
-                        operatorMan:'system',
-                        operatorTime:'2017/08/13 19:00',
-                        operator:'查看'
-                    },
-                    {
-                        name: '阿尔拉',
-                        id: 'DTY44',
-                        province:'新疆',
-                        country:'中国',
-                        supplier:'酒店供应商D',
-                        status:'已聚已审',
-                        operatorMan:'system',
-                        operatorTime:'2017/08/16 19:00',
-                        operator:'查看'
-                    },
-                ],
-                similarColumns: [
-                    {
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Radio', {
-                                    props: {
-                                        type: 'label='+params.key,
-                                    },
-
-                                })
-                            ]);
-                        },
-                        width: 60,
-                        align: 'center'
-                    },
-                    {
-                        title: '城市名称',
-                        key: 'name'
-                    },
-                    {
-                        title: '城市ID',
-                        key: 'id'
-                    },
-                    {
-                        title: '省份',
-                        key: 'province'
-                    },
-                    {
-                        title: '国家',
-                        key: 'country'
-                    },
-                    {
-                        title: '供应商名称',
-                        key: 'supplier'
-                    },
-                    {
-                        title: '聚合状态',
-                        key: 'status'
-                    },
-                    {
-                        title: '操作人',
-                        key: 'operatorMan'
-                    },
-                    {
-                        title: '操作时间',
-                        key: 'operatorTime'
-                    },
-                    {
-                        title: '操作',
-                        key: 'operator'
-                    }
-                ],
-                similarData: [
-                    {
-                        name: '阿尔拉',
-                        id: 'JD-H10',
-                        province:'新疆',
-                        country:'中国',
-                        supplier:'京东国内酒店',
-                        status:'',
-                        operatorMan:'',
-                        operatorTime:'',
-                        operator:''
-                    },
-                    {
-                        name: '阿尔拉市',
-                        id: 'A00067',
-                        province:'新疆',
-                        country:'中国',
-                        supplier:'酒店供应商A',
-                        status:'已聚待审',
-                        operatorMan:'system',
-                        operatorTime:'2017/08/11 17:19',
-                        operator:'查看'
-                    },
-                    {
-                        name: '阿尔拉',
-                        id: 'BUH13',
-                        province:'新疆',
-                        country:'中国',
-                        supplier:'酒店供应商B',
-                        status:'已聚待审',
-                        operatorMan:'system',
-                        operatorTime:'2017/08/12 18:00',
-                        operator:'查看'
-                    },
-                    {
-                        name: '阿尔拉',
-                        id: 'CN567',
-                        province:'新疆',
-                        country:'中国',
-                        supplier:'酒店供应商C',
-                        status:'已聚已审',
-                        operatorMan:'system',
-                        operatorTime:'2017/08/13 19:00',
-                        operator:'查看'
-                    },
-                    {
-                        name: '阿尔拉',
-                        id: 'DTY44',
-                        province:'新疆',
-                        country:'中国',
-                        supplier:'酒店供应商D',
-                        status:'已聚已审',
-                        operatorMan:'system',
-                        operatorTime:'2017/08/16 19:00',
-                        operator:'查看'
-                    },
-                ],
-                topHeight:'',
-                cityValue: ''
-            }
-        },
-        created(){
-
-        },
-        mounted(){
-            let h = this.$refs.top.clientHeight;
-            this.topHeight = h*2/3;
-        },
-        methods: {
-            rowClassName (row, index) {
-                if (index === 1) {
-                    return 'demo-table-info-row';
-                } else if (index === 3) {
-                    return 'demo-table-error-row';
+import Vue from 'vue';
+export default {
+    data(){
+        return{
+            similar:'',
+            cityValue:'',
+            classShow:false,
+            cityHeaderData:[
+                {
+                    title: '城市名称',
+                    key: 'name'
+                },
+                {
+                    title: '城市ID',
+                    key: 'id'
+                },
+                {
+                    title: '省份',
+                    key: 'province'
+                },
+                {
+                    title: '国家',
+                    key: 'country'
+                },
+                {
+                    title: '供应商名称',
+                    key: 'supplier'
+                },
+                {
+                    title: '聚合状态',
+                    key: 'status'
+                },
+                {
+                    title: '操作人',
+                    key: 'operatorMan'
+                },
+                {
+                    title: '操作时间',
+                    key: 'operatorTime'
+                },
+                {
+                    title: '操作',
+                    key: 'operator'
                 }
-                return '';
+            ],
+            cityExamineData:[
+                {
+                    name: '阿尔拉',
+                    id: 'JD-H10',
+                    province:'新疆',
+                    country:'中国',
+                    supplier:'京东国内酒店',
+                    status:'',
+                    operatorMan:'',
+                    operatorTime:'',
+                    operator:'',
+                    checked: false
+                },
+                {
+                    name: '阿尔拉市',
+                    id: 'A00067',
+                    province:'新疆',
+                    country:'中国',
+                    supplier:'酒店供应商A',
+                    status:'未聚待审',
+                    operatorMan:'system',
+                    operatorTime:'2017/08/11 17:19',
+                    operator:'查看',
+                    checked: false
+                },
+                {
+                    name: '阿尔拉',
+                    id: 'BUH13',
+                    province:'新疆',
+                    country:'中国',
+                    supplier:'酒店供应商B',
+                    status:'未聚待审',
+                    operatorMan:'system',
+                    operatorTime:'2017/08/12 18:00',
+                    operator:'查看',
+                    checked: false
+                },
+                {
+                    name: '阿尔拉',
+                    id: 'CN567',
+                    province:'新疆',
+                    country:'中国',
+                    supplier:'酒店供应商C',
+                    status:'已聚已审',
+                    operatorMan:'system',
+                    operatorTime:'2017/08/13 19:00',
+                    operator:'查看',
+                    checked: false
+                },
+                {
+                    name: '阿尔拉',
+                    id: 'DTY44',
+                    province:'新疆',
+                    country:'中国',
+                    supplier:'酒店供应商D',
+                    status:'已聚已审',
+                    operatorMan:'system',
+                    operatorTime:'2017/08/16 19:00',
+                    operator:'查看',
+                    checked: false
+                }
+            ],
+            similarHeaderData:[
+                {
+                    title: '城市名称',
+                    key: 'name'
+                },
+                {
+                    title: '城市ID',
+                    key: 'id'
+                },
+                {
+                    title: '省份',
+                    key: 'province'
+                },
+                {
+                    title: '国家',
+                    key: 'country'
+                },
+                {
+                    title: '供应商名称',
+                    key: 'supplier'
+                }
+            ],
+            similarCityData:[
+                {
+                    name: '阿尔拉',
+                    id: 'JD-H10',
+                    province:'新疆',
+                    country:'中国',
+                    supplier:'京东国内酒店'
+                },
+                {
+                    name: '阿尔拉',
+                    id: 'JD-H10',
+                    province:'新疆',
+                    country:'中国',
+                    supplier:'京东国内酒店'
+                },
+//                {
+//                    name: '阿尔拉',
+//                    id: 'JD-H10',
+//                    province:'新疆',
+//                    country:'中国',
+//                    supplier:'京东国内酒店'
+//                },
+//                {
+//                    name: '阿尔拉',
+//                    id: 'JD-H10',
+//                    province:'新疆',
+//                    country:'中国',
+//                    supplier:'京东国内酒店'
+//                }
+            ],
+            checkAll: false
+        }
+    },
+    watch: {
+        cityExamineData: {
+            handler () {
+                let check = true;
+                for (let i = 0; i < this.cityExamineData.length; i++) {
+                    let item = this.cityExamineData[i];
+                    if (item.status === '未聚待审') {
+                        console.log('item', item.checked);
+                        if (!item.checked) {
+                            check = false;
+                            break;
+                        }
+                    }
+                }
+                this.checkAll = check;
+                console.log('change checkAll', this.checkAll);
+            },
+            deep: true
+        }
+    },
+    methods:{
+        toggleCheckAll () {
+            // 等model变化完再执行事件
+            Vue.nextTick(() => {
+                for (let i = 0; i < this.cityExamineData.length; i++) {
+                    let item = this.cityExamineData[i];
+                    if (item.status === '未聚待审') {
+                        item.checked = this.checkAll;
+                    }
+                }
+            })
+        }
+    }
+}
+</script>
+<style lang="less" scoped rel="stylesheet/less">
+/* 表格初始化 */
+table{
+    width:100%;
+    text-align:center;
+    border-collapse:collapse;
+    border-spacing:0;
+    border-bottom:1px solid #e9eaec;
+}
+table td, table th{
+    border-left:1px solid #e9eaec;
+    border-top:1px solid #e9eaec;
+    height: 40px;
+}
+table th{
+    background: #f8f8f9;
+}
+table tr td:nth-of-type(1),table tr th:nth-of-type(1){
+    border-left: none;
+}
+/*table tr:hover{*/
+    /*background: #ebf7ff;*/
+/*}*/
+/* 表格横向滚动条和纵向滚动条 */
+.table{
+    height: 60%;
+    min-width: 100%;
+    position: relative;
+    border: 1px solid #dddee1;
+    border-top: none;
+    overflow-x: auto;
+    .wrapW1{
+        min-width: 130%;
+    }
+    .wrapW2{
+        width: 100%;
+    }
+    .wrap{
+        width: inherit;
+        height: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+        div:nth-of-type(1){
+            overflow: hidden;
+            table{
+                table-layout: fixed;
+            }
+        }
+        div:nth-of-type(2){
+            height: 74%;
+            overflow: auto;
+            table{
+                table-layout: fixed;
             }
         }
     }
-</script>
-<style lang="less" scoped rel="stylesheet/less">
-.ivu-table .demo-table-info-row td{
-    background: #2db7f5;
-    color: #fff;
 }
-.ivu-table .demo-table-error-row td{
-    background: #ff6600;
-    color: #fff;
+.wrapW1 table tr:nth-of-type(1) td{
+    color: #2d8cf0;
 }
+
+.trClass{
+    background: #ebf7ff;
+}
+/* 列表名称、button、表格相同样式 */
 .title{
     font-size: 16px;
     margin-bottom: 10px;
@@ -281,22 +345,18 @@
 .total{
     text-align: right;
 }
-.wrap{
+.tableWrap{
     width: 100%;
-    border: 1px solid #dddee1;
+    height: 100%;
     padding: 10px;
-    .top{
+    .topTable{
+        margin-bottom: 20px;
         height: 50%;
         width: 100%;
-        margin: 0 auto 20px;
-        overflow: auto;
     }
-    .bottom{
-        .button{
-            span{
-                font-size: 13px;
-            }
-        }
+    .bottomTable{
+        height: 50%;
+        width: 100%;
     }
 }
 </style>

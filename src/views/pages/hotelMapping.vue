@@ -48,8 +48,8 @@
                 </Tabs>
             </Row>
           </div>
-          <div slot="main-right">
-              12344
+          <div slot="main-right" style="height: 100%;">
+              <city></city>
           </div>
       </layout>
   </section>
@@ -71,6 +71,7 @@
 </style>
 <script>
 import layout from '../componets/layout.vue'
+import city from '../city/cityExamine.vue'
 export default {
     data(){
         return{
@@ -95,6 +96,7 @@ export default {
     },
     components:{
         layout,
+        city
     },
 }
 </script>
