@@ -34,7 +34,7 @@
 </style>
 
 <script>
-import hotel from '../../componets/tables/hotelExamine'
+import hotel from '../../componets/tables/hotelExamine.vue'
 import leftNav from '../../componets/navigation/leftNavHotel'
 export default {
   data() {
@@ -43,7 +43,7 @@ export default {
     }
   },
   components: {
-    hotel,
+      hotel,
     'left-nav': leftNav
   },
 }

@@ -22,11 +22,5 @@ const routers = [{
         title: 'roomMapping'
     },
     component: (resolve) => require(['./views/pages/Mapping/roomMapping.vue'], resolve)
-},{
-    path: '/cityExamine',
-    meta: {
-        title: '城市审核列表'
-    },
-    component: (resolve) => require(['./views/componets/city/cityExamine.vue'], resolve)
 }];
 export default routers;

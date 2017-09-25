@@ -389,4 +389,22 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
         width: 100%;
     }
 }
+/*table tr td:nth-of-type(1){*/
+    /*width: 100px;*/
+/*}*/
+/*table tr th:nth-of-type(1){*/
+    /*width: 100px;*/
+/*}*/
+/*table tr td:nth-of-type(2){*/
+    /*width: 150px;*/
+/*}*/
+/*table tr th:nth-of-type(2){*/
+    /*width: 150px;*/
+/*}*/
+/*table tr td:nth-of-type(3){*/
+    /*width: 100px;*/
+/*}*/
+/*table tr th:nth-of-type(3){*/
+    /*width: 100px;*/
+/*}*/
 </style>
