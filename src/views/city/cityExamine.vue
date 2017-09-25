@@ -21,8 +21,8 @@
                     <div>
                         <table>
                             <tr v-for="(item,index) in cityExamineData" :class="{trClass: item.status=='未聚待审'}">
-                                <td><input type="checkbox" v-model="item.checked"></td>
-                                <td>{{item.name}}</td>
+                                <td><input type="checkbox" v-model="item.checked" :disabled="item.status=='未聚待审'?disableStatus1:disableStatus2"></td>
+                                <td @click="getInputValue(item)">{{item.name}}</td>
                                 <td>{{item.id}}</td>
                                 <td>{{item.province}}</td>
                                 <td>{{item.country}}</td>
@@ -73,12 +73,14 @@
     </section>
 </template>
 <script>
-import Vue from 'vue';
 export default {
     data(){
         return{
+            // 单选
             similar:'',
+            // 相似搜索框的关键字
             cityValue:'',
+            // 未聚待审的背景色
             classShow:false,
             cityHeaderData:[
                 {
@@ -128,8 +130,7 @@ export default {
                     status:'',
                     operatorMan:'',
                     operatorTime:'',
-                    operator:'',
-                    checked: false
+                    operator:''
                 },
                 {
                     name: '阿尔拉市',
@@ -140,8 +141,7 @@ export default {
                     status:'未聚待审',
                     operatorMan:'system',
                     operatorTime:'2017/08/11 17:19',
-                    operator:'查看',
-                    checked: false
+                    operator:'查看'
                 },
                 {
                     name: '阿尔拉',
@@ -152,8 +152,7 @@ export default {
                     status:'未聚待审',
                     operatorMan:'system',
                     operatorTime:'2017/08/12 18:00',
-                    operator:'查看',
-                    checked: false
+                    operator:'查看'
                 },
                 {
                     name: '阿尔拉',
@@ -164,8 +163,7 @@ export default {
                     status:'已聚已审',
                     operatorMan:'system',
                     operatorTime:'2017/08/13 19:00',
-                    operator:'查看',
-                    checked: false
+                    operator:'查看'
                 },
                 {
                     name: '阿尔拉',
@@ -176,8 +174,7 @@ export default {
                     status:'已聚已审',
                     operatorMan:'system',
                     operatorTime:'2017/08/16 19:00',
-                    operator:'查看',
-                    checked: false
+                    operator:'查看'
                 }
             ],
             similarHeaderData:[
@@ -204,26 +201,26 @@ export default {
             ],
             similarCityData:[
                 {
-                    name: '阿尔拉',
+                    name: '阿拉尔',
                     id: 'JD-H10',
                     province:'新疆',
                     country:'中国',
                     supplier:'京东国内酒店'
                 },
                 {
-                    name: '阿尔拉',
+                    name: '阿拉尔市',
                     id: 'JD-H10',
                     province:'新疆',
                     country:'中国',
                     supplier:'京东国内酒店'
                 },
-//                {
-//                    name: '阿尔拉',
-//                    id: 'JD-H10',
-//                    province:'新疆',
-//                    country:'中国',
-//                    supplier:'京东国内酒店'
-//                },
+                {
+                    name: '阿拉善',
+                    id: 'JD-H10',
+                    province:'新疆',
+                    country:'中国',
+                    supplier:'京东国内酒店'
+                },
 //                {
 //                    name: '阿尔拉',
 //                    id: 'JD-H10',
@@ -232,8 +229,21 @@ export default {
 //                    supplier:'京东国内酒店'
 //                }
             ],
-            checkAll: false
+            // 全选状态
+            checkAll: false,
+            // 点击全选时，只有未聚待审可以选中
+            // 控制未聚待审的disable的状态
+            disableStatus1:false,
+            // 控制非未聚待审的disable的状态
+            disableStatus2:false
         }
+    },
+    created(){
+        // cityExamineData数据中set数据 checked: false
+        this.cityExamineData.forEach((item,index)=>{
+            this.$set(item,'checked',false);
+        })
+
     },
     watch: {
         cityExamineData: {
@@ -258,14 +268,22 @@ export default {
     methods:{
         toggleCheckAll () {
             // 等model变化完再执行事件
-            Vue.nextTick(() => {
+            this.$nextTick(() => {
                 for (let i = 0; i < this.cityExamineData.length; i++) {
                     let item = this.cityExamineData[i];
                     if (item.status === '未聚待审') {
                         item.checked = this.checkAll;
+                    }else {
+                        // 如果不是未聚待审，则不能进行选择操作
+                        this.disableStatus2 = true;
                     }
                 }
             })
+        },
+        // 点击城市名称赋值到input，然后调取接口
+        getInputValue(item){
+            console.log('点击获取名字:',item.name);
+            this.cityValue = item.name;
         }
     }
 }
@@ -289,6 +307,9 @@ table th{
 }
 table tr td:nth-of-type(1),table tr th:nth-of-type(1){
     border-left: none;
+}
+.wrapW1 table tr td:nth-of-type(2){
+    cursor: pointer;
 }
 /*table tr:hover{*/
     /*background: #ebf7ff;*/
