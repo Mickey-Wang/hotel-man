@@ -1,32 +1,40 @@
 <template>
-    <div class="root">
-        <router-view></router-view>
-    </div>
+  <div class="root">
+    <layout>
+    <router-view></router-view>
+    </layout>
+  </div>
 </template>
 <style lang="less">
-    body,html{
-        height: 100%;
-    }
-		.root{
-			height: 100%;
-		}
+body,
+html {
+  height: 100%;
+}
+
+.root {
+  height: 100%;
+}
 </style>
 
 <script>
-    export default {
-        data() {
-            return {
+import layout from './views/componets/layout.vue'
+export default {
+  data() {
+    return {
 
-            };
-        },
-        mounted() {
-
-        },
-        beforeDestroy() {
-
-        },
-        methods: {
-
-        }
     };
+  },
+  components: {
+    layout,
+  },
+  mounted() {
+
+  },
+  beforeDestroy() {
+
+  },
+  methods: {
+
+  }
+};
 </script>
