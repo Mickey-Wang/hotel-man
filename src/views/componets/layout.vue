@@ -101,8 +101,8 @@
           <img src="../../public/img/s.jpg" alt="logo" class="logo1" v-else>
         </div>
         <MenuItem name="index">
-        <Icon type="home"></Icon>
-          首页
+          <Icon type="home" :size="iconSize"></Icon>
+          <span class="layout-text">首页</span>
         </MenuItem>
         <Submenu name="confluence">
           <template slot="title">

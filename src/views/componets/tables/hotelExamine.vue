@@ -1,7 +1,7 @@
 <template>
     <section class="tableWrap">
         <div class="topTable">
-            <div class="title">城市审核列表</div>
+            <div class="title">酒店审核列表</div>
             <div class="button">
                 <Button type="primary">审核通过</Button>
                 <Button type="primary">设为待审</Button>
@@ -44,9 +44,9 @@
             </div>
         </div>
         <div class="bottomTable">
-            <div class="title">相似城市列表</div>
+            <div class="title">相似酒店列表</div>
             <div class="button">
-                <span>城市名称</span>
+                <span>酒店名称</span>
                 <Input v-model="cityValue" placeholder="JD数据模糊比配" style="width: 200px"></Input>
                 <Button type="primary">Go</Button>
             </div>
