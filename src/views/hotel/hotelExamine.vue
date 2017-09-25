@@ -23,14 +23,17 @@
                             <tr v-for="(item,index) in cityExamineData" :class="{trClass: item.status=='未聚待审'}">
                                 <td><input type="checkbox" v-model="item.checked" :disabled="item.status=='未聚待审'?disableStatus1:disableStatus2"></td>
                                 <td @click="getInputValue(item)">{{item.name}}</td>
-                                <td>{{item.id}}</td>
-                                <td>{{item.province}}</td>
-                                <td>{{item.country}}</td>
+                                <td>{{item.address}}</td>
+                                <td>{{item.phone}}</td>
+                                <td>{{item.range}}</td>
+                                <td>{{item.link}}</td>
+                                <td>{{item.city}}</td>
                                 <td>{{item.supplier}}</td>
+                                <td>{{item.cityId}}</td>
                                 <td>{{item.status}}</td>
                                 <td>{{item.operatorMan}}</td>
                                 <td>{{item.operatorTime}}</td>
-                                <td>{{item.operator}}</td>
+                                <td>{{item.log}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="cityExamineData.length==0">
@@ -62,11 +65,13 @@
                         <table v-if="similarCityData.length>0">
                             <tr v-for="(item,index) in similarCityData">
                                 <td><input type="radio" v-model="similar" :value="index"></td>
-                                <td>{{item.name}}</td>
                                 <td>{{item.id}}</td>
-                                <td>{{item.province}}</td>
-                                <td>{{item.country}}</td>
-                                <td>{{item.supplier}}</td>
+                                <td>{{item.name}}</td>
+                                <td>{{item.address}}</td>
+                                <td>{{item.phone}}</td>
+                                <td>{{item.link}}</td>
+                                <td>{{item.city}}</td>
+                                <td>{{item.tree}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="similarCityData==0">
@@ -90,24 +95,36 @@ export default {
             classShow:false,
             cityHeaderData:[
                 {
-                    title: '城市名称',
+                    title: '酒店名称',
                     key: 'name'
                 },
                 {
-                    title: '城市ID',
-                    key: 'id'
+                    title: '酒店地址',
+                    key: 'address'
                 },
                 {
-                    title: '省份',
-                    key: 'province'
+                    title: '酒店电话',
+                    key: 'phone'
                 },
                 {
-                    title: '国家',
-                    key: 'country'
+                    title: '经纬度距离',
+                    key: 'range'
                 },
                 {
-                    title: '供应商名称',
+                    title: '酒店链接',
+                    key: 'link'
+                },
+                {
+                    title: '城市',
+                    key: 'city'
+                },
+                {
+                    title: '供应商',
                     key: 'supplier'
+                },
+                {
+                    title: '供应商酒店ID',
+                    key: 'cityId'
                 },
                 {
                     title: '聚合状态',
@@ -118,122 +135,99 @@ export default {
                     key: 'operatorMan'
                 },
                 {
-                    title: '操作时间',
+                    title: '更新时间',
                     key: 'operatorTime'
                 },
                 {
-                    title: '操作',
-                    key: 'operator'
+                    title: '日志',
+                    key: 'log'
                 }
             ],
             cityExamineData:[
                 {
-                    name: '阿尔拉',
-                    id: 'JD-H10',
-                    province:'新疆',
-                    country:'中国',
-                    supplier:'京东国内酒店',
+                    name: '北京五棵松和颐酒店',
+                    address: '北京海淀区永定路4号院',
+                    phone:'010-88257117',
+                    range:'',
+                    link:'打开链接',
+                    city:'北京',
+                    supplier:'JD',
+                    cityId:'001',
                     status:'',
-                    operatorMan:'',
+                    operatorMan:'系统',
                     operatorTime:'',
-                    operator:''
+                    log:''
                 },
                 {
-                    name: '阿尔拉市',
-                    id: 'A00067',
-                    province:'新疆',
-                    country:'中国',
-                    supplier:'酒店供应商A',
+                    name: '北京五棵松和颐酒店',
+                    address: '北京海淀区永定路4号院',
+                    phone:'010-88257117',
+                    range:'50m',
+                    link:'打开链接',
+                    city:'北京',
+                    supplier:'携程',
+                    cityId:'001',
                     status:'未聚待审',
-                    operatorMan:'system',
-                    operatorTime:'2017/08/11 17:19',
-                    operator:'查看'
+                    operatorMan:'系统',
+                    operatorTime:'2017-8-10 10:15:11',
+                    log:'查看'
                 },
                 {
-                    name: '阿尔拉',
-                    id: 'BUH13',
-                    province:'新疆',
-                    country:'中国',
-                    supplier:'酒店供应商B',
+                    name: '北京五棵松和颐酒店',
+                    address: '北京海淀区永定路4号院',
+                    phone:'010-88257117',
+                    range:'30m',
+                    link:'打开链接',
+                    city:'北京',
+                    supplier:'携程',
+                    cityId:'001',
                     status:'未聚待审',
-                    operatorMan:'system',
-                    operatorTime:'2017/08/12 18:00',
-                    operator:'查看'
-                },
-                {
-                    name: '阿尔拉',
-                    id: 'CN567',
-                    province:'新疆',
-                    country:'中国',
-                    supplier:'酒店供应商C',
-                    status:'已聚已审',
-                    operatorMan:'system',
-                    operatorTime:'2017/08/13 19:00',
-                    operator:'查看'
-                },
-                {
-                    name: '阿尔拉',
-                    id: 'DTY44',
-                    province:'新疆',
-                    country:'中国',
-                    supplier:'酒店供应商D',
-                    status:'已聚已审',
-                    operatorMan:'system',
-                    operatorTime:'2017/08/16 19:00',
-                    operator:'查看'
+                    operatorMan:'系统',
+                    operatorTime:'2017-8-10 10:15:11',
+                    log:'查看'
                 }
             ],
             similarHeaderData:[
-                {
-                    title: '城市名称',
-                    key: 'name'
-                },
                 {
                     title: '城市ID',
                     key: 'id'
                 },
                 {
-                    title: '省份',
-                    key: 'province'
+                    title: '酒店名称',
+                    key: 'name'
                 },
                 {
-                    title: '国家',
-                    key: 'country'
+                    title: '酒店地址',
+                    key: 'address'
                 },
                 {
-                    title: '供应商名称',
-                    key: 'supplier'
-                }
+                    title: '酒店电话',
+                    key: 'phone'
+                },
+                {
+                    title: '酒店链接',
+                    key: 'link'
+                },
+                {
+                    title: '城市',
+                    key: 'city'
+                },
+                {
+                    title: '查看酒店Tree',
+                    key: 'tree'
+                },
             ],
             similarCityData:[
                 {
-                    name: '阿拉尔',
-                    id: 'JD-H10',
-                    province:'新疆',
-                    country:'中国',
-                    supplier:'京东国内酒店'
+                    id: '364469',
+                    name: '北京燕莎和颐酒店',
+                    address:'北京市朝阳区新源西里东街6号楼',
+                    phone:'010-64666626',
+                    link:'打开链接',
+                    city:'北京',
+                    tree:'Tree信息'
                 },
-                {
-                    name: '阿拉尔市',
-                    id: 'JD-H10',
-                    province:'新疆',
-                    country:'中国',
-                    supplier:'京东国内酒店'
-                },
-                {
-                    name: '阿拉善',
-                    id: 'JD-H10',
-                    province:'新疆',
-                    country:'中国',
-                    supplier:'京东国内酒店'
-                },
-//                {
-//                    name: '阿尔拉',
-//                    id: 'JD-H10',
-//                    province:'新疆',
-//                    country:'中国',
-//                    supplier:'京东国内酒店'
-//                }
+
             ],
             // 全选状态
             checkAll: false,
@@ -328,7 +322,7 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
     border-top: none;
     overflow-x: auto;
     .wrapW1{
-        min-width: 130%;
+        min-width: 200%;
     }
     .wrapW2{
         width: 100%;
