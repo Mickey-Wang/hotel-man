@@ -5,7 +5,7 @@ let util = {
 
 };
 util.title = function(title) {
-    title = title ? title + ' - Home' : 'iView project';
+    title = title ? title + ' - Home' : '国内酒店管理系统';
     window.document.title = title;
 };
 
