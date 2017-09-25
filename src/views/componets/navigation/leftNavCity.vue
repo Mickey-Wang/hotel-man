@@ -54,11 +54,10 @@ section {
         </TabPane>
         <TabPane label="国家">标签二的内容</TabPane>
         <TabPane label="省份">标签三的内容</TabPane>
-        <TabPane label="城市">标签三的内容</TabPane>
-        <TabPane label="酒店" style="height:100%">
+        <TabPane label="城市" style="height:100%">
           <Row class="check-select">
-            <Select v-model="hotelID">
-              <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <Select v-model="cityID">
+              <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
 
           </Row>
@@ -76,16 +75,16 @@ export default {
   data() {
     return {
       searchID: 0,
-      hotelID: 0,
+      cityID: 0,
       searchInput: '',
       searchCondition: [{
         value: 0,
-        label: '酒店id'
+        label: '城市id'
       }, {
         value: 1,
-        label: '酒店名称'
+        label: '城市名称'
       }],
-      hotelCondition: [{
+      cityCondition: [{
         value: 0,
         label: '已聚待审'
       }, {
