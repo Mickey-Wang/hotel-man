@@ -10,7 +10,7 @@
             <div class="total">共计XX条</div>
             <div class="table">
                 <div class="wrap wrapW1">
-                    <div>
+                    <div :style="{'padding-right':paddingR1+'px'}">
                         <table>
                             <tr>
                                 <th><input type="checkbox" v-model="checkAll" @click="toggleCheckAll"></th>
@@ -18,8 +18,8 @@
                             </tr>
                         </table>
                     </div>
-                    <div>
-                        <table v-if="cityExamineData.length>0">
+                    <div ref="h1">
+                        <table ref="h2" v-if="cityExamineData.length>0">
                             <tr v-for="(item,index) in cityExamineData" :class="{trClass: item.status=='未聚待审'}">
                                 <td><input type="checkbox" v-model="item.checked" :disabled="item.status=='未聚待审'?disableStatus1:disableStatus2"></td>
                                 <td @click="getInputValue(item)">{{item.name}}</td>
@@ -53,7 +53,7 @@
             <div class="total">共计XX条</div>
             <div class="table">
                 <div class="wrap wrapW2">
-                    <div>
+                    <div :style="{'padding-right':paddingR2+'px'}">
                         <table>
                             <tr>
                                 <th></th>
@@ -61,8 +61,8 @@
                             </tr>
                         </table>
                     </div>
-                    <div>
-                        <table v-if="similarCityData.length>0">
+                    <div ref="h3">
+                        <table ref="h4" v-if="similarCityData.length>0">
                             <tr v-for="(item,index) in similarCityData">
                                 <td><input type="radio" v-model="similar" :value="index"></td>
                                 <td>{{item.id}}</td>
@@ -93,6 +93,9 @@ export default {
             cityValue:'',
             // 未聚待审的背景色
             classShow:false,
+            // 判断是否加padding
+            paddingR1:0,
+            paddingR2:0,
             cityHeaderData:[
                 {
                     title: '酒店名称',
@@ -227,7 +230,24 @@ export default {
                     city:'北京',
                     tree:'Tree信息'
                 },
-
+                {
+                    id: '364469',
+                    name: '北京燕莎和颐酒店',
+                    address:'北京市朝阳区新源西里东街6号楼',
+                    phone:'010-64666626',
+                    link:'打开链接',
+                    city:'北京',
+                    tree:'Tree信息'
+                },
+                {
+                    id: '364469',
+                    name: '北京燕莎和颐酒店',
+                    address:'北京市朝阳区新源西里东街6号楼',
+                    phone:'010-64666626',
+                    link:'打开链接',
+                    city:'北京',
+                    tree:'Tree信息'
+                },
             ],
             // 全选状态
             checkAll: false,
@@ -243,6 +263,20 @@ export default {
         this.cityExamineData.forEach((item,index)=>{
             this.$set(item,'checked',false);
         })
+    },
+    filters:{
+        highlight: function (value, word) {
+            return highlight(value, word)
+        }
+    },
+    mounted(){
+        // 如果有滚动条，要去掉滚动条的宽度
+        let h1 = this.$refs.h1.offsetHeight;
+        let h2 = this.$refs.h2.offsetHeight;
+        let h3 = this.$refs.h3.offsetHeight;
+        let h4 = this.$refs.h4.offsetHeight;
+        this.paddingR1 = this.getPadding(h1,h2);
+        this.paddingR2 = this.getPadding(h3,h4);
     },
     watch: {
         cityExamineData: {
@@ -283,6 +317,14 @@ export default {
         getInputValue(item){
             console.log('点击获取名字:',item.name);
             this.cityValue = item.name;
+        },
+        // 判断padding为多少
+        getPadding(h1,h2){
+            if(h1>=h2){
+                return 0;
+            }else {
+                return 17;
+            }
         }
     }
 }
@@ -302,10 +344,11 @@ table td, table th{
     height: 40px;
 }
 table th{
-    background: #f8f8f9;
+    /*background: #f8f8f9;*/
 }
 table tr td:nth-of-type(1),table tr th:nth-of-type(1){
     border-left: none;
+    width: 60px;
 }
 .wrapW1 table tr td:nth-of-type(2){
     cursor: pointer;
@@ -334,6 +377,7 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
         box-sizing: border-box;
         div:nth-of-type(1){
             overflow: hidden;
+            background: #f8f8f9;
             table{
                 table-layout: fixed;
             }

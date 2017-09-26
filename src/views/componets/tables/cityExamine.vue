@@ -10,7 +10,7 @@
             <div class="total">共计XX条</div>
             <div class="table">
                 <div class="wrap wrapW1">
-                    <div>
+                    <div :style="{'padding-right':paddingR1+'px'}">
                         <table>
                             <tr>
                                 <th><input type="checkbox" v-model="checkAll" @click="toggleCheckAll"></th>
@@ -18,8 +18,8 @@
                             </tr>
                         </table>
                     </div>
-                    <div>
-                        <table v-if="cityExamineData.length>0">
+                    <div ref="h1">
+                        <table ref="h2" v-if="cityExamineData.length>0">
                             <tr v-for="(item,index) in cityExamineData" :class="{trClass: item.status=='未聚待审'}">
                                 <td><input type="checkbox" v-model="item.checked" :disabled="item.status=='未聚待审'?disableStatus1:disableStatus2"></td>
                                 <td @click="getInputValue(item)">{{item.name}}</td>
@@ -50,7 +50,7 @@
             <div class="total">共计XX条</div>
             <div class="table">
                 <div class="wrap wrapW2">
-                    <div>
+                    <div :style="{'padding-right':paddingR2+'px'}">
                         <table>
                             <tr>
                                 <th></th>
@@ -58,8 +58,8 @@
                             </tr>
                         </table>
                     </div>
-                    <div>
-                        <table v-if="similarCityData.length>0">
+                    <div ref="h3">
+                        <table ref="h4" v-if="similarCityData.length>0">
                             <tr v-for="(item,index) in similarCityData">
                                 <td><input type="radio" v-model="similar" :value="index"></td>
                                 <td>{{item.name}}</td>
@@ -88,6 +88,9 @@ export default {
             cityValue:'',
             // 未聚待审的背景色
             classShow:false,
+            // 判断是否加padding
+            paddingR1:0,
+            paddingR2:0,
             cityHeaderData:[
                 {
                     title: '城市名称',
@@ -250,6 +253,15 @@ export default {
             this.$set(item,'checked',false);
         })
     },
+    mounted(){
+        // 如果有滚动条，要去掉滚动条的宽度
+        let h1 = this.$refs.h1.offsetHeight;
+        let h2 = this.$refs.h2.offsetHeight;
+        let h3 = this.$refs.h3.offsetHeight;
+        let h4 = this.$refs.h4.offsetHeight;
+        this.paddingR1 = this.getPadding(h1,h2);
+        this.paddingR2 = this.getPadding(h3,h4);
+    },
     watch: {
         cityExamineData: {
             handler () {
@@ -289,6 +301,14 @@ export default {
         getInputValue(item){
             console.log('点击获取名字:',item.name);
             this.cityValue = item.name;
+        },
+        // 判断padding为多少
+        getPadding(h1,h2){
+            if(h1>=h2){
+                return 0;
+            }else {
+                return 17;
+            }
         }
     }
 }
@@ -308,10 +328,11 @@ table td, table th{
     height: 40px;
 }
 table th{
-    background: #f8f8f9;
+    /*background: #f8f8f9;*/
 }
 table tr td:nth-of-type(1),table tr th:nth-of-type(1){
     border-left: none;
+    width: 60px;
 }
 .wrapW1 table tr td:nth-of-type(2){
     cursor: pointer;
@@ -340,6 +361,7 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
         box-sizing: border-box;
         div:nth-of-type(1){
             overflow: hidden;
+            background: #f8f8f9;
             table{
                 table-layout: fixed;
             }
@@ -389,22 +411,4 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
         width: 100%;
     }
 }
-/*table tr td:nth-of-type(1){*/
-    /*width: 100px;*/
-/*}*/
-/*table tr th:nth-of-type(1){*/
-    /*width: 100px;*/
-/*}*/
-/*table tr td:nth-of-type(2){*/
-    /*width: 150px;*/
-/*}*/
-/*table tr th:nth-of-type(2){*/
-    /*width: 150px;*/
-/*}*/
-/*table tr td:nth-of-type(3){*/
-    /*width: 100px;*/
-/*}*/
-/*table tr th:nth-of-type(3){*/
-    /*width: 100px;*/
-/*}*/
 </style>
