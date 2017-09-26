@@ -101,7 +101,7 @@
           <img src="../../public/img/s.jpg" alt="logo" class="logo1" v-else>
         </div>
         <MenuItem name="index">
-          <Icon type="home" :size="iconSize"></Icon>
+          <Icon type="ios-home" :size="iconSize"></Icon>
           <span class="layout-text">首页</span>
         </MenuItem>
         <Submenu name="confluence">
@@ -124,7 +124,7 @@
         </Submenu>
         <Submenu name="3">
           <template slot="title">
-            <Icon type="ios-analytics" :size="iconSize"></Icon>
+            <Icon type="social-yen" :size="iconSize"></Icon>
             <span class="layout-text">订单管理</span>
           </template>
           <MenuItem name="3-1" class="layout-text">订单1</MenuItem>
@@ -151,7 +151,7 @@
         </div>
       </div>
       <div class="layout-copy">
-        2011-2017 &copy; jd lt
+        Copyright &copy; 2004 - 2017  京东JD.com 版权所有
       </div>
       </Col>
     </Row>

@@ -7,19 +7,19 @@ const routers = [{
 },{
     path: '/mapping/hotel',
     meta: {
-        title: 'hotelMapping'
+        title: '酒店聚合'
     },
     component: (resolve) => require(['./views/pages/Mapping/hotelMapping.vue'], resolve)
 },{
     path: '/mapping/city',
     meta: {
-        title: 'cityMapping'
+        title: '城市聚合'
     },
     component: (resolve) => require(['./views/pages/Mapping/cityMapping.vue'], resolve)
 },{
     path: '/mapping/room',
     meta: {
-        title: 'roomMapping'
+        title: '房型聚合'
     },
     component: (resolve) => require(['./views/pages/Mapping/roomMapping.vue'], resolve)
 }];

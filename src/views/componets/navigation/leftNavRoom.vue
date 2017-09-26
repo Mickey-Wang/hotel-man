@@ -41,20 +41,57 @@ section {
     </Row>
     <Row>
       <ButtonGroup size="large" style="width:100%">
-        <Button type="primary" style="width:50%">按供应商审核</Button>
-        <Button style="width:50%">按区域审核</Button>
+        <Button :type="btnTypeShop" style="width:50%" @click="btnShop">按供应商审核</Button>
+        <Button :type="btnTypeRegion" style="width:50%" @click="btnRegion">按区域审核</Button>
       </ButtonGroup>
     </Row>
     <Row style="height:80%">
-      <Tabs type="card" style="height:100%">
-        <TabPane label="供应商">
+      <Tabs type="card" style="height:100%" v-show="btnType=='shop'">
+        <TabPane label="供应商" >
           <p>携程</p>
           <p>艺龙</p>
           <p>去哪儿</p>
         </TabPane>
-        <TabPane label="国家">标签二的内容</TabPane>
-        <TabPane label="省份">标签三的内容</TabPane>
-        <TabPane label="城市">标签三的内容</TabPane>
+        <TabPane label="国家">
+          <p>中国</p>
+        </TabPane>
+        <TabPane label="省份">
+          <p>北京</p>
+          <p>北京</p>
+          <p>北京</p>
+          <p>北京</p>
+        </TabPane>
+        <TabPane label="城市">
+          <p>北京</p>
+            <p>上海</p>
+            <p>广州</p>
+            <p>南京</p>
+        </TabPane>
+        <TabPane label="酒店" style="height:100%">
+          <Row class="check-select">
+            <Select v-model="hotelID">
+              <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+
+          </Row>
+        </TabPane>
+      </Tabs>
+      <Tabs type="card" style="height:100%" v-show="btnType=='region'">
+        <TabPane label="国家">
+          <p>中国</p>
+        </TabPane>
+        <TabPane label="省份">
+          <p>北京</p>
+          <p>北京</p>
+          <p>北京</p>
+          <p>北京</p>
+        </TabPane>
+        <TabPane label="城市">
+          <p>北京</p>
+            <p>上海</p>
+            <p>广州</p>
+            <p>南京</p>
+        </TabPane>
         <TabPane label="酒店" style="height:100%">
           <Row class="check-select">
             <Select v-model="hotelID">
@@ -78,6 +115,7 @@ export default {
       searchID: 0,
       hotelID: 0,
       searchInput: '',
+      btnType:'shop',
       searchCondition: [{
         value: 0,
         label: '酒店id'
@@ -97,7 +135,21 @@ export default {
       }]
     };
   },
+  computed:{
+    btnTypeShop(){
+      return this.btnType=='shop'?'primary':'ghost'
+    },
+    btnTypeRegion(){
+      return this.btnType=='region'?'primary':'ghost'
+    }
+  },
+  methods:{
+    btnShop(){
+      this.btnType = 'shop';
+    },
+    btnRegion(){
+      this.btnType = 'region';
+    }
+  }
 }
 </script>
-
-
