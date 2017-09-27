@@ -15,6 +15,8 @@ Vue.use(Vuex);
 
 Vue.use(iView);
 
+//Vue.prototype.highlight =
+
 
 
 // 路由配置

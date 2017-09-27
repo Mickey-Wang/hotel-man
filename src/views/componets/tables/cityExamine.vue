@@ -3,7 +3,7 @@
         <div class="topTable">
             <div class="title">城市审核列表</div>
             <div class="button">
-                <Button type="primary">审核通过</Button>
+                <Button type="primary" @click="toSubmit">提交</Button>
                 <Button type="primary">设为待审</Button>
                 <Button type="primary">新增</Button>
             </div>
@@ -62,7 +62,8 @@
                         <table ref="h4" v-if="similarCityData.length>0">
                             <tr v-for="(item,index) in similarCityData">
                                 <td><input type="radio" v-model="similar" :value="index"></td>
-                                <td>{{item.name}}</td>
+                                <!--<td>{{item.name}}</td>-->
+                                <td v-html="highlight(item.name, cityValue)"></td>
                                 <td>{{item.id}}</td>
                                 <td>{{item.province}}</td>
                                 <td>{{item.country}}</td>
@@ -131,7 +132,7 @@ export default {
             ],
             cityExamineData:[
                 {
-                    name: '阿尔拉',
+                    name: '阿拉尔',
                     id: 'JD-H10',
                     province:'新疆',
                     country:'中国',
@@ -142,7 +143,7 @@ export default {
                     operator:''
                 },
                 {
-                    name: '阿尔拉市',
+                    name: '阿拉尔市',
                     id: 'A00067',
                     province:'新疆',
                     country:'中国',
@@ -153,7 +154,7 @@ export default {
                     operator:'查看'
                 },
                 {
-                    name: '阿尔拉',
+                    name: '阿拉尔',
                     id: 'BUH13',
                     province:'新疆',
                     country:'中国',
@@ -164,7 +165,7 @@ export default {
                     operator:'查看'
                 },
                 {
-                    name: '阿尔拉',
+                    name: '阿拉尔',
                     id: 'CN567',
                     province:'新疆',
                     country:'中国',
@@ -175,7 +176,7 @@ export default {
                     operator:'查看'
                 },
                 {
-                    name: '阿尔拉',
+                    name: '阿拉尔',
                     id: 'DTY44',
                     province:'新疆',
                     country:'中国',
@@ -309,6 +310,23 @@ export default {
             }else {
                 return 17;
             }
+        },
+        // highlight函数
+        highlight(value,word){
+            let newIndex = value.indexOf(word);
+            let beforeStr = value.substring(0, newIndex);
+            let afterStr = value.substring(newIndex + word.length);
+            console.log('word', word, 'before', beforeStr, ', after', afterStr, newIndex);
+            if (newIndex == -1 || afterStr === value) {
+                return value;
+            } else {
+                console.log('word', word, 'before', beforeStr, ', after', afterStr, newIndex);
+                return beforeStr + '<span style="color: #2d8cf0;">' + word + '</span>' + this.highlight(afterStr, word);
+            }
+        },
+        // 当选择已聚待审的数据时候
+        toSubmit(){
+
         }
     }
 }
@@ -410,5 +428,8 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
         height: 50%;
         width: 100%;
     }
+}
+.highlightColor{
+    color: #2d8cf0 !important;
 }
 </style>
