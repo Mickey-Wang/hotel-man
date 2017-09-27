@@ -1,6 +1,6 @@
 <template>
     <div>
-        123
+        国内酒店管理系统
     </div>
 </template>
 <style lang="less" scoped>
