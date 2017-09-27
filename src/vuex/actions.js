@@ -1,6 +1,6 @@
 import vue from 'vue';
-// import '../common/mock'
-let _baseUrl = baseURL;
+
+let _baseUrl = '//mockjs.jd.com';
 
 const _fetch = (url, method, data = {}, opt = {}, commit = null) => {
     if (commit) commit('START_LOADING')
