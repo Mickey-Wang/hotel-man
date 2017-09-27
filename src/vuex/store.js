@@ -7,7 +7,8 @@ import mutations from './mutation';
 Vue.use(Vuex);
 
 let state = {
-
+    // 就算一下未聚待审的数据长度
+    listLen:''
 };
 export default new Vuex.Store({
   state,
