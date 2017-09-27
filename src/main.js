@@ -7,7 +7,8 @@ import Util from './libs/util';
 import App from './app.vue';
 import 'iview/dist/styles/iview.css';
 //import '../theme/dist/iview.css';
-import filter from '../src/libs/filter'
+import filter from '../src/libs/filter';
+import store from './vuex/store';
 
 
 Vue.use(VueRouter);
@@ -40,22 +41,6 @@ router.afterEach(() => {
 Object.keys(filter).forEach(function(k) {
     Vue.filter(k, filter[k]);
 });
-
-const store = new Vuex.Store({
-    state: {
-
-    },
-    getters: {
-
-    },
-    mutations: {
-
-    },
-    actions: {
-
-    }
-});
-
 
 new Vue({
     el: '#app',
