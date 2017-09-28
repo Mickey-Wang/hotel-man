@@ -10,7 +10,7 @@ let state = {
   //异步加载loading
   asyncLoading : false,
   //主导航状态同步
-  routerName:''
+  routerName:'',
   // 就算一下未聚待审的数据长度
   listLen:''
 };
