@@ -45,6 +45,6 @@ export default {
   components: {
     city,
     'left-nav': leftNav
-  },
+  }
 }
 </script>

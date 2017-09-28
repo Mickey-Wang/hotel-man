@@ -7,7 +7,9 @@ import mutations from './mutation';
 Vue.use(Vuex);
 
 let state = {
-
+  //异步加载loading
+  asyncLoading : false,
+  routerName:''
 };
 export default new Vuex.Store({
   state,

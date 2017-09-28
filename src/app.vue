@@ -28,7 +28,7 @@ export default {
     layout,
   },
   mounted() {
-
+    
   },
   beforeDestroy() {
 

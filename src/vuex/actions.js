@@ -3,7 +3,7 @@ import vue from 'vue';
 let _baseUrl = '//mockjs.jd.com';
 
 const _fetch = (url, method, data = {}, opt = {}, commit = null) => {
-    if (commit) commit('START_LOADING')
+    if (commit) commit('START_LOADING');
     let _url = _baseUrl + url;
         // let _url = url
     let promise = null;
@@ -23,5 +23,5 @@ const _fetch = (url, method, data = {}, opt = {}, commit = null) => {
         }
     }).catch((err) => {
         return Promise.reject(err);
-    })
-}
+    });
+};

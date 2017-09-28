@@ -46,7 +46,7 @@ section {
       </ButtonGroup>
     </Row>
     <Row style="height:80%">
-      <Tabs type="card" animated="true" style="height:100%" v-show="btnType=='shop'">
+      <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='shop'">
         <TabPane label="供应商" >
           <p>携程</p>
           <p>艺龙</p>
@@ -69,7 +69,7 @@ section {
           </Row>
         </TabPane>
       </Tabs>
-      <Tabs type="card" style="height:100%" v-show="btnType=='region'">
+      <Tabs type="card" :animated="true"  style="height:100%" v-show="btnType=='region'">
         <TabPane label="国家">
           <p>中国</p>
         </TabPane>

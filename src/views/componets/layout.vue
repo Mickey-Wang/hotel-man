@@ -95,7 +95,7 @@
   <div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
     <Row type="flex" class="layout-row">
       <Col :span="spanLeft" class="layout-menu-left">
-      <Menu theme="dark" width="auto" active-name="1-2" :accordion="true" @on-open-change="expend" @on-select="select">
+      <Menu theme="dark" width="auto" :active-name="routerName" :openNames="submenu" :accordion="true" @on-open-change="expend" @on-select="select">
         <div class="layout-logo-left">
           <img src="../../public/img/h.jpg" alt="logo" class="logo" v-if="logoSelect">
           <img src="../../public/img/s.jpg" alt="logo" class="logo1" v-else>
@@ -164,6 +164,7 @@ export default {
       spanLeft: 5,
       spanRight: 19,
       selected:['',''],
+      submenu:['confluence'],
       nav: [{
         name: '首页',
         url: '/'
@@ -182,37 +183,60 @@ export default {
       }]
     }
   },
+  watch:{
+    routerName:function(val,old){
+      // console.log(val,old)
+      this.changeBreadcrumb(val);
+    }
+  },
   computed: {
     iconSize() {
       return this.spanLeft === 5 ? 14 : 24;
     },
     logoSelect() {
       return this.spanLeft === 5 ? true : false;
+    },
+    routerName(){
+      return this.$store.getters.routerName;
     }
   },
+  mounted:function(){
+    this.changeBreadcrumb(this.routerName);
+  },
   methods: {
-    select(name){
-      console.log(name)
+    changeBreadcrumb(name){
       switch (name) {
         case 'index':
-          this.$router.push('/');
           this.selected[0]='';
           this.selected[1]='';
           break;
         case 'city':
-          this.$router.push('/mapping/city');
           this.selected[0]='聚合系统';
           this.selected[1]='城市聚合';
           break;
         case 'hotel':
-          this.$router.push('/mapping/hotel');
           this.selected[0]='聚合系统';
           this.selected[1]='酒店聚合';
           break;
         case 'room':
-          this.$router.push('/mapping/room');
           this.selected[0]='聚合系统';
           this.selected[1]='房型聚合';
+          break;
+      }
+    },
+    select(name){
+      switch (name) {
+        case 'index':
+          this.$router.push('/');
+          break;
+        case 'city':
+          this.$router.push('/mapping/city');
+          break;
+        case 'hotel':
+          this.$router.push('/mapping/hotel');
+          break;
+        case 'room':
+          this.$router.push('/mapping/room');
           break;
       }
     },

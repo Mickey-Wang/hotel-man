@@ -3,24 +3,28 @@ const routers = [{
     meta: {
         title: ''
     },
+    name:'index',
     component: (resolve) => require(['./views/pages/index.vue'], resolve)
 },{
     path: '/mapping/hotel',
     meta: {
         title: '酒店聚合'
     },
+    name:'hotel',
     component: (resolve) => require(['./views/pages/Mapping/hotelMapping.vue'], resolve)
 },{
     path: '/mapping/city',
     meta: {
         title: '城市聚合'
     },
+    name:'city',
     component: (resolve) => require(['./views/pages/Mapping/cityMapping.vue'], resolve)
 },{
     path: '/mapping/room',
     meta: {
         title: '房型聚合'
     },
+    name:'room',
     component: (resolve) => require(['./views/pages/Mapping/roomMapping.vue'], resolve)
 }];
 export default routers;

@@ -16,7 +16,7 @@ Vue.use(Vuex);
 
 Vue.use(iView);
 
-
+Vue.prototype.$util = Util;
 
 // 路由配置
 const RouterConfig = {
@@ -28,6 +28,7 @@ const router = new VueRouter(RouterConfig);
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start();
     Util.title(to.meta.title);
+    store.commit('ROUTER_NAME',to.name);
     next();
 });
 
