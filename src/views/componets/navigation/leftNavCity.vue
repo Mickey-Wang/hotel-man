@@ -1,31 +1,33 @@
-<style lang="less" scoped>
+<style lang="less">
 .height100 {
   height: 100%;
 }
 
-section {
+.left-nav {
   height: 100%;
-}
+  .ivu-row {
+    padding-top: 5px;
+  }
 
-.ivu-row {
-  padding-top: 5px;
-}
-
-.ivu-tabs-bar {
-  margin-bottom: 0;
-}
-
-.ivu-tabs .ivu-tabs-tabpane {
-  padding: 2px;
-}
-</style>
-<style>
-.ivu-tabs-bar {
-  margin-bottom: 0;
+  .ivu-tabs-bar {
+    margin-bottom: 0;
+  }
+  .menu-box{
+    // display: none;
+  }
+  .ivu-tabs .ivu-tabs-content {
+    height: 100%;
+    .ivu-tabs-tabpane {
+      padding: 2px;
+    }
+  }
+  .ivu-tabs-bar {
+    margin-bottom: 0;
+  }
 }
 </style>
 <template>
-  <section>
+  <section class="left-nav">
     <Row :gutter="2">
       <Col span="8">
       <Select v-model="searchID" class="search-top-left">
@@ -41,14 +43,14 @@ section {
     </Row>
     <Row>
       <ButtonGroup size="large" style="width:100%">
-        <Button :type="btnTypesupplier" style="width:50%" @click="btnsupplier">按供应商审核</Button>
+        <Button :type="btnTypesupplier" style="width:50%" @click="btnSupplier">按供应商审核</Button>
         <Button :type="btnTypeRegion" style="width:50%" @click="btnRegion">按区域审核</Button>
       </ButtonGroup>
     </Row>
     <Row style="height:80%">
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseBySuppliers">
         <TabPane label="供应商" name="suppliers">
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseSupplier">
+          <Menu theme="light" width="auto"  @on-select="chooseSupplier">
             <MenuItem name="1">
             <span>携程</span>
             <span>20000/10000/50000</span>
@@ -81,7 +83,7 @@ section {
         </TabPane>
 
         <TabPane label="国家" name="nation">
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseNation">
+          <Menu theme="light" width="auto"  @on-select="chooseNation">
             <MenuItem name="1">
             <span>中国</span>
             <span>20000/10000/50000</span>
@@ -89,7 +91,7 @@ section {
           </Menu>
         </TabPane>
         <TabPane label="省份" name="province">
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseProvince">
+          <Menu theme="light" width="auto"  @on-select="chooseProvince">
             <MenuItem name="1">
             <span>广东省</span>
             <span>20000/10000/50000</span>
@@ -106,21 +108,22 @@ section {
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseCity">
-            <MenuItem name="1">
-            <span>广州</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="2">
-            <span>深圳</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-          </Menu>
+          <div style="height:80%;scroll-behavior: smooth;overflow: hidden;overflow-y: scroll;" class="menu-box">
+            <Menu theme="light" width="auto"  @on-select="chooseCity">
+              <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers.cities">
+              <span>{{item.name}}</span>
+              <span>{{`${item.num1}/${item.num2}/${item.num3}`}}</span>
+              </MenuItem>
+            </Menu>
+          </div>
+          <Row>
+            <Page :total="cityListChooseBySuppliers.cities.length" size="small" show-total></Page>
+          </Row>
         </TabPane>
       </Tabs>
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='region'" v-model="chooseByRegions">
-        <TabPane label="国家" name="nation">
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseNation">
+        <TabPane label="国家" name="nation"> 
+          <Menu theme="light" width="auto"  @on-select="chooseNation('region')"><!-- :active-name="1" -->
             <MenuItem name="1">
             <span>中国</span>
             <span>20000/10000/50000</span>
@@ -128,7 +131,7 @@ section {
           </Menu>
         </TabPane>
         <TabPane label="省份" name="province">
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseProvince">
+          <Menu theme="light" width="auto"  @on-select="chooseProvince('region')">
             <MenuItem name="1">
             <span>广东省</span>
             <span>20000/10000/50000</span>
@@ -145,22 +148,21 @@ section {
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseCity">
-            <MenuItem name="1">
-            <span>广州</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="2">
-            <span>深圳</span>
-            <span>20000/10000/50000</span>
+          <div style="height:80%;scroll-behavior: smooth;overflow: hidden;overflow-y: scroll;">
+          <Menu theme="light" width="auto"  @on-select="chooseCity('region')">
+            <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers.cities">
+            <span>{{item.name}}</span>
+            <span>{{`${item.num1}/${item.num2}/${item.num3}`}}</span>
             </MenuItem>
           </Menu>
+          </div>
+          <Row>
+            <Page :total="cityListChooseBySuppliers.cities.length" size="small" show-total></Page>
+          </Row>
         </TabPane>
       </Tabs>
     </Row>
-    <Row>
-      <Page :total="50" size="small" show-total></Page>
-    </Row>
+
   </section>
 </template>
 
@@ -172,8 +174,8 @@ export default {
       cityID: 0,
       searchInput: '',
       btnType: 'supplier',
-      chooseBySuppliers:"",
-      chooseByRegions:"",
+      chooseBySuppliers: "",
+      chooseByRegions: "",
       searchCondition: [{
         value: 0,
         label: '城市id'
@@ -190,8 +192,16 @@ export default {
       }, {
         value: 2,
         label: '未聚未审'
-      }]
+      }],
+      cityListChooseBySuppliers: [],
+      cityListChooseByRegions: [],
     };
+  },
+  mounted: function() {
+    this.$util.ajax.get('city').then(rs => {
+      this.cityListChooseBySuppliers = rs.data.data;
+      this.cityListChooseByRegions = rs.data.data;
+    })
   },
   computed: {
     btnTypesupplier() {
@@ -202,22 +212,24 @@ export default {
     }
   },
   methods: {
-    btnsupplier() {
+    btnSupplier() {
       this.btnType = 'supplier';
     },
     btnRegion() {
       this.btnType = 'region';
     },
-    chooseSupplier(){
+    chooseSupplier() {
       this.chooseBySuppliers = "nation"
     },
-    chooseNation(){
-      this.chooseBySuppliers = "province"      
+    chooseNation(position) {
+      position == 'region' ? this.chooseByRegions = "province"
+        : this.chooseBySuppliers = "province"
     },
-    chooseProvince(){
-      this.chooseBySuppliers = "city"
+    chooseProvince(position) {
+      position == 'region' ? this.chooseByRegions = "city"
+        : this.chooseBySuppliers = "city"
     },
-    chooseCity(){
+    chooseCity() {
 
     }
   }
