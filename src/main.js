@@ -17,6 +17,7 @@ Vue.use(Vuex);
 Vue.use(iView);
 
 Vue.prototype.$util = Util;
+//Vue.prototype.highlight =
 
 // 路由配置
 const RouterConfig = {

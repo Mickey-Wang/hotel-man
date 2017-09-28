@@ -3,7 +3,7 @@
         <div class="topTable">
             <div class="title">酒店审核列表</div>
             <div class="button">
-                <Button type="primary">审核通过</Button>
+                <Button type="primary">提交</Button>
                 <Button type="primary">设为待审</Button>
                 <Button type="primary">新增</Button>
             </div>

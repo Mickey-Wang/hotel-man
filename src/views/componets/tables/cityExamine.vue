@@ -3,7 +3,7 @@
         <div class="topTable">
             <div class="title">城市审核列表</div>
             <div class="button">
-                <Button type="primary">审核通过</Button>
+                <Button type="primary" @click="toSubmit" v-if="tableType==0">提交</Button>
                 <Button type="primary">设为待审</Button>
                 <Button type="primary">新增</Button>
             </div>
@@ -21,7 +21,8 @@
                     <div ref="h1">
                         <table ref="h2" v-if="cityExamineData.length>0">
                             <tr v-for="(item,index) in cityExamineData" :class="{trClass: item.status=='未聚待审'}">
-                                <td><input type="checkbox" v-model="item.checked" :disabled="item.status=='未聚待审'?disableStatus1:disableStatus2"></td>
+                                <td v-if="tableType==0" ><input type="checkbox" v-model="item.checked" :disabled="item.status=='未聚待审'?disableStatus1:disableStatus2"></td>
+                                <td v-if="tableType==1"><input type="checkbox" v-model="item.checked"></td>
                                 <td @click="getInputValue(item)">{{item.name}}</td>
                                 <td>{{item.id}}</td>
                                 <td>{{item.province}}</td>
@@ -61,8 +62,9 @@
                     <div ref="h3">
                         <table ref="h4" v-if="similarCityData.length>0">
                             <tr v-for="(item,index) in similarCityData">
-                                <td><input type="radio" v-model="similar" :value="index"></td>
-                                <td>{{item.name}}</td>
+                                <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item.id)"></td>
+                                <!--<td>{{item.name}}</td>-->
+                                <td v-html="highlight(item.name, cityValue)"></td>
                                 <td>{{item.id}}</td>
                                 <td>{{item.province}}</td>
                                 <td>{{item.country}}</td>
@@ -131,7 +133,7 @@ export default {
             ],
             cityExamineData:[
                 {
-                    name: '阿尔拉',
+                    name: '阿拉尔',
                     id: 'JD-H10',
                     province:'新疆',
                     country:'中国',
@@ -142,7 +144,7 @@ export default {
                     operator:''
                 },
                 {
-                    name: '阿尔拉市',
+                    name: '阿拉尔市',
                     id: 'A00067',
                     province:'新疆',
                     country:'中国',
@@ -153,7 +155,7 @@ export default {
                     operator:'查看'
                 },
                 {
-                    name: '阿尔拉',
+                    name: '阿拉尔',
                     id: 'BUH13',
                     province:'新疆',
                     country:'中国',
@@ -164,7 +166,7 @@ export default {
                     operator:'查看'
                 },
                 {
-                    name: '阿尔拉',
+                    name: '阿拉尔',
                     id: 'CN567',
                     province:'新疆',
                     country:'中国',
@@ -175,7 +177,7 @@ export default {
                     operator:'查看'
                 },
                 {
-                    name: '阿尔拉',
+                    name: '阿拉尔',
                     id: 'DTY44',
                     province:'新疆',
                     country:'中国',
@@ -244,14 +246,18 @@ export default {
             // 控制未聚待审的disable的状态
             disableStatus1:false,
             // 控制非未聚待审的disable的状态
-            disableStatus2:false
+            disableStatus2:false,
+            // 确定表格哪一种(已聚待审、已聚已审、未聚待审)
+            // 这个可以从 getter 里面拿到判断值
+            // 假设0为已聚待审,1已聚已审,2未聚待审
+            tableType:1
         }
     },
     created(){
         // cityExamineData数据中set数据 checked: false
         this.cityExamineData.forEach((item,index)=>{
             this.$set(item,'checked',false);
-        })
+        });
     },
     mounted(){
         // 如果有滚动条，要去掉滚动条的宽度
@@ -268,8 +274,16 @@ export default {
                 let check = true;
                 for (let i = 0; i < this.cityExamineData.length; i++) {
                     let item = this.cityExamineData[i];
-                    if (item.status === '未聚待审') {
-                        console.log('item', item.checked);
+                    if(this.tableType==0){
+                        if (item.status === '未聚待审') {
+                            console.log('item', item.checked);
+                            if (!item.checked) {
+                                check = false;
+                                break;
+                            }
+                        }
+                    }
+                    if(this.tableType==1){
                         if (!item.checked) {
                             check = false;
                             break;
@@ -288,11 +302,16 @@ export default {
             this.$nextTick(() => {
                 for (let i = 0; i < this.cityExamineData.length; i++) {
                     let item = this.cityExamineData[i];
-                    if (item.status === '未聚待审') {
+                    if(this.tableType==0){
+                        if (item.status === '未聚待审') {
+                            item.checked = this.checkAll;
+                        }else {
+                            // 如果不是未聚待审，则不能进行选择操作
+                            this.disableStatus2 = true;
+                        }
+                    }
+                    if(this.tableType==1){
                         item.checked = this.checkAll;
-                    }else {
-                        // 如果不是未聚待审，则不能进行选择操作
-                        this.disableStatus2 = true;
                     }
                 }
             })
@@ -309,6 +328,41 @@ export default {
             }else {
                 return 17;
             }
+        },
+        // highlight函数
+        highlight(value,word){
+            let newIndex = value.indexOf(word);
+            let beforeStr = value.substring(0, newIndex);
+            let afterStr = value.substring(newIndex + word.length);
+            console.log('word', word, 'before', beforeStr, ', after', afterStr, newIndex);
+            if (newIndex == -1 || afterStr === value) {
+                return value;
+            } else {
+                console.log('word', word, 'before', beforeStr, ', after', afterStr, newIndex);
+                return beforeStr + '<span style="color: #2d8cf0;">' + word + '</span>' + this.highlight(afterStr, word);
+            }
+        },
+        // 点击提交按钮
+        toSubmit(){
+           console.log('点击提交');
+           for(let i=0; i<this.cityExamineData.length; i++){
+               if(this.cityExamineData[i].checked){
+                    console.log(this.cityExamineData[i].id);
+               }
+           }
+           //接口调取成功之后，计算一下未聚待审数据的长度
+            let dataLen = 0;
+            for(let i=0; i<this.cityExamineData.length; i++){
+                if(this.cityExamineData[i].status == '未聚待审'){
+                    dataLen ++;
+                }
+            }
+            console.log('未聚待审的长度:', dataLen);
+            this.$store.commit('LIST_LEN',dataLen);
+        },
+        // 单选框对应的值
+        radioSelect(id){
+            console.log('radio',id);
         }
     }
 }
@@ -410,5 +464,8 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
         height: 50%;
         width: 100%;
     }
+}
+.highlightColor{
+    color: #2d8cf0 !important;
 }
 </style>
