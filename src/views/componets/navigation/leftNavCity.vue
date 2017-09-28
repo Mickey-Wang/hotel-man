@@ -41,56 +41,120 @@ section {
     </Row>
     <Row>
       <ButtonGroup size="large" style="width:100%">
-        <Button :type="btnTypeShop" style="width:50%" @click="btnShop">按供应商审核</Button>
+        <Button :type="btnTypesupplier" style="width:50%" @click="btnsupplier">按供应商审核</Button>
         <Button :type="btnTypeRegion" style="width:50%" @click="btnRegion">按区域审核</Button>
       </ButtonGroup>
     </Row>
     <Row style="height:80%">
-      <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='shop'">
-        <TabPane label="供应商" >
-          <p>携程</p>
-          <p>艺龙</p>
-          <p>去哪儿</p>
+      <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseBySuppliers">
+        <TabPane label="供应商" name="suppliers">
+          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseSupplier">
+            <MenuItem name="1">
+            <span>携程</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+            <MenuItem name="2">
+            <span>艺龙</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+            <MenuItem name="3">
+            <span>深捷旅</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+            <MenuItem name="4">
+            <span>美团</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+            <MenuItem name="5">
+            <span>畅联</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+            <MenuItem name="6">
+            <span>泰坦云</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+            <MenuItem name="7">
+            <span>道旅</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+          </Menu>
         </TabPane>
-        <TabPane label="国家">
-          <p>中国</p>
+
+        <TabPane label="国家" name="nation">
+          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseNation">
+            <MenuItem name="1">
+            <span>中国</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+          </Menu>
         </TabPane>
-        <TabPane label="省份">
-          <p>北京</p>
-          <p>北京</p>
-          <p>北京</p>
-          <p>北京</p>
+        <TabPane label="省份" name="province">
+          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseProvince">
+            <MenuItem name="1">
+            <span>广东省</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+            <MenuItem name="2">
+            <span>福建省</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+          </Menu>
         </TabPane>
-        <TabPane label="城市" style="height:100%">
+        <TabPane label="城市" style="height:100%" name="city">
           <Row class="check-select">
             <Select v-model="cityID">
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
+          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseCity">
+            <MenuItem name="1">
+            <span>广州</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+            <MenuItem name="2">
+            <span>深圳</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+          </Menu>
         </TabPane>
       </Tabs>
-      <Tabs type="card" :animated="true"  style="height:100%" v-show="btnType=='region'">
-        <TabPane label="国家">
-          <p>中国</p>
+      <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='region'" v-model="chooseByRegions">
+        <TabPane label="国家" name="nation">
+          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseNation">
+            <MenuItem name="1">
+            <span>中国</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+          </Menu>
         </TabPane>
-        <TabPane label="省份">
-          <p>北京</p>
-          <p>河北省</p>
-          <p>河南省</p>
-          <p>山东省</p>
+        <TabPane label="省份" name="province">
+          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseProvince">
+            <MenuItem name="1">
+            <span>广东省</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+            <MenuItem name="2">
+            <span>福建省</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+          </Menu>
         </TabPane>
-        <TabPane label="城市" style="height:100%">
+        <TabPane label="城市" style="height:100%" name="city">
           <Row class="check-select">
             <Select v-model="cityID">
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
-          <Row>
-            <p>北京</p>
-            <p>上海</p>
-            <p>广州</p>
-            <p>南京</p>
-          </Row>
+          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseCity">
+            <MenuItem name="1">
+            <span>广州</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+            <MenuItem name="2">
+            <span>深圳</span>
+            <span>20000/10000/50000</span>
+            </MenuItem>
+          </Menu>
         </TabPane>
       </Tabs>
     </Row>
@@ -107,7 +171,9 @@ export default {
       searchID: 0,
       cityID: 0,
       searchInput: '',
-      btnType:'shop',
+      btnType: 'supplier',
+      chooseBySuppliers:"",
+      chooseByRegions:"",
       searchCondition: [{
         value: 0,
         label: '城市id'
@@ -127,20 +193,32 @@ export default {
       }]
     };
   },
-  computed:{
-    btnTypeShop(){
-      return this.btnType=='shop'?'primary':'ghost'
+  computed: {
+    btnTypesupplier() {
+      return this.btnType == 'supplier' ? 'primary' : 'ghost'
     },
-    btnTypeRegion(){
-      return this.btnType=='region'?'primary':'ghost'
+    btnTypeRegion() {
+      return this.btnType == 'region' ? 'primary' : 'ghost'
     }
   },
-  methods:{
-    btnShop(){
-      this.btnType = 'shop';
+  methods: {
+    btnsupplier() {
+      this.btnType = 'supplier';
     },
-    btnRegion(){
+    btnRegion() {
       this.btnType = 'region';
+    },
+    chooseSupplier(){
+      this.chooseBySuppliers = "nation"
+    },
+    chooseNation(){
+      this.chooseBySuppliers = "province"      
+    },
+    chooseProvince(){
+      this.chooseBySuppliers = "city"
+    },
+    chooseCity(){
+
     }
   }
 }
