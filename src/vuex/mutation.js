@@ -18,6 +18,7 @@ const  mutations={
     //主导航状态同步
     [ROUTER_NAME](state,data){
         state.routerName = data;
+    },
     [LIST_LEN](state, data){
         state.LIST_LEN = data;
     }
