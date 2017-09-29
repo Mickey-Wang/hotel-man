@@ -83,11 +83,7 @@
         </TabPane>
 
         <TabPane label="国家" name="nation">
-<<<<<<< HEAD
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseNation">
-=======
           <Menu theme="light" width="auto"  @on-select="chooseNation">
->>>>>>> b9ee1cf1341cf080e90e9e9e2e7d9d5382713997
             <MenuItem name="1">
             <span>中国</span>
             <span>20000/10000/50000</span>
@@ -95,11 +91,7 @@
           </Menu>
         </TabPane>
         <TabPane label="省份" name="province">
-<<<<<<< HEAD
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseProvince">
-=======
           <Menu theme="light" width="auto"  @on-select="chooseProvince">
->>>>>>> b9ee1cf1341cf080e90e9e9e2e7d9d5382713997
             <MenuItem name="1">
             <span>广东省</span>
             <span>20000/10000/50000</span>
@@ -116,23 +108,6 @@
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
-<<<<<<< HEAD
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseCity">
-            <MenuItem name="1">
-            <span>广州</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="2">
-            <span>深圳</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-          </Menu>
-        </TabPane>
-      </Tabs>
-      <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='region'" v-model="chooseByRegions">
-        <TabPane label="国家" name="nation">
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseNation">
-=======
           <div style="height:80%;scroll-behavior: smooth;overflow: hidden;overflow-y: scroll;" class="menu-box">
             <Menu theme="light" width="auto"  @on-select="chooseCity">
               <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers.cities">
@@ -149,7 +124,6 @@
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='region'" v-model="chooseByRegions">
         <TabPane label="国家" name="nation"> 
           <Menu theme="light" width="auto"  @on-select="chooseNation('region')"><!-- :active-name="1" -->
->>>>>>> b9ee1cf1341cf080e90e9e9e2e7d9d5382713997
             <MenuItem name="1">
             <span>中国</span>
             <span>20000/10000/50000</span>
@@ -157,11 +131,7 @@
           </Menu>
         </TabPane>
         <TabPane label="省份" name="province">
-<<<<<<< HEAD
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseProvince">
-=======
           <Menu theme="light" width="auto"  @on-select="chooseProvince('region')">
->>>>>>> b9ee1cf1341cf080e90e9e9e2e7d9d5382713997
             <MenuItem name="1">
             <span>广东省</span>
             <span>20000/10000/50000</span>
@@ -178,18 +148,6 @@
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
-<<<<<<< HEAD
-          <Menu theme="light" width="auto" :active-name="1" @on-select="chooseCity">
-            <MenuItem name="1">
-            <span>广州</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="2">
-            <span>深圳</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-          </Menu>
-=======
           <div style="height:80%;scroll-behavior: smooth;overflow: hidden;overflow-y: scroll;">
           <Menu theme="light" width="auto"  @on-select="chooseCity('region')">
             <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers.cities">
@@ -201,7 +159,6 @@
           <Row>
             <Page :total="cityListChooseBySuppliers.cities.length" size="small" show-total></Page>
           </Row>
->>>>>>> b9ee1cf1341cf080e90e9e9e2e7d9d5382713997
         </TabPane>
       </Tabs>
     </Row>
@@ -217,13 +174,8 @@ export default {
       cityID: 0,
       searchInput: '',
       btnType: 'supplier',
-<<<<<<< HEAD
-      chooseBySuppliers:"",
-      chooseByRegions:"",
-=======
       chooseBySuppliers: "",
       chooseByRegions: "",
->>>>>>> b9ee1cf1341cf080e90e9e9e2e7d9d5382713997
       searchCondition: [{
         value: 0,
         label: '城市id'
@@ -245,15 +197,12 @@ export default {
       cityListChooseByRegions: [],
     };
   },
-<<<<<<< HEAD
-=======
   mounted: function() {
     this.$util.ajax.get('city').then(rs => {
       this.cityListChooseBySuppliers = rs.data.data;
       this.cityListChooseByRegions = rs.data.data;
     })
   },
->>>>>>> b9ee1cf1341cf080e90e9e9e2e7d9d5382713997
   computed: {
     btnTypesupplier() {
       return this.btnType == 'supplier' ? 'primary' : 'ghost'
@@ -263,28 +212,12 @@ export default {
     }
   },
   methods: {
-<<<<<<< HEAD
-    btnsupplier() {
-=======
     btnSupplier() {
->>>>>>> b9ee1cf1341cf080e90e9e9e2e7d9d5382713997
       this.btnType = 'supplier';
     },
     btnRegion() {
       this.btnType = 'region';
     },
-<<<<<<< HEAD
-    chooseSupplier(){
-      this.chooseBySuppliers = "nation"
-    },
-    chooseNation(){
-      this.chooseBySuppliers = "province"      
-    },
-    chooseProvince(){
-      this.chooseBySuppliers = "city"
-    },
-    chooseCity(){
-=======
     chooseSupplier() {
       this.chooseBySuppliers = "nation"
     },
@@ -297,7 +230,6 @@ export default {
         : this.chooseBySuppliers = "city"
     },
     chooseCity() {
->>>>>>> b9ee1cf1341cf080e90e9e9e2e7d9d5382713997
 
     }
   }

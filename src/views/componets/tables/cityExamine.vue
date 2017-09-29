@@ -3,8 +3,8 @@
         <div class="topTable">
             <div class="title">城市审核列表</div>
             <div class="button">
-                <Button type="primary" @click="toSubmit" v-if="tableType==0">提交</Button>
-                <Button type="primary" @click="toSubmit">设为待审</Button>
+                <Button type="primary" @click="toSubmit1">提交</Button>
+                <Button type="primary" @click="toSubmit2" v-if="tableType!=2">设为待审</Button>
                 <Button type="primary">新增</Button>
             </div>
             <div class="total">共计XX条</div>
@@ -13,16 +13,15 @@
                     <div :style="{'padding-right':paddingR1+'px'}">
                         <table>
                             <tr>
-                                <th><input type="checkbox" v-if="tableType!==1" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
+                                <th><input type="checkbox" v-if="tableType!==2" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
                                 <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
                             </tr>
                         </table>
                     </div>
                     <div ref="h1">
                         <table ref="h2" v-if="cityExamineData.length>0">
-                            <tr v-for="(item,index) in cityExamineData" :class="[{trClass: item.status=='已聚待审'},{fontColor: index==0&&tableType!=2}]">
-                                <td v-if="tableType==0" ><input type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.status=='已聚待审'?disableStatus1:disableStatus2"></td>
-                                <td v-if="tableType==1"><input type="checkbox" v-model="item.checked"></td>
+                            <tr v-for="(item,index) in cityExamineData" :key="item.id" :class="[{trClass: item.status=='已聚待审'},{fontColor: index==0&&tableType!=2}]">
+                                <td><input v-if="item.status!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.status=='已聚待审'?disableStatus1:disableStatus2"></td>
                                 <td @click="getInputValue(item)">{{item.name}}</td>
                                 <td>{{item.id}}</td>
                                 <td>{{item.province}}</td>
@@ -61,8 +60,8 @@
                     </div>
                     <div ref="h3">
                         <table ref="h4" v-if="similarCityData.length>0">
-                            <tr v-for="(item,index) in similarCityData">
-                                <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item.id)"></td>
+                            <tr v-for="(item,index) in similarCityData" :key="item.id">
+                                <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <!--<td>{{item.name}}</td>-->
                                 <td v-html="highlight(item.name, cityValue)"></td>
                                 <td>{{item.id}}</td>
@@ -148,10 +147,21 @@ export default {
                 },
                 {
                     name: '阿拉尔市',
-                    id: 'A00067',
+                    id: 'A00061',
                     province: '新疆',
                     country: '中国',
                     supplier: '酒店供应商A',
+                    status: '已聚待审',
+                    operatorMan: 'system',
+                    operatorTime: '2017/08/11 17:19',
+                    operator: '查看'
+                },
+                {
+                    name: '阿拉尔市',
+                    id: 'A00062',
+                    province: '新疆',
+                    country: '中国',
+                    supplier: '酒店供应商B',
                     status: '已聚待审',
                     operatorMan: 'system',
                     operatorTime: '2017/08/11 17:19',
@@ -162,7 +172,7 @@ export default {
                     id: 'BUH13',
                     province: '新疆',
                     country: '中国',
-                    supplier: '酒店供应商B',
+                    supplier: '酒店供应商C',
                     status: '已聚已审',
                     operatorMan: 'system',
                     operatorTime: '2017/08/12 18:00',
@@ -173,7 +183,7 @@ export default {
                     id: 'CN567',
                     province: '新疆',
                     country: '中国',
-                    supplier: '酒店供应商C',
+                    supplier: '酒店供应商D',
                     status: '已聚已审',
                     operatorMan: 'system',
                     operatorTime: '2017/08/13 19:00',
@@ -184,7 +194,7 @@ export default {
                     id: 'DTY44',
                     province: '新疆',
                     country: '中国',
-                    supplier: '酒店供应商D',
+                    supplier: '酒店供应商E',
                     status: '已聚已审',
                     operatorMan: 'system',
                     operatorTime: '2017/08/16 19:00',
@@ -234,14 +244,7 @@ export default {
                     province: '新疆',
                     country: '中国',
                     supplier: '京东国内酒店'
-                },
-//                {
-//                    name: '阿尔拉',
-//                    id: 'JD-H10',
-//                    province:'新疆',
-//                    country:'中国',
-//                    supplier:'京东国内酒店'
-//                }
+                }
             ],
             // 全选状态
             checkAll: false,
@@ -255,6 +258,11 @@ export default {
                 checkBoxData:[],
                 radioData:[]
             },
+            // 点击设为待审的入参
+            submitData1:{
+                checkBoxData:[],
+                radioData:[]
+            },
             // 控制模态框显示
             modelShow:false,
             // 模态框信息
@@ -262,7 +270,10 @@ export default {
             // 确定表格哪一种(已聚待审、已聚已审、未聚待审)
             // 这个可以从 getter 里面拿到判断值
             // 假设0为已聚待审,1已聚已审,2未聚待审
-            tableType:0
+            tableType:1,
+            // 供应商维度还是区域维度
+            // 区域是0，供应商是1
+            sourceType:1
         }
     },
     created(){
@@ -285,7 +296,7 @@ export default {
             handler () {
                 let check = true;
                 // 先确定是否有已聚待审的数据的存在
-                if(this.tableType==0){
+                if(this.tableType==0 || this.tableType==0){
                     for (let i = 0; i < this.cityExamineData.length; i++) {
                         let item = this.cityExamineData[i];
                         if (item.status === '已聚待审') {
@@ -303,6 +314,7 @@ export default {
                     }
                     this.checkAll = check;
                 }
+
                 console.log('change checkAll', this.checkAll);
             },
             deep: true
@@ -355,51 +367,95 @@ export default {
             }
         },
         // 点击提交按钮(点击提交按钮)
-        toSubmit(){
+        toSubmit1(){
            console.log('点击提交');
-            this.submitData.checkBoxData = [];
+           // 获取酒店审核列表中选中的城市ID
+           this.submitData.checkBoxData = [];
            for(let i=0; i<this.cityExamineData.length; i++){
                if(this.cityExamineData[i].checked){
                     console.log('checked的ID:',this.tableType,this.cityExamineData[i].id);
-                    this.submitData.checkBoxData.push(this.cityExamineData[i].id);
+                    this.submitData.checkBoxData.push(this.cityExamineData[i]);
                }
            }
            //接口调取成功之后，计算一下未聚待审数据的长度
             let dataLen = 0;
-            if (this.tableType==0){
+            // 选中的是已聚待审、区域维度
+            /*if (this.tableType==0 && this.sourceType==0){
                 for(let i=0; i<this.cityExamineData.length; i++){
                     if(this.cityExamineData[i].status == '已聚待审'){
                         dataLen ++;
                     }
                 }
-
-                console.log('列表的长度:', this.tableType, dataLen);
+                console.log('供应商维度已聚待审列表的长度:', this.tableType, dataLen);
                 this.$store.commit('LIST_LEN',dataLen);
-            }
-            if(this.tableType==1){
+                if(dataLen == 0){
+                    // 左侧一条数据消失
+                }
+            }*/
+            // 已聚待审、区域维度
+            /*if (this.tableType==1 && this.sourceType==0){
                 for(let i=0; i<this.cityExamineData.length; i++){
-                    if(this.cityExamineData[i].status == '已聚已审'){
+                    if(this.cityExamineData[i].status == '已聚待审'){
                         dataLen ++;
                     }
                 }
-                console.log('列表的长度:', this.tableType, dataLen);
+                console.log('供应商维度已聚待审列表的长度:', this.tableType, dataLen);
                 this.$store.commit('LIST_LEN',dataLen);
-            }
+                if(dataLen == 0){
+                    // 左侧一条数据消失
+                }
+            }*/
+            // 调取接口之前记录一下第二条数据的供应商名字
+            // 调取接口之后的事情:选中的是未聚待审、供应商维度、需要知道是哪个供应商(比如说是携程)
+            /*if(this.tableType==0 && this.sourceType==1){
+                // 掉接口之前
+                let beforSupplierName = this.cityExamineData[1];
+                console.log('供应商维度的列表中的第二条数据:',this.cityExamineData[1]);
+                let afterSupplierName = this.cityExamineData[1];
+                if(beforSupplierName == afterSupplierName){
+                    console.log('当前供应商没有聚合');
+                }else {
+                    console.log('当前供应商已经聚合');
+                    // 左侧一条数据消失
+                }
+            }*/
+
             console.log('提交的数据:',this.submitData);
             console.log('多选框和单选框的长度:',this.submitData.checkBoxData.length,this.submitData.radioData.length);
-            if(this.submitData.checkBoxData.length==0 || this.submitData.radioData.length==0){
-                this.instance('info');
+            if(this.submitData.checkBoxData.length==0){
+                this.instance('info','已聚待审');
             }else {
                 this.modelShow = true;
                 this.message = '请确认是否将已选择城市提交？';
+                // 点击确定调取接口
             }
         },
-
+        toSubmit2(){
+            // 当是已聚待审的时候
+            this.submitData1.checkBoxData = [];
+            if(this.tableType==0){
+                for(let i=0; i<this.cityExamineData.length; i++){
+                    if(this.cityExamineData[i].status == '已聚已审'&&this.cityExamineData[i].checked){
+                        this.submitData1.checkBoxData.push(this.cityExamineData[i]);
+                    }
+                }
+                console.log('已聚已审的数据:',this.submitData1.checkBoxData,this.submitData1);
+                if(this.submitData1.checkBoxData.length == 0){
+                    this.instance('info','已聚已审');
+                }else {
+                    this.modelShow = true;
+                    this.message = '请确认是否将已选择城市设为待审？';
+                    // 点击确定调取接口
+                }
+            }
+        },
         // 单选框对应的值
-        radioSelect(id){
-            console.log('radio',id);
+        radioSelect(item){
+            console.log('radio',item);
             this.submitData.radioData = [];
-            this.submitData.radioData.push(id);
+            this.submitData1.radioData = [];
+            this.submitData.radioData.push(item);
+            this.submitData1.radioData.push(item);
         },
         // 单个复选框选择的时候
         oneSelect(item){
@@ -423,8 +479,8 @@ export default {
         cancel () {
 
         },
-        instance (type) {
-            const content1 = '<p style="font-size: 16px;">请必须选择一个京东城市和至少一个(含)供应商城市"已聚待审"的数据</p>';
+        instance (type,status) {
+            const content1 = '<p style="font-size: 16px;">请必须选择一个京东城市和至少一个(含)供应商城市"'+status+'"的数据</p>';
             const content2 = '<p style="font-size: 16px;">请输入城市名称</p>';
             switch (type) {
                 case 'info':
