@@ -270,7 +270,7 @@ export default {
             // 确定表格哪一种(已聚待审、已聚已审、未聚待审)
             // 这个可以从 getter 里面拿到判断值
             // 假设0为已聚待审、已聚已审,1未聚待审
-            tableType:1,
+            tableType:0,
         }
     },
     created(){
