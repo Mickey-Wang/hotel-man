@@ -116,11 +116,14 @@
         <Submenu name="static">
           <template slot="title">
             <Icon type="images" :size="iconSize"></Icon>
-            <span class="layout-text">静态管理</span>
+            <span class="layout-text">静态数据</span>
           </template>
           <MenuItem name="hotel" class="layout-text">酒店管理</MenuItem>
           <MenuItem name="destination" class="layout-text">目的地管理</MenuItem>
           <MenuItem name="picture" class="layout-text">图片管理</MenuItem>
+          <MenuItem name="2-1" class="layout-text">商圈管理</MenuItem>
+          <MenuItem name="2-2" class="layout-text">品牌管理</MenuItem>
+          <MenuItem name="2-3" class="layout-text">地标管理</MenuItem>
         </Submenu>
         <Submenu name="order">
           <template slot="title">

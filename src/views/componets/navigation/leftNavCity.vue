@@ -12,8 +12,13 @@
   .ivu-tabs-bar {
     margin-bottom: 0;
   }
-  .menu-box{
-    // display: none;
+  .menu-box {
+    position: relative;
+    z-index: 10;
+    height: 78%;
+    scroll-behavior: smooth;
+    overflow: hidden;
+    overflow-y: scroll;
   }
   .ivu-tabs .ivu-tabs-content {
     height: 100%;
@@ -47,10 +52,11 @@
         <Button :type="btnTypeRegion" style="width:50%" @click="btnRegion">按区域审核</Button>
       </ButtonGroup>
     </Row>
-    <Row style="height:80%">
+    <Row style="height:85%">
+      <!-- 供应商 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseBySuppliers">
-        <TabPane label="供应商" name="suppliers">
-          <Menu theme="light" width="auto"  @on-select="chooseSupplier">
+        <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
+          <Menu theme="light" width="auto" @on-select="chooseSupplier">
             <MenuItem name="1">
             <span>携程</span>
             <span>20000/10000/50000</span>
@@ -81,17 +87,16 @@
             </MenuItem>
           </Menu>
         </TabPane>
-
-        <TabPane label="国家" name="nation">
-          <Menu theme="light" width="auto"  @on-select="chooseNation">
+        <TabPane label="国家" name="nation" :disabled="supplierTabDisable[1]">
+          <Menu theme="light" width="auto" @on-select="chooseNation">
             <MenuItem name="1">
             <span>中国</span>
             <span>20000/10000/50000</span>
             </MenuItem>
           </Menu>
         </TabPane>
-        <TabPane label="省份" name="province">
-          <Menu theme="light" width="auto"  @on-select="chooseProvince">
+        <TabPane label="省份" name="province" :disabled="supplierTabDisable[2]">
+          <Menu theme="light" width="auto" @on-select="chooseProvince">
             <MenuItem name="1">
             <span>广东省</span>
             <span>20000/10000/50000</span>
@@ -102,36 +107,39 @@
             </MenuItem>
           </Menu>
         </TabPane>
-        <TabPane label="城市" style="height:100%" name="city">
+        <TabPane label="城市" style="height:100%" name="city" :disabled="supplierTabDisable[3]">
           <Row class="check-select">
             <Select v-model="cityID">
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
-          <div style="height:80%;scroll-behavior: smooth;overflow: hidden;overflow-y: scroll;" class="menu-box">
-            <Menu theme="light" width="auto"  @on-select="chooseCity">
-              <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers.cities">
+          <Row class-name="menu-box">
+            <Menu theme="light" width="auto" @on-select="chooseCity">
+              <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers.cities" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.num1}/${item.num2}/${item.num3}`}}</span>
               </MenuItem>
             </Menu>
-          </div>
-          <Row>
+          </Row>
+          <Row type="flex" justify="center">
             <Page :total="cityListChooseBySuppliers.cities.length" size="small" show-total></Page>
           </Row>
         </TabPane>
       </Tabs>
+
+      <!-- 区域 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='region'" v-model="chooseByRegions">
-        <TabPane label="国家" name="nation"> 
-          <Menu theme="light" width="auto"  @on-select="chooseNation('region')"><!-- :active-name="1" -->
+        <TabPane label="国家" name="nation" :disabled="regionTabDisable[0]">
+          <Menu theme="light" width="auto" @on-select="chooseNation('region')">
+            <!-- :active-name="1" -->
             <MenuItem name="1">
             <span>中国</span>
             <span>20000/10000/50000</span>
             </MenuItem>
           </Menu>
         </TabPane>
-        <TabPane label="省份" name="province">
-          <Menu theme="light" width="auto"  @on-select="chooseProvince('region')">
+        <TabPane label="省份" name="province" :disabled="regionTabDisable[1]">
+          <Menu theme="light" width="auto" @on-select="chooseProvince('region')">
             <MenuItem name="1">
             <span>广东省</span>
             <span>20000/10000/50000</span>
@@ -142,22 +150,22 @@
             </MenuItem>
           </Menu>
         </TabPane>
-        <TabPane label="城市" style="height:100%" name="city">
+        <TabPane label="城市" style="height:100%" name="city" :disabled="regionTabDisable[2]">
           <Row class="check-select">
             <Select v-model="cityID">
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
-          <div style="height:80%;scroll-behavior: smooth;overflow: hidden;overflow-y: scroll;">
-          <Menu theme="light" width="auto"  @on-select="chooseCity('region')">
-            <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers.cities">
-            <span>{{item.name}}</span>
-            <span>{{`${item.num1}/${item.num2}/${item.num3}`}}</span>
-            </MenuItem>
-          </Menu>
-          </div>
-          <Row>
-            <Page :total="cityListChooseBySuppliers.cities.length" size="small" show-total></Page>
+          <Row class-name="menu-box">
+            <Menu theme="light" width="auto" @on-select="chooseCity('region')">
+              <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions.cities" :key="index">
+              <span>{{item.name}}</span>
+              <span>{{`${item.num1}/${item.num2}/${item.num3}`}}</span>
+              </MenuItem>
+            </Menu>
+          </Row>
+          <Row type="flex" justify="center">
+            <Page :total="cityTotal" size="small" show-total></Page>
           </Row>
         </TabPane>
       </Tabs>
@@ -170,12 +178,9 @@
 export default {
   data() {
     return {
+      //搜索选项默认
       searchID: 0,
-      cityID: 0,
-      searchInput: '',
-      btnType: 'supplier',
-      chooseBySuppliers: "",
-      chooseByRegions: "",
+      //选项内容
       searchCondition: [{
         value: 0,
         label: '城市id'
@@ -183,6 +188,23 @@ export default {
         value: 1,
         label: '城市名称'
       }],
+      //搜索框内容
+      searchInput: '',
+
+      //供应商区域按钮
+      btnType: 'supplier',
+      //当前供应商选项卡
+      chooseBySuppliers: "",
+      //当前区域选项卡
+      chooseByRegions: "",
+      //供应商选项是否不可用
+      supplierTabDisable:[false,true,true,true],
+      //区域选项是否不可用
+      regionTabDisable:[false,true,true],
+      
+      //城市三种状态id
+      cityID: 0,
+      //城市三种状态内容
       cityCondition: [{
         value: 0,
         label: '已聚待审'
@@ -193,8 +215,13 @@ export default {
         value: 2,
         label: '未聚未审'
       }],
-      cityListChooseBySuppliers: [],
-      cityListChooseByRegions: [],
+      //城市数据
+      cityListChooseBySuppliers: {
+        cities:[],
+      },
+      cityListChooseByRegions: {
+        cities:[],
+      }
     };
   },
   mounted: function() {
@@ -209,6 +236,9 @@ export default {
     },
     btnTypeRegion() {
       return this.btnType == 'region' ? 'primary' : 'ghost'
+    },
+    cityTotal(){
+      return this.cityListChooseBySuppliers.cities.length
     }
   },
   methods: {
@@ -218,12 +248,18 @@ export default {
     btnRegion() {
       this.btnType = 'region';
     },
-    chooseSupplier() {
-      this.chooseBySuppliers = "nation"
+    chooseSupplier(position) {
+      this.chooseBySuppliers = "nation";
+      // this.supplierTabDisable[1] = false;
     },
     chooseNation(position) {
-      position == 'region' ? this.chooseByRegions = "province"
-        : this.chooseBySuppliers = "province"
+      if(position == 'region'){
+        this.chooseByRegions = "province"
+        // this.regionTabDisable[1] = false;   
+      }else{
+        // this.supplierTabDisable[2] = false;
+        this.chooseBySuppliers = "province"
+      } 
     },
     chooseProvince(position) {
       position == 'region' ? this.chooseByRegions = "city"

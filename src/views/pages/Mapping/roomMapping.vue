@@ -35,7 +35,7 @@
 
 <script>
 import city from '../../componets/tables/cityExamine.vue'
-import leftNav from '../../componets/navigation/leftNavRoom'
+import leftNav from '../../componets/navigation/leftNavHotel'
 export default {
   data() {
     return {
