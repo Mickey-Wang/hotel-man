@@ -134,24 +134,24 @@ export default {
                 }
             ],
             cityExamineData: [
-//                {
-//                    name: '阿拉尔',
-//                    id: 'JD-H10',
-//                    province: '新疆',
-//                    country: '中国',
-//                    supplier: '京东国内酒店',
-//                    status: '',
-//                    operatorMan: '',
-//                    operatorTime: '',
-//                    operator: ''
-//                },
+                {
+                    name: '阿拉尔',
+                    id: 'JD-H10',
+                    province: '新疆',
+                    country: '中国',
+                    supplier: '京东国内酒店',
+                    status: '',
+                    operatorMan: '',
+                    operatorTime: '',
+                    operator: ''
+                },
                 {
                     name: '阿拉尔市',
                     id: 'A00061',
                     province: '新疆',
                     country: '中国',
                     supplier: '酒店供应商A',
-                    status: '未聚待审',
+                    status: '已聚待审',
                     operatorMan: 'system',
                     operatorTime: '2017/08/11 17:19',
                     operator: '查看'
@@ -162,7 +162,7 @@ export default {
                     province: '新疆',
                     country: '中国',
                     supplier: '酒店供应商B',
-                    status: '未聚待审',
+                    status: '已聚待审',
                     operatorMan: 'system',
                     operatorTime: '2017/08/11 17:19',
                     operator: '查看'
