@@ -13,13 +13,16 @@
 }
 
 .layout-breadcrumb {
-  padding: 10px 15px 0;
+  padding: 5px 10px 0;
+  .ivu-breadcrumb{
+    font-size: 12px;
+  }
 }
 
 .layout-content {
   min-height: 200px;
-  height: 80%;
-  margin: 15px;
+  height: 86%;
+  margin: 5px;
   overflow: hidden;
   background: #fff;
   border-radius: 4px;
@@ -53,7 +56,7 @@
 }
 
 .layout-header {
-  height: 60px;
+  height: 40px;
   background: #fff;
   box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
 }
