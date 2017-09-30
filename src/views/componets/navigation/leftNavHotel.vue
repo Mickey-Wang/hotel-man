@@ -107,7 +107,7 @@
             </MenuItem>
           </Menu>
         </TabPane>
-        <TabPane label="酒店" name="city" :disabled="supplierTabDisable[3]">
+        <TabPane label="城市" name="city" :disabled="supplierTabDisable[3]">
           <Menu theme="light" width="auto" @on-select="chooseCity">
             <MenuItem name="1">
             <span>北海</span>
@@ -142,7 +142,7 @@
       <!-- 区域 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='region'" v-model="chooseByRegions">
         <TabPane label="国家" name="nation" :disabled="regionTabDisable[0]">
-          <Menu theme="light" width="auto" @on-select="chooseNation('region')">
+          <Menu theme="light" width="auto" @on-select="chooseNationCopy">
             <!-- :active-name="1" -->
             <MenuItem name="1">
             <span>中国</span>
@@ -151,7 +151,7 @@
           </Menu>
         </TabPane>
         <TabPane label="省份" name="province" :disabled="regionTabDisable[1]">
-          <Menu theme="light" width="auto" @on-select="chooseProvince('region')">
+          <Menu theme="light" width="auto" @on-select="chooseProvinceCopy">
             <MenuItem name="1">
             <span>广东省</span>
             <span>20000/10000/50000</span>
@@ -162,8 +162,8 @@
             </MenuItem>
           </Menu>
         </TabPane>
-        <TabPane label="酒店" name="city" :disabled="regionTabDisable[2]">
-          <Menu theme="light" width="auto" @on-select="chooseCity('region')">
+        <TabPane label="城市" name="city" :disabled="regionTabDisable[2]">
+          <Menu theme="light" width="auto" @on-select="chooseCityCopy">
             <MenuItem name="1">
             <span>北海</span>
             <span>2000/1000/5000</span>
@@ -181,7 +181,7 @@
             </Select>
           </Row>
           <Row class-name="menu-box">
-            <Menu theme="light" width="auto" @on-select="chooseHotel('region')">
+            <Menu theme="light" width="auto" @on-select="chooseHotelCopy">
               <MenuItem :name="index" v-for="(item,index) in hotelListChooseBySuppliers.hotel" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.num1}/${item.num2}/${item.num3}`}}</span>
@@ -295,22 +295,31 @@ export default {
     btnRegion() {
       this.btnType = 'region';
     },
-    chooseSupplier() {
+    chooseSupplier(name) {
       this.chooseBySuppliers = "nation"
     },
-    chooseNation(position) {
-      position == 'region' ? this.chooseByRegions = "province"
-        : this.chooseBySuppliers = "province"
+    chooseNation(name) {
+        this.chooseBySuppliers = "province"
     },
-    chooseProvince(position) {
-      position == 'region' ? this.chooseByRegions = "city"
-        : this.chooseBySuppliers = "city"
+    chooseProvince(name) {
+        this.chooseBySuppliers = "city"
     },
-    chooseCity(position) {
-      position == 'region' ? this.chooseByRegions = "hotel"
-        : this.chooseBySuppliers = "hotel"
+    chooseCity(name) {
+        this.chooseBySuppliers = "hotel"
     },
-    chooseHotel(){
+    chooseHotel(name){
+
+    },
+    chooseNationCopy(name) {
+      this.chooseByRegions = "province"
+    },
+    chooseProvinceCopy(name) {
+      this.chooseByRegions = "city"
+    },
+    chooseCityCopy(name) {
+      this.chooseByRegions = "hotel"
+    },
+    chooseHotelCopy(name){
 
     }
 

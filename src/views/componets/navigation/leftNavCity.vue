@@ -15,7 +15,7 @@
   .menu-box {
     position: relative;
     z-index: 10;
-    height: 78%;
+    height: 80%;
     scroll-behavior: smooth;
     overflow: hidden;
     overflow-y: scroll;
@@ -122,7 +122,7 @@
             </Menu>
           </Row>
           <Row type="flex" justify="center">
-            <Page :total="cityListChooseBySuppliers.cities.length" size="small" show-total></Page>
+            <Page :total="cityTotalSuppliers" size="small" show-total></Page>
           </Row>
         </TabPane>
       </Tabs>
@@ -130,7 +130,7 @@
       <!-- 区域 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='region'" v-model="chooseByRegions">
         <TabPane label="国家" name="nation" :disabled="regionTabDisable[0]">
-          <Menu theme="light" width="auto" @on-select="chooseNation('region')">
+          <Menu theme="light" width="auto" @on-select="chooseNationCopy">
             <!-- :active-name="1" -->
             <MenuItem name="1">
             <span>中国</span>
@@ -139,7 +139,7 @@
           </Menu>
         </TabPane>
         <TabPane label="省份" name="province" :disabled="regionTabDisable[1]">
-          <Menu theme="light" width="auto" @on-select="chooseProvince('region')">
+          <Menu theme="light" width="auto" @on-select="chooseProvinceCopy">
             <MenuItem name="1">
             <span>广东省</span>
             <span>20000/10000/50000</span>
@@ -157,7 +157,7 @@
             </Select>
           </Row>
           <Row class-name="menu-box">
-            <Menu theme="light" width="auto" @on-select="chooseCity('region')">
+            <Menu theme="light" width="auto" @on-select="chooseCityCopy">
               <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions.cities" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.num1}/${item.num2}/${item.num3}`}}</span>
@@ -165,7 +165,7 @@
             </Menu>
           </Row>
           <Row type="flex" justify="center">
-            <Page :total="cityTotal" size="small" show-total></Page>
+            <Page :total="cityTotalRegions" size="small" show-total></Page>
           </Row>
         </TabPane>
       </Tabs>
@@ -237,8 +237,11 @@ export default {
     btnTypeRegion() {
       return this.btnType == 'region' ? 'primary' : 'ghost'
     },
-    cityTotal(){
-      return this.cityListChooseBySuppliers.cities.length
+    cityTotalSuppliers(){
+      return this.cityListChooseBySuppliers.cities.length;
+    },
+    cityTotalRegions(){
+      return this.cityListChooseByRegions.cities.length;
     }
   },
   methods: {
@@ -248,25 +251,26 @@ export default {
     btnRegion() {
       this.btnType = 'region';
     },
-    chooseSupplier(position) {
-      this.chooseBySuppliers = "nation";
-      // this.supplierTabDisable[1] = false;
+    chooseSupplier(name) {
+      this.chooseBySuppliers = "nation"
     },
-    chooseNation(position) {
-      if(position == 'region'){
-        this.chooseByRegions = "province"
-        // this.regionTabDisable[1] = false;   
-      }else{
-        // this.supplierTabDisable[2] = false;
+    chooseNation(name) {
         this.chooseBySuppliers = "province"
-      } 
     },
-    chooseProvince(position) {
-      position == 'region' ? this.chooseByRegions = "city"
-        : this.chooseBySuppliers = "city"
+    chooseProvince(name) {
+        this.chooseBySuppliers = "city"
     },
-    chooseCity() {
+    chooseCity(name) {
 
+    },
+    chooseNationCopy(name) {
+      this.chooseByRegions = "province"
+    },
+    chooseProvinceCopy(name) {
+      this.chooseByRegions = "city"
+    },
+    chooseCityCopy(name) {
+      
     }
   }
 }
