@@ -20,6 +20,10 @@
     overflow: hidden;
     overflow-y: scroll;
   }
+  .menu-box-large {
+    .menu-box;
+    height: 90%;    
+  }
   .ivu-tabs .ivu-tabs-content {
     height: 100%;
     .ivu-tabs-tabpane {
@@ -27,7 +31,7 @@
     }
     .bottom-total {
       position: absolute;
-      width:100%;
+      width: 100%;
       bottom: 31px;
       z-index: 1;
       color: #000;
@@ -66,8 +70,8 @@
         <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
           <Menu theme="light" width="auto" @on-select="chooseSupplier">
             <MenuItem :name="index" v-for="(item,index) in supplierList" :key="index">
-              <span>{{item.name}}</span>
-              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
+            <span>{{item.name}}</span>
+            <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
           <Row class-name="bottom-total">
@@ -77,8 +81,8 @@
         <TabPane label="国家" name="nation" :disabled="supplierTabDisable[1]">
           <Menu theme="light" width="auto" @on-select="chooseNation">
             <MenuItem :name="index" v-for="(item,index) in nationListChooseBySuppliers" :key="index">
-              <span>{{item.name}}</span>
-              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
+            <span>{{item.name}}</span>
+            <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
           <Row class-name="bottom-total">
@@ -86,23 +90,27 @@
           </Row>
         </TabPane>
         <TabPane label="省份" name="province" :disabled="supplierTabDisable[2]">
-          <Menu theme="light" width="auto" @on-select="chooseProvince">
-            <MenuItem :name="index" v-for="(item,index) in provinceListChooseBySuppliers" :key="index">
+          <Row class-name="menu-box-large">
+            <Menu theme="light" width="auto" @on-select="chooseProvince">
+              <MenuItem :name="index" v-for="(item,index) in provinceListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
-            </MenuItem>
-          </Menu>
+              </MenuItem>
+            </Menu>
+          </Row>
           <Row class-name="bottom-total">
             <span>共计{{provinceListChooseByRegions.length}}条</span>
           </Row>
         </TabPane>
         <TabPane label="城市" name="city" :disabled="supplierTabDisable[3]">
-          <Menu theme="light" width="auto" @on-select="chooseCity">
-            <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
+          <Row class-name="menu-box-large">
+            <Menu theme="light" width="auto" @on-select="chooseCity">
+              <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
-            </MenuItem>
-          </Menu>
+              </MenuItem>
+            </Menu>
+          </Row>
           <Row class-name="bottom-total">
             <span>共计{{cityListChooseByRegions.length}}条</span>
           </Row>
@@ -133,8 +141,8 @@
           <Menu theme="light" width="auto" @on-select="chooseNationCopy">
             <!-- :active-name="1" -->
             <MenuItem :name="index" v-for="(item,index) in nationListChooseByRegions" :key="index">
-              <span>{{item.name}}</span>
-              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
+            <span>{{item.name}}</span>
+            <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
           <Row class-name="bottom-total">
@@ -142,23 +150,27 @@
           </Row>
         </TabPane>
         <TabPane label="省份" name="province" :disabled="regionTabDisable[1]">
-          <Menu theme="light" width="auto" @on-select="chooseProvinceCopy">
-            <MenuItem :name="index" v-for="(item,index) in provinceListChooseByRegions" :key="index">
+          <Row class-name="menu-box-large">
+            <Menu theme="light" width="auto" @on-select="chooseProvinceCopy">
+              <MenuItem :name="index" v-for="(item,index) in provinceListChooseByRegions" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
-            </MenuItem>
-          </Menu>
+              </MenuItem>
+            </Menu>
+          </Row>
           <Row class-name="bottom-total">
             <span>共计{{provinceListChooseByRegions.length}}条</span>
           </Row>
         </TabPane>
         <TabPane label="城市" name="city" :disabled="regionTabDisable[2]">
-          <Menu theme="light" width="auto" @on-select="chooseCityCopy">
-            <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions" :key="index">
+          <Row class-name="menu-box-large">
+            <Menu theme="light" width="auto" @on-select="chooseCityCopy">
+              <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
-            </MenuItem>
-          </Menu>
+              </MenuItem>
+            </Menu>
+          </Row>
           <Row class-name="bottom-total">
             <span>共计{{cityListChooseByRegions.length}}条</span>
           </Row>
@@ -211,10 +223,10 @@ export default {
       //当前区域选项卡
       chooseByRegions: "",
       //供应商选项是否不可用
-      supplierTabDisable:[false,true,true,true,true],
+      supplierTabDisable: [false, true, true, true, true],
       //区域选项是否不可用
-      regionTabDisable:[false,true,true,true],
-      
+      regionTabDisable: [false, true, true, true],
+
       //酒店三种状态id
       hotelID: 0,
       //酒店三种状态内容
@@ -229,116 +241,120 @@ export default {
         label: '未聚未审'
       }],
       //酒店数据
-      supplierList:[{
-          name:'携程',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
-      },{
-          name:'艺龙',
-          matchedCount:222,
-          matchedUncheckCount:111,
-          unmatchedCount:333
+      supplierList: [{
+        name: '携程',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
+      }, {
+        name: '艺龙',
+        matchedCount: 222,
+        matchedUncheckCount: 111,
+        unmatchedCount: 333
       }],
-      nationListChooseBySuppliers:[{
-          name:'中国',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
+      nationListChooseBySuppliers: [{
+        name: '中国',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
       }],
-      nationListChooseByRegions:[{
-          name:'中国',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
+      nationListChooseByRegions: [{
+        name: '中国',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
       }],
-      provinceListChooseBySuppliers:[{
-          name:'广东省',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
-      },{
-          name:'湖南省',
-          matchedCount:222,
-          matchedUncheckCount:111,
-          unmatchedCount:333
+      provinceListChooseBySuppliers: [{
+        name: '广东省',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
+      }, {
+        name: '湖南省',
+        matchedCount: 222,
+        matchedUncheckCount: 111,
+        unmatchedCount: 333
       }],
-      provinceListChooseByRegions:[{
-          name:'广东省',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
-      },{
-          name:'湖南省',
-          matchedCount:222,
-          matchedUncheckCount:111,
-          unmatchedCount:333
+      provinceListChooseByRegions: [{
+        name: '广东省',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
+      }, {
+        name: '湖南省',
+        matchedCount: 222,
+        matchedUncheckCount: 111,
+        unmatchedCount: 333
       }],
-      cityListChooseBySuppliers:[{
-          name:'北海',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
-      },{
-          name:'镇江',
-          matchedCount:222,
-          matchedUncheckCount:111,
-          unmatchedCount:333
-      },{
-          name:'武汉',
-          matchedCount:222,
-          matchedUncheckCount:111,
-          unmatchedCount:333
+      cityListChooseBySuppliers: [{
+        name: '北海',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
+      }, {
+        name: '镇江',
+        matchedCount: 222,
+        matchedUncheckCount: 111,
+        unmatchedCount: 333
+      }, {
+        name: '武汉',
+        matchedCount: 222,
+        matchedUncheckCount: 111,
+        unmatchedCount: 333
       }],
-      cityListChooseByRegions:[{
-          name:'北海',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
-      },{
-          name:'镇江',
-          matchedCount:222,
-          matchedUncheckCount:111,
-          unmatchedCount:333
-      },{
-          name:'武汉',
-          matchedCount:222,
-          matchedUncheckCount:111,
-          unmatchedCount:333
+      cityListChooseByRegions: [{
+        name: '北海',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
+      }, {
+        name: '镇江',
+        matchedCount: 222,
+        matchedUncheckCount: 111,
+        unmatchedCount: 333
+      }, {
+        name: '武汉',
+        matchedCount: 222,
+        matchedUncheckCount: 111,
+        unmatchedCount: 333
       }],
       hotelListChooseBySuppliers: {
-        hotel:[{
-          name:'北京五棵松和颐酒店',
-          num1:1234,
-          num2:1231,
-          num3:2222
-        },{
-          name:'北京五棵松和颐酒店',
-          num1:1234,
-          num2:1231,
-          num3:2222
+        hotel: [{
+          name: '北京五棵松和颐酒店',
+          num1: 1234,
+          num2: 1231,
+          num3: 2222
+        }, {
+          name: '北京五棵松和颐酒店',
+          num1: 1234,
+          num2: 1231,
+          num3: 2222
         }],
       },
       hotelListChooseByRegions: {
-        hotel:[{
-          name:'北京五棵松和颐酒店',
-          num1:1234,
-          num2:1231,
-          num3:2222
-        },{
-          name:'北京五棵松和颐酒店',
-          num1:1234,
-          num2:1231,
-          num3:2222
+        hotel: [{
+          name: '北京五棵松和颐酒店',
+          num1: 1234,
+          num2: 1231,
+          num3: 2222
+        }, {
+          name: '北京五棵松和颐酒店',
+          num1: 1234,
+          num2: 1231,
+          num3: 2222
         }],
       }
     };
   },
   mounted: function() {
-    // this.$util.ajax.get('city').then(rs => {
-    //   this.hotelListChooseBySuppliers = rs.data.data;
-    //   this.hotelListChooseByRegions = rs.data.data;
-    // })
+    this.$util.ajax.get('city').then(rs => {
+      this.cityListChooseBySuppliers = rs.data.result;
+      this.cityListChooseByRegions = rs.data.result;
+    })
+    this.$util.ajax.get('province').then(rs => {
+      this.provinceListChooseBySuppliers = rs.data.result;
+      this.provinceListChooseByRegions = rs.data.result;
+    })
   },
   computed: {
     btnTypesupplier() {
@@ -347,10 +363,10 @@ export default {
     btnTypeRegion() {
       return this.btnType == 'region' ? 'primary' : 'ghost'
     },
-    hotelTotalSuppliers(){
+    hotelTotalSuppliers() {
       return this.hotelListChooseBySuppliers.hotel.length;
     },
-    hotelTotalRegions(){
+    hotelTotalRegions() {
       return this.hotelListChooseByRegions.hotel.length;
     }
   },
@@ -365,15 +381,15 @@ export default {
       this.chooseBySuppliers = "nation"
     },
     chooseNation(name) {
-        this.chooseBySuppliers = "province"
+      this.chooseBySuppliers = "province"
     },
     chooseProvince(name) {
-        this.chooseBySuppliers = "city"
+      this.chooseBySuppliers = "city"
     },
     chooseCity(name) {
-        this.chooseBySuppliers = "hotel"
+      this.chooseBySuppliers = "hotel"
     },
-    chooseHotel(name){
+    chooseHotel(name) {
 
     },
     chooseNationCopy(name) {
@@ -385,7 +401,7 @@ export default {
     chooseCityCopy(name) {
       this.chooseByRegions = "hotel"
     },
-    chooseHotelCopy(name){
+    chooseHotelCopy(name) {
 
     }
 

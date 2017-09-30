@@ -20,6 +20,10 @@
     overflow: hidden;
     overflow-y: scroll;
   }
+  .menu-box-large {
+    .menu-box;
+    height: 90%;    
+  }
   .ivu-tabs .ivu-tabs-content {
     height: 100%;
     .ivu-tabs-tabpane {
@@ -27,7 +31,7 @@
     }
     .bottom-total {
       position: absolute;
-      width:100%;
+      width: 100%;
       bottom: 31px;
       z-index: 1;
       color: #000;
@@ -66,8 +70,8 @@
         <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
           <Menu theme="light" width="auto" @on-select="chooseSupplier">
             <MenuItem :name="index" v-for="(item,index) in supplierList" :key="index">
-              <span>{{item.name}}</span>
-              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
+            <span>{{item.name}}</span>
+            <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
           <Row class-name="bottom-total">
@@ -77,8 +81,8 @@
         <TabPane label="国家" name="nation" :disabled="supplierTabDisable[1]">
           <Menu theme="light" width="auto" @on-select="chooseNation">
             <MenuItem :name="index" v-for="(item,index) in nationListChooseBySuppliers" :key="index">
-              <span>{{item.name}}</span>
-              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
+            <span>{{item.name}}</span>
+            <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
           <Row class-name="bottom-total">
@@ -86,12 +90,14 @@
           </Row>
         </TabPane>
         <TabPane label="省份" name="province" :disabled="supplierTabDisable[2]">
-          <Menu theme="light" width="auto" @on-select="chooseProvince">
-            <MenuItem :name="index" v-for="(item,index) in provinceListChooseBySuppliers" :key="index">
+          <Row class-name="menu-box-large">
+            <Menu theme="light" width="auto" @on-select="chooseProvince">
+              <MenuItem :name="index" v-for="(item,index) in provinceListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
-            </MenuItem>
-          </Menu>
+              </MenuItem>
+            </Menu>
+          </Row>
           <Row class-name="bottom-total">
             <span>共计{{provinceListChooseByRegions.length}}条</span>
           </Row>
@@ -104,7 +110,7 @@
           </Row>
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseCity">
-              <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers.cities" :key="index">
+              <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
@@ -122,8 +128,8 @@
           <Menu theme="light" width="auto" @on-select="chooseNationCopy">
             <!-- :active-name="1" -->
             <MenuItem :name="index" v-for="(item,index) in nationListChooseByRegions" :key="index">
-              <span>{{item.name}}</span>
-              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
+            <span>{{item.name}}</span>
+            <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
           <Row class-name="bottom-total">
@@ -131,12 +137,14 @@
           </Row>
         </TabPane>
         <TabPane label="省份" name="province" :disabled="regionTabDisable[1]">
-          <Menu theme="light" width="auto" @on-select="chooseProvinceCopy">
-           <MenuItem :name="index" v-for="(item,index) in provinceListChooseByRegions" :key="index">
+          <Row class-name="menu-box-large">
+            <Menu theme="light" width="auto" @on-select="chooseProvinceCopy">
+              <MenuItem :name="index" v-for="(item,index) in provinceListChooseByRegions" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
-            </MenuItem>
-          </Menu>
+              </MenuItem>
+            </Menu>
+          </Row>
           <Row class-name="bottom-total">
             <span>共计{{provinceListChooseByRegions.length}}条</span>
           </Row>
@@ -149,7 +157,7 @@
           </Row>
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseCityCopy">
-              <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions.cities" :key="index">
+              <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
@@ -207,63 +215,63 @@ export default {
         label: '未聚未审'
       }],
       //城市数据
-      supplierList:[{
-          name:'携程',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
-      },{
-          name:'艺龙',
-          matchedCount:222,
-          matchedUncheckCount:111,
-          unmatchedCount:333
+      supplierList: [{
+        name: '携程',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
+      }, {
+        name: '艺龙',
+        matchedCount: 222,
+        matchedUncheckCount: 111,
+        unmatchedCount: 333
       }],
-      nationListChooseBySuppliers:[{
-          name:'中国',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
+      nationListChooseBySuppliers: [{
+        name: '中国',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
       }],
-      nationListChooseByRegions:[{
-          name:'中国',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
+      nationListChooseByRegions: [{
+        name: '中国',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
       }],
-      provinceListChooseBySuppliers:[{
-          name:'广东省',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
-      },{
-          name:'湖南省',
-          matchedCount:222,
-          matchedUncheckCount:111,
-          unmatchedCount:333
+      provinceListChooseBySuppliers: [{
+        name: '广东省',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
+      }, {
+        name: '湖南省',
+        matchedCount: 222,
+        matchedUncheckCount: 111,
+        unmatchedCount: 333
       }],
-      provinceListChooseByRegions:[{
-          name:'广东省',
-          matchedCount:222,
-          matchedUncheckCount:333,
-          unmatchedCount:111
-      },{
-          name:'湖南省',
-          matchedCount:222,
-          matchedUncheckCount:111,
-          unmatchedCount:333
+      provinceListChooseByRegions: [{
+        name: '广东省',
+        matchedCount: 222,
+        matchedUncheckCount: 333,
+        unmatchedCount: 111
+      }, {
+        name: '湖南省',
+        matchedCount: 222,
+        matchedUncheckCount: 111,
+        unmatchedCount: 333
       }],
-      cityListChooseBySuppliers: {
-        cities: [],
-      },
-      cityListChooseByRegions: {
-        cities: [],
-      }
+      cityListChooseBySuppliers: [],
+      cityListChooseByRegions: []
     };
   },
   mounted: function() {
     this.$util.ajax.get('city').then(rs => {
-      this.cityListChooseBySuppliers = rs.data.data;
-      this.cityListChooseByRegions = rs.data.data;
+      this.cityListChooseBySuppliers = rs.data.result;
+      this.cityListChooseByRegions = rs.data.result;
+    })
+    this.$util.ajax.get('province').then(rs => {
+      this.provinceListChooseBySuppliers = rs.data.result;
+      this.provinceListChooseByRegions = rs.data.result;
     })
   },
   computed: {
@@ -274,10 +282,10 @@ export default {
       return this.btnType == 'region' ? 'primary' : 'ghost'
     },
     cityTotalSuppliers() {
-      return this.cityListChooseBySuppliers.cities.length;
+      return this.cityListChooseBySuppliers.length;
     },
     cityTotalRegions() {
-      return this.cityListChooseByRegions.cities.length;
+      return this.cityListChooseByRegions.length;
     }
   },
   methods: {
