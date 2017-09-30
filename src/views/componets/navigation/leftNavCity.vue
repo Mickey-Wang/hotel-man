@@ -15,7 +15,7 @@
   .menu-box {
     position: relative;
     z-index: 10;
-    height: 80%;
+    height: 82%;
     scroll-behavior: smooth;
     overflow: hidden;
     overflow-y: scroll;
@@ -24,6 +24,14 @@
     height: 100%;
     .ivu-tabs-tabpane {
       padding: 2px;
+    }
+    .bottom-total {
+      position: absolute;
+      width:100%;
+      bottom: 31px;
+      z-index: 1;
+      color: #000;
+      text-align: center;
     }
   }
   .ivu-tabs-bar {
@@ -52,60 +60,41 @@
         <Button :type="btnTypeRegion" style="width:50%" @click="btnRegion">按区域审核</Button>
       </ButtonGroup>
     </Row>
-    <Row style="height:85%">
+    <Row style="height:88%;position:relative;">
       <!-- 供应商 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseBySuppliers">
         <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
           <Menu theme="light" width="auto" @on-select="chooseSupplier">
-            <MenuItem name="1">
-            <span>携程</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="2">
-            <span>艺龙</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="3">
-            <span>深捷旅</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="4">
-            <span>美团</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="5">
-            <span>畅联</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="6">
-            <span>泰坦云</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="7">
-            <span>道旅</span>
-            <span>20000/10000/50000</span>
+            <MenuItem :name="index" v-for="(item,index) in supplierList" :key="index">
+              <span>{{item.name}}</span>
+              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
+          <Row class-name="bottom-total">
+            <span>共计{{supplierList.length}}条</span>
+          </Row>
         </TabPane>
         <TabPane label="国家" name="nation" :disabled="supplierTabDisable[1]">
           <Menu theme="light" width="auto" @on-select="chooseNation">
-            <MenuItem name="1">
-            <span>中国</span>
-            <span>20000/10000/50000</span>
+            <MenuItem :name="index" v-for="(item,index) in nationListChooseBySuppliers" :key="index">
+              <span>{{item.name}}</span>
+              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
+          <Row class-name="bottom-total">
+            <span>共计{{nationListChooseByRegions.length}}条</span>
+          </Row>
         </TabPane>
         <TabPane label="省份" name="province" :disabled="supplierTabDisable[2]">
           <Menu theme="light" width="auto" @on-select="chooseProvince">
-            <MenuItem name="1">
-            <span>广东省</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="2">
-            <span>福建省</span>
-            <span>20000/10000/50000</span>
+            <MenuItem :name="index" v-for="(item,index) in provinceListChooseBySuppliers" :key="index">
+              <span>{{item.name}}</span>
+              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
+          <Row class-name="bottom-total">
+            <span>共计{{provinceListChooseByRegions.length}}条</span>
+          </Row>
         </TabPane>
         <TabPane label="城市" style="height:100%" name="city" :disabled="supplierTabDisable[3]">
           <Row class="check-select">
@@ -117,7 +106,7 @@
             <Menu theme="light" width="auto" @on-select="chooseCity">
               <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers.cities" :key="index">
               <span>{{item.name}}</span>
-              <span>{{`${item.num1}/${item.num2}/${item.num3}`}}</span>
+              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
           </Row>
@@ -132,23 +121,25 @@
         <TabPane label="国家" name="nation" :disabled="regionTabDisable[0]">
           <Menu theme="light" width="auto" @on-select="chooseNationCopy">
             <!-- :active-name="1" -->
-            <MenuItem name="1">
-            <span>中国</span>
-            <span>20000/10000/50000</span>
+            <MenuItem :name="index" v-for="(item,index) in nationListChooseByRegions" :key="index">
+              <span>{{item.name}}</span>
+              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
+          <Row class-name="bottom-total">
+            <span>共计{{nationListChooseByRegions.length}}条</span>
+          </Row>
         </TabPane>
         <TabPane label="省份" name="province" :disabled="regionTabDisable[1]">
           <Menu theme="light" width="auto" @on-select="chooseProvinceCopy">
-            <MenuItem name="1">
-            <span>广东省</span>
-            <span>20000/10000/50000</span>
-            </MenuItem>
-            <MenuItem name="2">
-            <span>福建省</span>
-            <span>20000/10000/50000</span>
+           <MenuItem :name="index" v-for="(item,index) in provinceListChooseByRegions" :key="index">
+              <span>{{item.name}}</span>
+              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
+          <Row class-name="bottom-total">
+            <span>共计{{provinceListChooseByRegions.length}}条</span>
+          </Row>
         </TabPane>
         <TabPane label="城市" style="height:100%" name="city" :disabled="regionTabDisable[2]">
           <Row class="check-select">
@@ -160,7 +151,7 @@
             <Menu theme="light" width="auto" @on-select="chooseCityCopy">
               <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions.cities" :key="index">
               <span>{{item.name}}</span>
-              <span>{{`${item.num1}/${item.num2}/${item.num3}`}}</span>
+              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
           </Row>
@@ -198,10 +189,10 @@ export default {
       //当前区域选项卡
       chooseByRegions: "",
       //供应商选项是否不可用
-      supplierTabDisable:[false,true,true,true],
+      supplierTabDisable: [false, true, true, true],
       //区域选项是否不可用
-      regionTabDisable:[false,true,true],
-      
+      regionTabDisable: [false, true, true],
+
       //城市三种状态id
       cityID: 0,
       //城市三种状态内容
@@ -216,11 +207,56 @@ export default {
         label: '未聚未审'
       }],
       //城市数据
+      supplierList:[{
+          name:'携程',
+          matchedCount:222,
+          matchedUncheckCount:333,
+          unmatchedCount:111
+      },{
+          name:'艺龙',
+          matchedCount:222,
+          matchedUncheckCount:111,
+          unmatchedCount:333
+      }],
+      nationListChooseBySuppliers:[{
+          name:'中国',
+          matchedCount:222,
+          matchedUncheckCount:333,
+          unmatchedCount:111
+      }],
+      nationListChooseByRegions:[{
+          name:'中国',
+          matchedCount:222,
+          matchedUncheckCount:333,
+          unmatchedCount:111
+      }],
+      provinceListChooseBySuppliers:[{
+          name:'广东省',
+          matchedCount:222,
+          matchedUncheckCount:333,
+          unmatchedCount:111
+      },{
+          name:'湖南省',
+          matchedCount:222,
+          matchedUncheckCount:111,
+          unmatchedCount:333
+      }],
+      provinceListChooseByRegions:[{
+          name:'广东省',
+          matchedCount:222,
+          matchedUncheckCount:333,
+          unmatchedCount:111
+      },{
+          name:'湖南省',
+          matchedCount:222,
+          matchedUncheckCount:111,
+          unmatchedCount:333
+      }],
       cityListChooseBySuppliers: {
-        cities:[],
+        cities: [],
       },
       cityListChooseByRegions: {
-        cities:[],
+        cities: [],
       }
     };
   },
@@ -237,10 +273,10 @@ export default {
     btnTypeRegion() {
       return this.btnType == 'region' ? 'primary' : 'ghost'
     },
-    cityTotalSuppliers(){
+    cityTotalSuppliers() {
       return this.cityListChooseBySuppliers.cities.length;
     },
-    cityTotalRegions(){
+    cityTotalRegions() {
       return this.cityListChooseByRegions.cities.length;
     }
   },
@@ -255,10 +291,10 @@ export default {
       this.chooseBySuppliers = "nation"
     },
     chooseNation(name) {
-        this.chooseBySuppliers = "province"
+      this.chooseBySuppliers = "province"
     },
     chooseProvince(name) {
-        this.chooseBySuppliers = "city"
+      this.chooseBySuppliers = "city"
     },
     chooseCity(name) {
 
@@ -270,7 +306,7 @@ export default {
       this.chooseByRegions = "city"
     },
     chooseCityCopy(name) {
-      
+
     }
   }
 }
