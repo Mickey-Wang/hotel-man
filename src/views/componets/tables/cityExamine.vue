@@ -8,19 +8,31 @@
                 <Button type="primary">新增</Button>
             </div>
             <div class="total">共计XX条</div>
-            <div class="table">
+            <div class="table table1">
                 <div class="wrap wrapW1">
-                    <div :style="{'padding-right':paddingR1+'px'}">
-                        <table>
+                    <div ref="w1">
+                        <table :style="{'width':divWidth1+'px'}">
                             <tr>
                                 <th><input type="checkbox" v-if="tableType!==1" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
                                 <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
                             </tr>
+                            <tr class="fontColor" v-if="tableType!=1">
+                                <td></td>
+                                <td @click="getInputValue(cityExamineData[0])">{{cityExamineData[0].name}}</td>
+                                <td>{{cityExamineData[0].id}}</td>
+                                <td>{{cityExamineData[0].province}}</td>
+                                <td>{{cityExamineData[0].country}}</td>
+                                <td>{{cityExamineData[0].supplier}}</td>
+                                <td>{{cityExamineData[0].status}}</td>
+                                <td>{{cityExamineData[0].operatorMan}}</td>
+                                <td>{{cityExamineData[0].operatorTime}}</td>
+                                <td>{{cityExamineData[0].operator}}</td>
+                            </tr>
                         </table>
                     </div>
                     <div ref="h1">
-                        <table ref="h2" v-if="cityExamineData.length>0">
-                            <tr v-for="(item,index) in cityExamineData" :key="item.id" :class="[{trClass: item.status=='已聚待审'},{fontColor: index==0&&tableType!=1}]">
+                        <table ref="h2" v-if="cityExamineData.length>0" :style="{'width':divWidth1+'px'}">
+                            <tr v-for="(item,index) in cityExamineData" v-if="index>0" :key="item.id" :class="[{trClass: item.status=='已聚待审'}]">
                                 <td><input v-if="item.status!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.status=='已聚待审'?disableStatus1:disableStatus2"></td>
                                 <td @click="getInputValue(item)">{{item.name}}</td>
                                 <td>{{item.id}}</td>
@@ -48,10 +60,10 @@
                 <Button type="primary" @click="getSimilar">Go</Button>
             </div>
             <div class="total">共计XX条</div>
-            <div class="table">
+            <div class="table table2">
                 <div class="wrap wrapW2">
-                    <div :style="{'padding-right':paddingR2+'px'}">
-                        <table>
+                    <div ref="w2">
+                        <table :style="{'width':divWidth2+'px'}">
                             <tr>
                                 <th></th>
                                 <th v-for="(item,index) in similarHeaderData">{{item.title}}</th>
@@ -59,7 +71,7 @@
                         </table>
                     </div>
                     <div ref="h3">
-                        <table ref="h4" v-if="similarCityData.length>0">
+                        <table ref="h4" v-if="similarCityData.length>0" :style="{'width':divWidth2+'px'}">
                             <tr v-for="(item,index) in similarCityData" :key="item.id">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <!--<td>{{item.name}}</td>-->
@@ -92,9 +104,6 @@ export default {
             cityValue: '',
             // 未聚待审的背景色
             classShow: false,
-            // 判断是否加padding
-            paddingR1: 0,
-            paddingR2: 0,
             cityHeaderData: [
                 {
                     title: '城市名称',
@@ -173,7 +182,7 @@ export default {
                     province: '新疆',
                     country: '中国',
                     supplier: '酒店供应商C',
-                    status: '未聚已审',
+                    status: '已聚已审',
                     operatorMan: 'system',
                     operatorTime: '2017/08/12 18:00',
                     operator: '查看'
@@ -184,7 +193,7 @@ export default {
                     province: '新疆',
                     country: '中国',
                     supplier: '酒店供应商D',
-                    status: '未聚已审',
+                    status: '已聚已审',
                     operatorMan: 'system',
                     operatorTime: '2017/08/13 19:00',
                     operator: '查看'
@@ -195,9 +204,20 @@ export default {
                     province: '新疆',
                     country: '中国',
                     supplier: '酒店供应商E',
-                    status: '未聚已审',
+                    status: '已聚已审',
                     operatorMan: 'system',
                     operatorTime: '2017/08/16 19:00',
+                    operator: '查看'
+                },
+                {
+                    name: '阿拉尔',
+                    id: 'DTY45',
+                    province: '新疆',
+                    country: '中国',
+                    supplier: '酒店供应商E',
+                    status: '已聚已审',
+                    operatorMan: 'system',
+                    operatorTime: '2017/08/17 19:00',
                     operator: '查看'
                 }
             ],
@@ -244,7 +264,14 @@ export default {
                     province: '新疆',
                     country: '中国',
                     supplier: '京东国内酒店'
-                }
+                },
+//                {
+//                    name: '阿拉善',
+//                    id: 'JD-H13',
+//                    province: '新疆',
+//                    country: '中国',
+//                    supplier: '京东国内酒店'
+//                }
             ],
             // 全选状态
             checkAll: false,
@@ -267,6 +294,9 @@ export default {
             modelShow:false,
             // 模态框信息
             message:'',
+            // div的宽度
+            divWidth1:'',
+            divWidth2:'',
             // 确定表格哪一种(已聚待审、已聚已审、未聚待审)
             // 这个可以从 getter 里面拿到判断值
             // 假设0为已聚待审、已聚已审,1未聚待审
@@ -280,13 +310,10 @@ export default {
         });
     },
     mounted(){
-        // 如果有滚动条，要去掉滚动条的宽度
-        let h1 = this.$refs.h1.offsetHeight;
-        let h2 = this.$refs.h2.offsetHeight;
-        let h3 = this.$refs.h3.offsetHeight;
-        let h4 = this.$refs.h4.offsetHeight;
-        this.paddingR1 = this.getPadding(h1,h2);
-        this.paddingR2 = this.getPadding(h3,h4);
+        // 计算一下初始化第一个表格的宽度
+        this.divWidth1 = this.$refs.w1.offsetWidth;
+        this.divWidth2 = this.$refs.w2.offsetWidth;
+        console.log('宽度:', this.divWidth1);
     },
     watch: {
         cityExamineData: {
@@ -341,14 +368,6 @@ export default {
         getInputValue(item){
             console.log('点击获取名字:',item.name);
             this.cityValue = item.name;
-        },
-        // 判断padding为多少
-        getPadding(h1,h2){
-            if(h1>=h2){
-                return 0;
-            }else {
-                return 17;
-            }
         },
         // highlight函数
         highlight(value,word){
@@ -488,14 +507,12 @@ table{
     border-collapse:collapse;
     border-spacing:0;
     border-bottom:1px solid #e9eaec;
+    /*border-right: 1px solid #dddee1;*/
 }
 table td, table th{
     border-left:1px solid #e9eaec;
     border-top:1px solid #e9eaec;
-    height: 40px;
-}
-table th{
-    /*background: #f8f8f9;*/
+    height: 34px;
 }
 table tr td:nth-of-type(1),table tr th:nth-of-type(1){
     border-left: none;
@@ -504,16 +521,16 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
 .wrapW1 table tr td:nth-of-type(2){
     cursor: pointer;
 }
-/*table tr:hover{*/
-    /*background: #ebf7ff;*/
-/*}*/
+.wrapW1 table tr td:nth-last-of-type(1){
+    cursor: pointer;
+}
 /* 表格横向滚动条和纵向滚动条 */
 .table{
-    height: 60%;
     min-width: 100%;
     position: relative;
     border: 1px solid #dddee1;
     border-top: none;
+    /*border-right: none;*/
     overflow-x: auto;
     .wrapW1{
         min-width: 130%;
@@ -528,9 +545,12 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
         box-sizing: border-box;
         div:nth-of-type(1){
             overflow: hidden;
-            background: #f8f8f9;
+            box-sizing: border-box;
             table{
                 table-layout: fixed;
+                th{
+                    background: #f8f8f9;
+                }
             }
         }
         div:nth-of-type(2){
@@ -538,13 +558,19 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
             overflow: auto;
             table{
                 table-layout: fixed;
+                tr:nth-of-type(1) td{
+                    border-top: none;
+                }
             }
         }
     }
 }
-/*.wrapW1 table tr:nth-of-type(1) td{*/
-    /*color: #2d8cf0;*/
-/*}*/
+.table1{
+    height: 85%;
+}
+.table2{
+    height: 60%;
+}
 .fontColor{
     color: #2d8cf0;
 }
@@ -557,11 +583,8 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
 }
 /* 列表名称、button、表格相同样式 */
 .title{
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-.button{
-    margin-bottom: 10px;
+    font-size: 14px;
+    margin-bottom: 5px;
 }
 .total{
     text-align: right;
@@ -571,7 +594,7 @@ table tr td:nth-of-type(1),table tr th:nth-of-type(1){
     height: 100%;
     padding: 10px;
     .topTable{
-        margin-bottom: 20px;
+        margin-bottom: 50px;
         height: 50%;
         width: 100%;
     }
