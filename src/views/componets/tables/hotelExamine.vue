@@ -48,7 +48,7 @@
                                 <td>{{item.status}}</td>
                                 <td>{{item.operatorMan}}</td>
                                 <td>{{item.operatorTime}}</td>
-                                <td>{{item.log}}</td>
+                                <td @click="checkShow = true">{{item.log}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="cityExamineData.length==0">
@@ -86,7 +86,7 @@
                                 <td>{{item.phone}}</td>
                                 <td>{{item.link}}</td>
                                 <td>{{item.city}}</td>
-                                <td>{{item.tree}}</td>
+                                <td @click="treeShow = true">{{item.tree}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="similarCityData==0">
@@ -96,6 +96,71 @@
                 </div>
             </div>
         </div>
+        <Modal
+                v-model="checkShow"
+                title="查看日志"
+                width="800">
+            <div>
+                <Table border height="360" :columns="checkTitle" :data="checkData"></Table>
+            </div>
+            <div slot="footer">
+                <Button v-if="false"></Button>
+            </div>
+        </Modal>
+        <Modal
+                v-model="treeShow"
+                title="查看酒店Tree信息"
+                width="1300">
+            <Button type="primary" @click="treeSubmit">设为待审</Button>
+            <div class="table table1" style="height: 300px; margin-top: 10px;">
+                <div class="wrap wrapW1" style="min-width: 100%">
+                    <div ref="w3">
+                        <table style="width: 1266px;">
+                            <tr>
+                                <th></th>
+                                <th v-for="(item,index) in treeTitle">{{item.title}}</th>
+                            </tr>
+                            <tr class="fontColor">
+                                <td></td>
+                                <td>{{treeData[0].name}}</td>
+                                <td>{{treeData[0].address}}</td>
+                                <td>{{treeData[0].phone}}</td>
+                                <td>{{treeData[0].range}}</td>
+                                <td>{{treeData[0].link}}</td>
+                                <td>{{treeData[0].city}}</td>
+                                <td>{{treeData[0].supplier}}</td>
+                                <td>{{treeData[0].cityId}}</td>
+                                <td>{{treeData[0].operatorTime}}</td>
+                                <td>{{treeData[0].status}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <table style="width: 1266px;">
+                            <tr v-for="(item,index) in treeData" v-if="index>0" :key="item.id">
+                                <td><input type="checkbox" v-model="item.checked"/></td>
+                                <td>{{item.name}}</td>
+                                <td>{{item.address}}</td>
+                                <td>{{item.phone}}</td>
+                                <td>{{item.range}}</td>
+                                <td>{{item.link}}</td>
+                                <td>{{item.city}}</td>
+                                <td>{{item.supplier}}</td>
+                                <td>{{item.cityId}}</td>
+                                <td>{{item.operatorTime}}</td>
+                                <td>{{item.status}}</td>
+                            </tr>
+                        </table>
+                        <div class="noData" v-if="treeData.length==0">
+                            暂无数据
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div slot="footer">
+                <Button v-if="false"></Button>
+            </div>
+        </Modal>
         <Modal v-model="modelShow" width="500" :closable="false">
             <p style="font-size: 16px">{{message}}</p>
         </Modal>
@@ -320,6 +385,192 @@
                         tree:'Tree信息'
                     },
                 ],
+                // 点击查看表格的数据
+                checkTitle:[
+                    {
+                        title: '原值',
+                        key: 'oldValue'
+                    },
+                    {
+                        title: '新值',
+                        key: 'newValue'
+                    },
+                    {
+                        title: '操作时间',
+                        key: 'operatorTime'
+                    },
+                    {
+                        title: '操作人',
+                        key: 'operatorMan'
+                    }
+                ],
+                checkData:[
+                    {
+                        'oldValue':'已聚待审',
+                        'newValue':'已聚已审',
+                        'operatorTime':'2017-08-13 12:09:00',
+                        'operatorMan':'系统'
+                    },
+                    {
+                        'oldValue':'已聚待审',
+                        'newValue':'已聚已审',
+                        'operatorTime':'2017-08-13 12:09:00',
+                        'operatorMan':'系统'
+                    },
+                    {
+                        'oldValue':'已聚待审',
+                        'newValue':'已聚已审',
+                        'operatorTime':'2017-08-13 12:09:00',
+                        'operatorMan':'系统'
+                    },
+                    {
+                        'oldValue':'已聚待审',
+                        'newValue':'已聚已审',
+                        'operatorTime':'2017-08-13 12:09:00',
+                        'operatorMan':'系统'
+                    }
+                ],
+                // 酒店Tree表格的数据
+                treeTitle:[
+                    {
+                        title: '酒店名称',
+                        key: 'name'
+                    },
+                    {
+                        title: '酒店地址',
+                        key: 'address'
+                    },
+                    {
+                        title: '酒店电话',
+                        key: 'phone'
+                    },
+                    {
+                        title: '经纬度距离',
+                        key: 'range'
+                    },
+                    {
+                        title: '酒店链接',
+                        key: 'link'
+                    },
+                    {
+                        title: '城市',
+                        key: 'city'
+                    },
+                    {
+                        title: '供应商',
+                        key: 'supplier'
+                    },
+                    {
+                        title: '供应商酒店ID',
+                        key: 'cityId'
+                    },
+                    {
+                        title: '审核时间',
+                        key: 'operatorTime'
+                    },
+                    {
+                        title: '聚合状态',
+                        key: 'status'
+                    },
+                ],
+                treeData:[
+                    {
+                        name: '北京五棵松和颐酒店',
+                        address: '北京海淀区永定路4号院',
+                        phone:'010-88257117',
+                        range:'',
+                        link:'打开链接',
+                        city:'北京',
+                        supplier:'JD',
+                        cityId:'001',
+                        operatorTime:'',
+                        status:'',
+                    },
+                    {
+                        name: '北京五棵松',
+                        address: '北京海淀区永定路4号院',
+                        phone:'010-88257117',
+                        range:'50m',
+                        link:'打开链接',
+                        city:'北京',
+                        supplier:'携程',
+                        cityId:'001',
+                        operatorTime:'2017-8-10 10:15:11',
+                        status:'已聚已审'
+                    },
+                    {
+                        name: '北京五棵松',
+                        address: '北京海淀区永定路4号院',
+                        phone:'010-88257117',
+                        range:'50m',
+                        link:'打开链接',
+                        city:'北京',
+                        supplier:'携程',
+                        cityId:'001',
+                        operatorTime:'2017-8-10 10:15:11',
+                        status:'已聚已审'
+                    },
+                    {
+                        name: '北京五棵松',
+                        address: '北京海淀区永定路4号院',
+                        phone:'010-88257117',
+                        range:'50m',
+                        link:'打开链接',
+                        city:'北京',
+                        supplier:'携程',
+                        cityId:'001',
+                        operatorTime:'2017-8-10 10:15:11',
+                        status:'已聚已审'
+                    },
+                    {
+                        name: '北京五棵松',
+                        address: '北京海淀区永定路4号院',
+                        phone:'010-88257117',
+                        range:'50m',
+                        link:'打开链接',
+                        city:'北京',
+                        supplier:'携程',
+                        cityId:'001',
+                        operatorTime:'2017-8-10 10:15:11',
+                        status:'已聚已审'
+                    },
+                    {
+                        name: '北京五棵松',
+                        address: '北京海淀区永定路4号院',
+                        phone:'010-88257117',
+                        range:'50m',
+                        link:'打开链接',
+                        city:'北京',
+                        supplier:'携程',
+                        cityId:'001',
+                        operatorTime:'2017-8-10 10:15:11',
+                        status:'已聚已审'
+                    },
+                    {
+                        name: '北京五棵松',
+                        address: '北京海淀区永定路4号院',
+                        phone:'010-88257117',
+                        range:'50m',
+                        link:'打开链接',
+                        city:'北京',
+                        supplier:'携程',
+                        cityId:'001',
+                        operatorTime:'2017-8-10 10:15:11',
+                        status:'已聚已审'
+                    },
+                    {
+                        name: '北京五棵松',
+                        address: '北京海淀区永定路4号院',
+                        phone:'010-88257117',
+                        range:'50m',
+                        link:'打开链接',
+                        city:'北京',
+                        supplier:'携程',
+                        cityId:'001',
+                        operatorTime:'2017-8-10 10:15:11',
+                        status:'已聚已审'
+                    }
+                ],
                 // 全选状态
                 checkAll: false,
                 // 点击全选时，只有未聚待审可以选中
@@ -337,13 +588,20 @@
                     checkBoxData:[],
                     radioData:[]
                 },
+                // 点击tree上面的提交待审的数据
+                submitTreeData:[],
                 // 控制模态框显示
                 modelShow:false,
+                // 控制查看模态框显示
+                checkShow:false,
+                // 控制查看Tree信息
+                treeShow:false,
                 // 模态框信息
                 message:'',
                 // div的宽度
                 divWidth1:'',
                 divWidth2:'',
+                divWidth3:'',
                 // 确定表格哪一种(已聚待审、已聚已审、未聚待审)
                 // 这个可以从 getter 里面拿到判断值
                 // 假设0为已聚待审、已聚已审,1未聚待审
@@ -355,12 +613,16 @@
             this.cityExamineData.forEach((item,index)=>{
                 this.$set(item,'checked',false);
             });
+            this.treeData.forEach((item,index)=>{
+                this.$set(item,'checked',false);
+            });
         },
         mounted(){
             // 计算一下初始化第一个表格的宽度
             this.divWidth1 = this.$refs.w1.offsetWidth;
             this.divWidth2 = this.$refs.w2.offsetWidth;
-            console.log('宽度:', this.divWidth1);
+            this.divWidth3 = this.$refs.w3.offsetWidth;
+            console.log('宽度:', this.divWidth3);
         },
         watch: {
             cityExamineData: {
@@ -447,7 +709,7 @@
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市提交？';
                         // 点击确定调取接口
-                        this.ok();
+                        this.ok(0);
                     }
                 }
                 if(this.tableType == 1){
@@ -462,7 +724,7 @@
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市提交？';
                         // 点击确定调取接口
-                        this.ok();
+                        this.ok(1);
                     }else {
                         this.instance('info','未聚待审');
                     }
@@ -484,10 +746,28 @@
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市设为待审？';
                         // 点击确定调取接口
-                        this.ok();
+                        this.ok(2);
                     }
                 }
                 console.log('设为已审的数据:',this.submitData1);
+            },
+            // tree表格上面的按钮
+            treeSubmit(){
+                this.submitTreeData = [];
+                for(let i=0; i<this.treeData.length; i++){
+                    if(this.treeData[i].status == '已聚已审'&&this.treeData[i].checked){
+                        this.submitTreeData.push(this.treeData[i]);
+                    }
+                }
+                console.log('选择的Tree信息:',this.submitTreeData);
+                if(this.submitTreeData.length == 0){
+                    this.instance('info','已聚已审');
+                }else {
+                    this.modelShow = true;
+                    this.message = '请确认是否将已选择城市设为待审？';
+                    // 点击确定调取接口
+                    this.ok(3);
+                }
             },
             // 单选框对应的值
             radioSelect(item){
@@ -512,8 +792,9 @@
                 }
             },
             // 弹框选择确定按钮
-            ok () {
-                console.log('点击确定');
+            ok (item) {
+                console.log('点击确定',item);
+                
             },
             // 弹框选择取消按钮
             cancel () {
@@ -569,6 +850,9 @@
         cursor: pointer;
     }
     .wrapW1 table tr td:nth-last-of-type(1){
+        cursor: pointer;
+    }
+    .wrapW2 table tr td:nth-last-of-type(1){
         cursor: pointer;
     }
     /* 表格横向滚动条和纵向滚动条 */
@@ -652,5 +936,8 @@
     }
     .highlightColor{
         color: #2d8cf0 !important;
+    }
+    .treeTable{
+        width: 100%;
     }
 </style>

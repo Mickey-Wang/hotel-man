@@ -11,8 +11,6 @@ let state = {
   asyncLoading : false,
   //主导航状态同步
   routerName:'',
-  // 就算一下未聚待审的数据长度
-  listLen:''
 };
 export default new Vuex.Store({
   state,

@@ -42,7 +42,7 @@
                                 <td>{{item.status}}</td>
                                 <td>{{item.operatorMan}}</td>
                                 <td>{{item.operatorTime}}</td>
-                                <td>{{item.operator}}</td>
+                                <td @click="checkShow = true">{{item.operator}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="cityExamineData.length==0">
@@ -91,6 +91,17 @@
         </div>
         <Modal v-model="modelShow" width="500" :closable="false">
             <p style="font-size: 16px">{{message}}</p>
+        </Modal>
+        <Modal
+                v-model="checkShow"
+                title="查看日志"
+                width="800">
+            <div>
+                <Table border height="360" :columns="checkTitle" :data="checkData"></Table>
+            </div>
+            <div slot="footer">
+                <Button v-if="false"></Button>
+            </div>
         </Modal>
     </section>
 </template>
@@ -273,6 +284,51 @@ export default {
 //                    supplier: '京东国内酒店'
 //                }
             ],
+            // 点击查看表格的数据
+            checkTitle:[
+                {
+                    title: '原值',
+                    key: 'oldValue'
+                },
+                {
+                    title: '新值',
+                    key: 'newValue'
+                },
+                {
+                    title: '操作时间',
+                    key: 'operatorTime'
+                },
+                {
+                    title: '操作人',
+                    key: 'operatorMan'
+                }
+            ],
+            checkData:[
+                {
+                    'oldValue':'已聚待审',
+                    'newValue':'已聚已审',
+                    'operatorTime':'2017-08-13 12:09:00',
+                    'operatorMan':'系统'
+                },
+                {
+                    'oldValue':'已聚待审',
+                    'newValue':'已聚已审',
+                    'operatorTime':'2017-08-13 12:09:00',
+                    'operatorMan':'系统'
+                },
+                {
+                    'oldValue':'已聚待审',
+                    'newValue':'已聚已审',
+                    'operatorTime':'2017-08-13 12:09:00',
+                    'operatorMan':'系统'
+                },
+                {
+                    'oldValue':'已聚待审',
+                    'newValue':'已聚已审',
+                    'operatorTime':'2017-08-13 12:09:00',
+                    'operatorMan':'系统'
+                }
+            ],
             // 全选状态
             checkAll: false,
             // 点击全选时，只有未聚待审可以选中
@@ -292,6 +348,8 @@ export default {
             },
             // 控制模态框显示
             modelShow:false,
+            // 控制查看模态框显示
+            checkShow:false,
             // 模态框信息
             message:'',
             // div的宽度
