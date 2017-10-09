@@ -794,7 +794,7 @@
             // 弹框选择确定按钮
             ok (item) {
                 console.log('点击确定',item);
-                
+
             },
             // 弹框选择取消按钮
             cancel () {
