@@ -2,8 +2,7 @@
 import {
     START_LOADING,
     FINISH_LOADING,
-    ROUTER_NAME,
-    LIST_LEN
+    ROUTER_NAME
 }
 from './mutation-type';
 const  mutations={

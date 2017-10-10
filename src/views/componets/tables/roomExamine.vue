@@ -26,9 +26,9 @@
                     </table>
                 </div>
                 <div>
-                    <table>
+                    <table id="mainTable">
                         <tbody>
-                            <tr v-for="(item,index) in roomExamineData1">
+                            <tr v-for="(item,index) in roomExamineData1" class="handle">
                                 <td><input type="checkbox"/></td>
                                 <td>{{item.name}}</td>
                                 <td>{{item.type}}</td>
@@ -40,7 +40,7 @@
                                 <td>{{item.operatorTime}}</td>
                                 <td>{{item.log}}</td>
                             </tr>
-                            <tr v-for="(item,index) in roomExamineData2">
+                            <tr v-for="(item,index) in roomExamineData2" class="handle">
                                 <td><input type="checkbox"/></td>
                                 <td>{{item.name}}</td>
                                 <td>{{item.type}}</td>
@@ -60,6 +60,7 @@
     </section>
 </template>
 <script>
+    import tableDragger from 'table-dragger'
     export default {
         data(){
             return{
@@ -150,6 +151,21 @@
                     },
                 ]
             }
+        },
+        mounted(){
+            this.$nextTick(vm=>{
+                var el = document.getElementById('mainTable');
+                var dragger = tableDragger(el, {
+                mode: 'row',
+                dragHandler: '.handle',
+                onlyBody: true,
+                animation: 300
+                });
+                dragger.on('drop',function(from, to){
+                console(from);
+                console(to);
+                });
+            })
         }
     }
 </script>

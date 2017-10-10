@@ -69,7 +69,7 @@
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseBySuppliers">
         <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
           <Menu theme="light" width="auto" @on-select="chooseSupplier">
-            <MenuItem :name="index" v-for="(item,index) in supplierList" :key="index">
+            <MenuItem :name="item.id" v-for="(item,index) in supplierList" :key="index">
             <span>{{item.name}}</span>
             <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
@@ -80,7 +80,7 @@
         </TabPane>
         <TabPane label="国家" name="nation" :disabled="supplierTabDisable[1]">
           <Menu theme="light" width="auto" @on-select="chooseNation">
-            <MenuItem :name="index" v-for="(item,index) in nationListChooseBySuppliers" :key="index">
+            <MenuItem :name="item.id" v-for="(item,index) in nationListChooseBySuppliers" :key="index">
             <span>{{item.name}}</span>
             <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
@@ -92,7 +92,7 @@
         <TabPane label="省份" name="province" :disabled="supplierTabDisable[2]">
           <Row class-name="menu-box-large">
             <Menu theme="light" width="auto" @on-select="chooseProvince">
-              <MenuItem :name="index" v-for="(item,index) in provinceListChooseBySuppliers" :key="index">
+              <MenuItem :name="item.id" v-for="(item,index) in provinceListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
@@ -110,7 +110,7 @@
           </Row>
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseCity">
-              <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
+              <MenuItem :name="item.id" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
@@ -127,7 +127,7 @@
         <TabPane label="国家" name="nation" :disabled="regionTabDisable[0]">
           <Menu theme="light" width="auto" @on-select="chooseNationCopy">
             <!-- :active-name="1" -->
-            <MenuItem :name="index" v-for="(item,index) in nationListChooseByRegions" :key="index">
+            <MenuItem :name="item.id" v-for="(item,index) in nationListChooseByRegions" :key="index">
             <span>{{item.name}}</span>
             <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
@@ -139,7 +139,7 @@
         <TabPane label="省份" name="province" :disabled="regionTabDisable[1]">
           <Row class-name="menu-box-large">
             <Menu theme="light" width="auto" @on-select="chooseProvinceCopy">
-              <MenuItem :name="index" v-for="(item,index) in provinceListChooseByRegions" :key="index">
+              <MenuItem :name="item.id" v-for="(item,index) in provinceListChooseByRegions" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
@@ -157,7 +157,7 @@
           </Row>
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseCityCopy">
-              <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions" :key="index">
+              <MenuItem :name="item.id" v-for="(item,index) in cityListChooseByRegions" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
@@ -216,45 +216,53 @@ export default {
       }],
       //城市数据
       supplierList: [{
+        id:132,
         name: '携程',
         matchedCount: 222,
         matchedUncheckCount: 333,
         unmatchedCount: 111
       }, {
+        id:133,
         name: '艺龙',
         matchedCount: 222,
         matchedUncheckCount: 111,
         unmatchedCount: 333
       }],
       nationListChooseBySuppliers: [{
+        id:81,
         name: '中国',
         matchedCount: 222,
         matchedUncheckCount: 333,
         unmatchedCount: 111
       }],
       nationListChooseByRegions: [{
+        id:81,
         name: '中国',
         matchedCount: 222,
         matchedUncheckCount: 333,
         unmatchedCount: 111
       }],
       provinceListChooseBySuppliers: [{
+        id:876,
         name: '广东省',
         matchedCount: 222,
         matchedUncheckCount: 333,
         unmatchedCount: 111
       }, {
+        id:677,
         name: '湖南省',
         matchedCount: 222,
         matchedUncheckCount: 111,
         unmatchedCount: 333
       }],
       provinceListChooseByRegions: [{
+        id:888,
         name: '广东省',
         matchedCount: 222,
         matchedUncheckCount: 333,
         unmatchedCount: 111
       }, {
+        id:282,
         name: '湖南省',
         matchedCount: 222,
         matchedUncheckCount: 111,
