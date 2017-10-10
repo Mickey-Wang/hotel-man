@@ -28,8 +28,29 @@
                 <div>
                     <table>
                         <tbody>
-                            <tr>
-                                <td></td>
+                            <tr v-for="(item,index) in roomExamineData1">
+                                <td><input type="checkbox"/></td>
+                                <td>{{item.name}}</td>
+                                <td>{{item.type}}</td>
+                                <td>{{item.area}}</td>
+                                <td>{{item.price}}</td>
+                                <td>{{item.supplier}}</td>
+                                <td>{{item.status}}</td>
+                                <td>{{item.operatorMan}}</td>
+                                <td>{{item.operatorTime}}</td>
+                                <td>{{item.log}}</td>
+                            </tr>
+                            <tr v-for="(item,index) in roomExamineData2">
+                                <td><input type="checkbox"/></td>
+                                <td>{{item.name}}</td>
+                                <td>{{item.type}}</td>
+                                <td>{{item.area}}</td>
+                                <td>{{item.price}}</td>
+                                <td>{{item.supplier}}</td>
+                                <td>{{item.status}}</td>
+                                <td>{{item.operatorMan}}</td>
+                                <td>{{item.operatorTime}}</td>
+                                <td>{{item.log}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -80,7 +101,7 @@
                         key: 'log'
                     }
                 ],
-                cityExamineData:[
+                roomExamineData1:[
                     {
                         name: '商务客房(2)',
                         type: '大床',
@@ -94,6 +115,30 @@
                     },
                     {
                         name: '商务房',
+                        type: '大床',
+                        area: '40㎡',
+                        price: '500',
+                        supplier: '携程',
+                        status: '已聚待审',
+                        operatorMan: '系统',
+                        operatorTime: '2017-08-13 10:15:10',
+                        log: '查看'
+                    },
+                ],
+                roomExamineData2:[
+                    {
+                        name: '高级客房(2)',
+                        type: '大床',
+                        area: '40㎡',
+                        price: '',
+                        supplier: 'JD',
+                        status: '',
+                        operatorMan: '',
+                        operatorTime: '',
+                        log: ''
+                    },
+                    {
+                        name: '高级房',
                         type: '大床',
                         area: '40㎡',
                         price: '500',
