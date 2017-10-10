@@ -11,7 +11,7 @@
             <div class="table table1">
                 <div class="wrap wrapW1">
                     <div ref="w1">
-                        <table :style="{'width':divWidth1+'px'}">
+                        <table :style="{'min-width':divWidth1+'px'}">
                             <tr>
                                 <th><input type="checkbox" v-if="tableType!==1" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
                                 <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
@@ -31,7 +31,7 @@
                         </table>
                     </div>
                     <div ref="h1">
-                        <table ref="h2" v-if="cityExamineData.length>0" :style="{'width':divWidth1+'px'}">
+                        <table ref="h2" v-if="cityExamineData.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in cityExamineData" v-if="index>0" :key="item.id" :class="[{trClass: item.status=='已聚待审'}]">
                                 <td><input v-if="item.status!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.status=='已聚待审'?disableStatus1:disableStatus2"></td>
                                 <td @click="getInputValue(item)">{{item.name}}</td>
@@ -63,7 +63,7 @@
             <div class="table table2">
                 <div class="wrap wrapW2">
                     <div ref="w2">
-                        <table :style="{'width':divWidth2+'px'}">
+                        <table :style="{'min-width':divWidth2+'px'}">
                             <tr>
                                 <th></th>
                                 <th v-for="(item,index) in similarHeaderData">{{item.title}}</th>
@@ -71,7 +71,7 @@
                         </table>
                     </div>
                     <div ref="h3">
-                        <table ref="h4" v-if="similarCityData.length>0" :style="{'width':divWidth2+'px'}">
+                        <table ref="h4" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
                             <tr v-for="(item,index) in similarCityData" :key="item.id">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <!--<td>{{item.name}}</td>-->

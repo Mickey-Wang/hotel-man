@@ -2,7 +2,7 @@
   <div class="layout-row">
     <Row class="layout-row">
       <Col span="18" push="6" class="layout-content-main-right">
-      <city></city>
+      <room></room>
       </Col>
       <Col span="6" pull="18" class="layout-content-main-left">
       <left-nav></left-nav>
@@ -34,7 +34,7 @@
 </style>
 
 <script>
-import city from '../../componets/tables/cityExamine.vue'
+import room from '../../componets/tables/roomExamine.vue'
 import leftNav from '../../componets/navigation/leftNavHotel'
 export default {
   data() {
@@ -43,7 +43,7 @@ export default {
     }
   },
   components: {
-    city,
+    room,
     'left-nav': leftNav
   },
 }
