@@ -65,12 +65,16 @@
   width: 90%;
   height: 60px; // background: #5b6270;
   border-radius: 3px;
-  margin: 15px auto;
+  // margin: 15px auto;
   .logo {
+    display: block;
     height: 60px;
+    transition: all 0.5s ease-in-out 1s;    
   }
   .logo1 {
+    display: block;    
     height: 40px;
+    transition: all 0.5s ease-in-out 1s;
   }
 }
 
@@ -100,8 +104,8 @@
       <Col :span="spanLeft" class="layout-menu-left">
       <Menu theme="dark" width="auto" :active-name="routerName" :openNames="submenu" :accordion="true" @on-open-change="expend" @on-select="select">
         <div class="layout-logo-left">
-          <img src="../../public/img/h.jpg" alt="logo" class="logo" v-if="logoSelect">
-          <img src="../../public/img/s.jpg" alt="logo" class="logo1" v-else>
+          <img src="../../public/img/h.jpg" alt="logo" class="logo" v-show="logoSelect">
+          <img src="../../public/img/s.jpg" alt="logo" class="logo1" v-show="!logoSelect">
         </div>
         <MenuItem name="index">
           <Icon type="ios-home" :size="iconSize"></Icon>

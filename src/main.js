@@ -16,7 +16,7 @@ Vue.use(Vuex);
 
 Vue.use(iView);
 
-Vue.prototype.$util = Util;
+Vue.prototype.$http = Util.ajax;
 //Vue.prototype.highlight =
 
 // 路由配置

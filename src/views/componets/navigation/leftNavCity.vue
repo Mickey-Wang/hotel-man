@@ -265,11 +265,11 @@ export default {
     };
   },
   mounted: function() {
-    this.$util.ajax.get('city').then(rs => {
+    this.$http.get('city').then(rs => {
       this.cityListChooseBySuppliers = rs.data.result;
       this.cityListChooseByRegions = rs.data.result;
     })
-    this.$util.ajax.get('province').then(rs => {
+    this.$http.get('province').then(rs => {
       this.provinceListChooseBySuppliers = rs.data.result;
       this.provinceListChooseByRegions = rs.data.result;
     })
