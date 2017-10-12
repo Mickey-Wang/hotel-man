@@ -18,36 +18,36 @@
                             </tr>
                             <tr class="fontColor" v-if="tableType!=1">
                                 <td></td>
-                                <td @click="getInputValue(cityExamineData[0])">{{cityExamineData[0].name}}</td>
+                                <td @click="getInputValue(cityExamineData[0])">{{cityExamineData[0].hotelName}}</td>
                                 <td>{{cityExamineData[0].address}}</td>
-                                <td>{{cityExamineData[0].phone}}</td>
-                                <td>{{cityExamineData[0].range}}</td>
+                                <td>{{cityExamineData[0].tel}}</td>
+                                <td>{{cityExamineData[0].distance}}</td>
                                 <td>{{cityExamineData[0].link}}</td>
-                                <td>{{cityExamineData[0].city}}</td>
-                                <td>{{cityExamineData[0].supplier}}</td>
-                                <td>{{cityExamineData[0].cityId}}</td>
-                                <td>{{cityExamineData[0].status}}</td>
-                                <td>{{cityExamineData[0].operatorMan}}</td>
-                                <td>{{cityExamineData[0].operatorTime}}</td>
+                                <td>{{cityExamineData[0].cityName}}</td>
+                                <td>{{cityExamineData[0].supplierName}}</td>
+                                <td>{{cityExamineData[0].hotelId}}</td>
+                                <td>{{cityExamineData[0].mapStatus}}</td>
+                                <td>{{cityExamineData[0].lastOperator}}</td>
+                                <td>{{cityExamineData[0].lastModifyTime}}</td>
                                 <td>{{cityExamineData[0].log}}</td>
                             </tr>
                         </table>
                     </div>
                     <div>
                         <table v-if="cityExamineData.length>0" :style="{'min-width':divWidth1+'px'}">
-                            <tr v-for="(item,index) in cityExamineData" v-if="index>0" :key="item.id" :class="[{trClass: item.status=='已聚待审'}]">
-                                <td><input v-if="item.status!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.status=='已聚待审'?disableStatus1:disableStatus2"></td>
-                                <td @click="getInputValue(item)">{{item.name}}</td>
+                            <tr v-for="(item,index) in cityExamineData" v-if="index>0" :key="item.id" :class="[{trClass: item.mapStatus=='已聚待审'}]">
+                                <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.mapStatus=='已聚待审'?disableStatus1:disableStatus2"></td>
+                                <td @click="getInputValue(item)">{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
-                                <td>{{item.phone}}</td>
-                                <td>{{item.range}}</td>
+                                <td>{{item.tel}}</td>
+                                <td>{{item.distance}}</td>
                                 <td>{{item.link}}</td>
-                                <td>{{item.city}}</td>
-                                <td>{{item.supplier}}</td>
-                                <td>{{item.cityId}}</td>
-                                <td>{{item.status}}</td>
-                                <td>{{item.operatorMan}}</td>
-                                <td>{{item.operatorTime}}</td>
+                                <td>{{item.cityName}}</td>
+                                <td>{{item.supplierName}}</td>
+                                <td>{{item.hotelId}}</td>
+                                <td>{{item.mapStatus}}</td>
+                                <td>{{item.lastOperator}}</td>
+                                <td>{{item.lastModifyTime}}</td>
                                 <td @click="checkShow = true">{{item.log}}</td>
                             </tr>
                         </table>
@@ -81,11 +81,11 @@
                             <tr v-for="(item,index) in similarCityData" :key="item.id">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <td>{{item.id}}</td>
-                                <td v-html="highlight(item.name, cityValue)"></td>
+                                <td v-html="highlight(item.hotelName, cityValue)"></td>
                                 <td>{{item.address}}</td>
-                                <td>{{item.phone}}</td>
+                                <td>{{item.tel}}</td>
                                 <td>{{item.link}}</td>
-                                <td>{{item.city}}</td>
+                                <td>{{item.cityName}}</td>
                                 <td @click="treeShow = true">{{item.tree}}</td>
                             </tr>
                         </table>
@@ -122,16 +122,16 @@
                             </tr>
                             <tr class="fontColor">
                                 <td></td>
-                                <td>{{treeData[0].name}}</td>
+                                <td>{{treeData[0].hotelName}}</td>
                                 <td>{{treeData[0].address}}</td>
-                                <td>{{treeData[0].phone}}</td>
-                                <td>{{treeData[0].range}}</td>
+                                <td>{{treeData[0].tel}}</td>
+                                <td>{{treeData[0].distance}}</td>
                                 <td>{{treeData[0].link}}</td>
-                                <td>{{treeData[0].city}}</td>
-                                <td>{{treeData[0].supplier}}</td>
-                                <td>{{treeData[0].cityId}}</td>
-                                <td>{{treeData[0].operatorTime}}</td>
-                                <td>{{treeData[0].status}}</td>
+                                <td>{{treeData[0].cityName}}</td>
+                                <td>{{treeData[0].supplierName}}</td>
+                                <td>{{treeData[0].hotelId}}</td>
+                                <td>{{treeData[0].lastModifyTime}}</td>
+                                <td>{{treeData[0].mapStatus}}</td>
                             </tr>
                         </table>
                     </div>
@@ -139,16 +139,16 @@
                         <table style="width: 1266px;">
                             <tr v-for="(item,index) in treeData" v-if="index>0" :key="item.id">
                                 <td><input type="checkbox" v-model="item.checked"/></td>
-                                <td>{{item.name}}</td>
+                                <td>{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
-                                <td>{{item.phone}}</td>
-                                <td>{{item.range}}</td>
+                                <td>{{item.tel}}</td>
+                                <td>{{item.distance}}</td>
                                 <td>{{item.link}}</td>
-                                <td>{{item.city}}</td>
-                                <td>{{item.supplier}}</td>
-                                <td>{{item.cityId}}</td>
-                                <td>{{item.operatorTime}}</td>
-                                <td>{{item.status}}</td>
+                                <td>{{item.cityName}}</td>
+                                <td>{{item.supplierName}}</td>
+                                <td>{{item.hotelId}}</td>
+                                <td>{{item.lastModifyTime}}</td>
+                                <td>{{item.mapStatus}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="treeData.length==0">
@@ -179,7 +179,7 @@
                 cityHeaderData: [
                     {
                         title: '酒店名称',
-                        key: 'name'
+                        key: 'hotelName'
                     },
                     {
                         title: '酒店地址',
@@ -187,11 +187,11 @@
                     },
                     {
                         title: '酒店电话',
-                        key: 'phone'
+                        key: 'tel'
                     },
                     {
                         title: '经纬度距离',
-                        key: 'range'
+                        key: 'distance'
                     },
                     {
                         title: '酒店链接',
@@ -199,27 +199,27 @@
                     },
                     {
                         title: '城市',
-                        key: 'city'
+                        key: 'cityName'
                     },
                     {
                         title: '供应商',
-                        key: 'supplier'
+                        key: 'supplierName'
                     },
                     {
                         title: '供应商酒店ID',
-                        key: 'cityId'
+                        key: 'hotelId'
                     },
                     {
                         title: '聚合状态',
-                        key: 'status'
+                        key: 'mapStatus'
                     },
                     {
                         title: '操作人',
-                        key: 'operatorMan'
+                        key: 'lastOperator'
                     },
                     {
                         title: '更新时间',
-                        key: 'operatorTime'
+                        key: 'lastModifyTime'
                     },
                     {
                         title: '日志',
@@ -228,101 +228,101 @@
                 ],
                 cityExamineData: [
                     {
-                        name: '北京五棵松和颐酒店',
+                        hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'',
+                        tel:'010-88257117',
+                        distance:'',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'JD',
-                        cityId:'001',
-                        status:'',
-                        operatorMan:'系统',
-                        operatorTime:'',
+                        cityName:'北京',
+                        supplierName:'JD',
+                        hotelId:'001',
+                        mapStatus:'',
+                        lastOperator:'系统',
+                        lastModifyTime:'',
                         log:''
                     },
                     {
-                        name: '北京五棵松',
+                        hotelName: '北京五棵松',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'50m',
+                        tel:'010-88257117',
+                        distance:'50m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        status:'已聚待审',
-                        operatorMan:'系统',
-                        operatorTime:'2017-8-10 10:15:11',
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        mapStatus:'已聚待审',
+                        lastOperator:'系统',
+                        lastModifyTime:'2017-8-10 10:15:11',
                         log:'查看'
                     },
                     {
-                        name: '北京五棵松和颐酒店',
+                        hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'30m',
+                        tel:'010-88257117',
+                        distance:'30m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        status:'已聚待审',
-                        operatorMan:'系统',
-                        operatorTime:'2017-8-10 10:15:11',
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        mapStatus:'已聚待审',
+                        lastOperator:'系统',
+                        lastModifyTime:'2017-8-10 10:15:11',
                         log:'查看'
                     },
                     {
-                        name: '北京五棵松和颐酒店',
+                        hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'30m',
+                        tel:'010-88257117',
+                        distance:'30m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        status:'已聚已审',
-                        operatorMan:'系统',
-                        operatorTime:'2017-8-10 10:15:11',
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        mapStatus:'已聚已审',
+                        lastOperator:'系统',
+                        lastModifyTime:'2017-8-10 10:15:11',
                         log:'查看'
                     },
                     {
-                        name: '北京五棵松和颐酒店',
+                        hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'30m',
+                        tel:'010-88257117',
+                        distance:'30m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        status:'已聚已审',
-                        operatorMan:'系统',
-                        operatorTime:'2017-8-10 10:15:11',
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        mapStatus:'已聚已审',
+                        lastOperator:'系统',
+                        lastModifyTime:'2017-8-10 10:15:11',
                         log:'查看'
                     },
                     {
-                        name: '北京五棵松和颐酒店',
+                        hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'30m',
+                        tel:'010-88257117',
+                        distance:'30m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        status:'已聚已审',
-                        operatorMan:'系统',
-                        operatorTime:'2017-8-10 10:15:11',
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        mapStatus:'已聚已审',
+                        lastOperator:'系统',
+                        lastModifyTime:'2017-8-10 10:15:11',
                         log:'查看'
                     },
                     {
-                        name: '北京五棵松和颐酒店',
+                        hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'30m',
+                        tel:'010-88257117',
+                        distance:'30m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        status:'已聚已审',
-                        operatorMan:'系统',
-                        operatorTime:'2017-8-10 10:15:11',
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        mapStatus:'已聚已审',
+                        lastOperator:'系统',
+                        lastModifyTime:'2017-8-10 10:15:11',
                         log:'查看'
                     }
                 ],
@@ -333,7 +333,7 @@
                     },
                     {
                         title: '酒店名称',
-                        key: 'name'
+                        key: 'hotelName'
                     },
                     {
                         title: '酒店地址',
@@ -341,7 +341,7 @@
                     },
                     {
                         title: '酒店电话',
-                        key: 'phone'
+                        key: 'tel'
                     },
                     {
                         title: '酒店链接',
@@ -349,7 +349,7 @@
                     },
                     {
                         title: '城市',
-                        key: 'city'
+                        key: 'cityName'
                     },
                     {
                         title: '查看酒店Tree',
@@ -359,29 +359,29 @@
                 similarCityData: [
                     {
                         id: '364469',
-                        name: '北京五棵松和颐酒店',
+                        hotelName: '北京五棵松和颐酒店',
                         address:'北京市朝阳区新源西里东街6号楼',
-                        phone:'010-64666626',
+                        tel:'010-64666626',
                         link:'打开链接',
-                        city:'北京',
+                        cityName:'北京',
                         tree:'Tree信息'
                     },
                     {
                         id: '364469',
-                        name: '北京燕莎和颐酒店',
+                        hotelName: '北京燕莎和颐酒店',
                         address:'北京市朝阳区新源西里东街6号楼',
-                        phone:'010-64666626',
+                        tel:'010-64666626',
                         link:'打开链接',
-                        city:'北京',
+                        cityName:'北京',
                         tree:'Tree信息'
                     },
                     {
                         id: '364469',
-                        name: '北京燕莎和颐酒店',
+                        hotelName: '北京燕莎和颐酒店',
                         address:'北京市朝阳区新源西里东街6号楼',
-                        phone:'010-64666626',
+                        tel:'010-64666626',
                         link:'打开链接',
-                        city:'北京',
+                        cityName:'北京',
                         tree:'Tree信息'
                     },
                 ],
@@ -397,44 +397,44 @@
                     },
                     {
                         title: '操作时间',
-                        key: 'operatorTime'
+                        key: 'lastModifyTime'
                     },
                     {
                         title: '操作人',
-                        key: 'operatorMan'
+                        key: 'lastOperator'
                     }
                 ],
                 checkData:[
                     {
                         'oldValue':'已聚待审',
                         'newValue':'已聚已审',
-                        'operatorTime':'2017-08-13 12:09:00',
-                        'operatorMan':'系统'
+                        'lastModifyTime':'2017-08-13 12:09:00',
+                        'lastOperator':'系统'
                     },
                     {
                         'oldValue':'已聚待审',
                         'newValue':'已聚已审',
-                        'operatorTime':'2017-08-13 12:09:00',
-                        'operatorMan':'系统'
+                        'lastModifyTime':'2017-08-13 12:09:00',
+                        'lastOperator':'系统'
                     },
                     {
                         'oldValue':'已聚待审',
                         'newValue':'已聚已审',
-                        'operatorTime':'2017-08-13 12:09:00',
-                        'operatorMan':'系统'
+                        'lastModifyTime':'2017-08-13 12:09:00',
+                        'lastOperator':'系统'
                     },
                     {
                         'oldValue':'已聚待审',
                         'newValue':'已聚已审',
-                        'operatorTime':'2017-08-13 12:09:00',
-                        'operatorMan':'系统'
+                        'lastModifyTime':'2017-08-13 12:09:00',
+                        'lastOperator':'系统'
                     }
                 ],
                 // 酒店Tree表格的数据
                 treeTitle:[
                     {
                         title: '酒店名称',
-                        key: 'name'
+                        key: 'hotelName'
                     },
                     {
                         title: '酒店地址',
@@ -442,11 +442,11 @@
                     },
                     {
                         title: '酒店电话',
-                        key: 'phone'
+                        key: 'tel'
                     },
                     {
                         title: '经纬度距离',
-                        key: 'range'
+                        key: 'distance'
                     },
                     {
                         title: '酒店链接',
@@ -454,121 +454,121 @@
                     },
                     {
                         title: '城市',
-                        key: 'city'
+                        key: 'cityName'
                     },
                     {
                         title: '供应商',
-                        key: 'supplier'
+                        key: 'supplierName'
                     },
                     {
                         title: '供应商酒店ID',
-                        key: 'cityId'
+                        key: 'hotelId'
                     },
                     {
                         title: '审核时间',
-                        key: 'operatorTime'
+                        key: 'lastModifyTime'
                     },
                     {
                         title: '聚合状态',
-                        key: 'status'
+                        key: 'mapStatus'
                     },
                 ],
                 treeData:[
                     {
-                        name: '北京五棵松和颐酒店',
+                        hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'',
+                        tel:'010-88257117',
+                        distance:'',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'JD',
-                        cityId:'001',
-                        operatorTime:'',
-                        status:'',
+                        cityName:'北京',
+                        supplierName:'JD',
+                        hotelId:'001',
+                        lastModifyTime:'',
+                        mapStatus:'',
                     },
                     {
-                        name: '北京五棵松',
+                        hotelName: '北京五棵松',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'50m',
+                        tel:'010-88257117',
+                        distance:'50m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        operatorTime:'2017-8-10 10:15:11',
-                        status:'已聚已审'
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        lastModifyTime:'2017-8-10 10:15:11',
+                        mapStatus:'已聚已审'
                     },
                     {
-                        name: '北京五棵松',
+                        hotelName: '北京五棵松',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'50m',
+                        tel:'010-88257117',
+                        distance:'50m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        operatorTime:'2017-8-10 10:15:11',
-                        status:'已聚已审'
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        lastModifyTime:'2017-8-10 10:15:11',
+                        mapStatus:'已聚已审'
                     },
                     {
-                        name: '北京五棵松',
+                        hotelName: '北京五棵松',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'50m',
+                        tel:'010-88257117',
+                        distance:'50m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        operatorTime:'2017-8-10 10:15:11',
-                        status:'已聚已审'
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        lastModifyTime:'2017-8-10 10:15:11',
+                        mapStatus:'已聚已审'
                     },
                     {
-                        name: '北京五棵松',
+                        hotelName: '北京五棵松',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'50m',
+                        tel:'010-88257117',
+                        distance:'50m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        operatorTime:'2017-8-10 10:15:11',
-                        status:'已聚已审'
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        lastModifyTime:'2017-8-10 10:15:11',
+                        mapStatus:'已聚已审'
                     },
                     {
-                        name: '北京五棵松',
+                        hotelName: '北京五棵松',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'50m',
+                        tel:'010-88257117',
+                        distance:'50m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        operatorTime:'2017-8-10 10:15:11',
-                        status:'已聚已审'
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        lastModifyTime:'2017-8-10 10:15:11',
+                        mapStatus:'已聚已审'
                     },
                     {
-                        name: '北京五棵松',
+                        hotelName: '北京五棵松',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'50m',
+                        tel:'010-88257117',
+                        distance:'50m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        operatorTime:'2017-8-10 10:15:11',
-                        status:'已聚已审'
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        lastModifyTime:'2017-8-10 10:15:11',
+                        mapStatus:'已聚已审'
                     },
                     {
-                        name: '北京五棵松',
+                        hotelName: '北京五棵松',
                         address: '北京海淀区永定路4号院',
-                        phone:'010-88257117',
-                        range:'50m',
+                        tel:'010-88257117',
+                        distance:'50m',
                         link:'打开链接',
-                        city:'北京',
-                        supplier:'携程',
-                        cityId:'001',
-                        operatorTime:'2017-8-10 10:15:11',
-                        status:'已聚已审'
+                        cityName:'北京',
+                        supplierName:'携程',
+                        hotelId:'001',
+                        lastModifyTime:'2017-8-10 10:15:11',
+                        mapStatus:'已聚已审'
                     }
                 ],
                 // 全选状态
@@ -632,7 +632,7 @@
                     if(this.tableType==0){
                         for (let i = 0; i < this.cityExamineData.length; i++) {
                             let item = this.cityExamineData[i];
-                            if (item.status === '已聚待审') {
+                            if (item.mapStatus === '已聚待审') {
                                 console.log('item', item.checked);
                                 if (!item.checked) {
                                     check = false;
@@ -660,7 +660,7 @@
                     for (let i = 0; i < this.cityExamineData.length; i++) {
                         let item = this.cityExamineData[i];
                         if(this.tableType==0){
-                            if (item.status === '已聚待审') {
+                            if (item.mapStatus === '已聚待审') {
                                 item.checked = this.checkAll;
                             }else {
                                 // 如果不是已聚待审，则不能进行选择操作
@@ -675,8 +675,8 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
-                console.log('点击获取名字:',item.name);
-                this.cityValue = item.name;
+                console.log('点击获取名字:',item.hotelName);
+                this.cityValue = item.hotelName;
             },
             // highlight函数
             highlight(value,word){
@@ -696,7 +696,7 @@
                 this.submitData.checkBoxData = [];
                 if(this.tableType == 0){
                     for(let i=0; i<this.cityExamineData.length; i++){
-                        if(this.cityExamineData[i].status=='已聚待审'&&this.cityExamineData[i].checked){
+                        if(this.cityExamineData[i].mapStatus=='已聚待审'&&this.cityExamineData[i].checked){
                             console.log('checked的ID:',this.tableType,this.cityExamineData[i].id);
                             this.submitData.checkBoxData.push(this.cityExamineData[i]);
                         }
@@ -714,7 +714,7 @@
                 }
                 if(this.tableType == 1){
                     for(let i=0; i<this.cityExamineData.length; i++){
-                        if(this.cityExamineData[i].status=='未聚待审'&&this.cityExamineData[i].checked){
+                        if(this.cityExamineData[i].mapStatus=='未聚待审'&&this.cityExamineData[i].checked){
                             console.log('checked的ID:',this.tableType,this.cityExamineData[i].id);
                             this.submitData.checkBoxData.push(this.cityExamineData[i]);
                         }
@@ -735,7 +735,7 @@
                 this.submitData1.checkBoxData = [];
                 if(this.tableType==0){
                     for(let i=0; i<this.cityExamineData.length; i++){
-                        if(this.cityExamineData[i].status == '已聚已审'&&this.cityExamineData[i].checked){
+                        if(this.cityExamineData[i].mapStatus == '已聚已审'&&this.cityExamineData[i].checked){
                             this.submitData1.checkBoxData.push(this.cityExamineData[i]);
                         }
                     }
@@ -755,7 +755,7 @@
             treeSubmit(){
                 this.submitTreeData = [];
                 for(let i=0; i<this.treeData.length; i++){
-                    if(this.treeData[i].status == '已聚已审'&&this.treeData[i].checked){
+                    if(this.treeData[i].mapStatus == '已聚已审'&&this.treeData[i].checked){
                         this.submitTreeData.push(this.treeData[i]);
                     }
                 }
@@ -780,7 +780,7 @@
             // 单个复选框选择的时候
             oneSelect(item){
                 for (let i=0; i<this.cityExamineData.length; i++){
-                    if(this.cityExamineData[i].status!=='已聚待审'){
+                    if(this.cityExamineData[i].mapStatus!=='已聚待审'){
                         if(this.cityExamineData[i].checked){
                             this.disableStatus1 = true;
                         }
