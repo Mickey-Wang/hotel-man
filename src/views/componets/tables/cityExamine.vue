@@ -16,23 +16,23 @@
                                 <th><input type="checkbox" v-if="tableType!==1" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
                                 <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-if="tableType!=1">
+                            <tr v-for="(item,index) in JDHotelApproval" class="fontColor" v-if="tableType!=1">
                                 <td></td>
-                                <td @click="getInputValue(cityExamineData[0])">{{cityExamineData[0].cityName}}</td>
-                                <td>{{cityExamineData[0].cityId}}</td>
-                                <td>{{cityExamineData[0].provinceName}}</td>
-                                <td>{{cityExamineData[0].countryName}}</td>
-                                <td>{{cityExamineData[0].supplierName}}</td>
-                                <td>{{cityExamineData[0].mapStatus}}</td>
-                                <td>{{cityExamineData[0].lastOperator}}</td>
-                                <td>{{cityExamineData[0].lastModifyTime}}</td>
-                                <td>{{cityExamineData[0].operator}}</td>
+                                <td @click="getInputValue(item)">{{item.cityName}}</td>
+                                <td>{{item.cityId}}</td>
+                                <td>{{item.provinceName}}</td>
+                                <td>{{item.countryName}}</td>
+                                <td>{{item.supplierName}}</td>
+                                <td>{{item.mapStatus}}</td>
+                                <td>{{item.lastOperator}}</td>
+                                <td>{{item.lastModifyTime}}</td>
+                                <td>{{item.operator}}</td>
                             </tr>
                         </table>
                     </div>
                     <div ref="h1">
-                        <table ref="h2" v-if="cityExamineData.length>0" :style="{'min-width':divWidth1+'px'}">
-                            <tr v-for="(item,index) in cityExamineData" v-if="index>0" :key="item.cityId" :class="[{trClass: item.mapStatus=='已聚待审'}]">
+                        <table ref="h2" v-if="cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
+                            <tr v-for="(item,index) in cityApprovalList" :key="item.cityId" :class="[{trClass: item.mapStatus=='已聚待审'}]">
                                 <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.mapStatus=='已聚待审'?disableStatus1:disableStatus2"></td>
                                 <td @click="getInputValue(item)">{{item.cityName}}</td>
                                 <td>{{item.cityId}}</td>
@@ -45,7 +45,7 @@
                                 <td @click="checkShow = true">{{item.operator}}</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="cityExamineData.length==0">
+                        <div class="noData" v-if="cityApprovalList.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -153,8 +153,7 @@
                         key: 'operator'
                     }
                 ],
-                JDHotelApproval:[],
-                cityExamineData: [
+                JDHotelApproval:[
                     {
                         cityName: '阿拉尔',
                         cityId: 'JD-H10',
@@ -165,7 +164,9 @@
                         lastOperator: '',
                         lastModifyTime: '',
                         operator: ''
-                    },
+                    }
+                ],
+                cityApprovalList: [
                     {
                         cityName: '阿拉尔市',
                         cityId: 'A00061',
@@ -356,8 +357,8 @@
             }
         },
         created(){
-            // cityExamineData数据中set数据 checked: false
-            this.cityExamineData.forEach((item,index)=>{
+            // cityApprovalList数据中set数据 checked: false
+            this.cityApprovalList.forEach((item,index)=>{
                 this.$set(item,'checked',false);
             });
         },
@@ -368,13 +369,13 @@
             console.log('宽度:', this.divWidth1);
         },
         watch: {
-            cityExamineData: {
+            cityApprovalList: {
                 handler () {
                     let check = true;
                     // 先确定是否有已聚待审的数据的存在
                     if(this.tableType==0){
-                        for (let i = 0; i < this.cityExamineData.length; i++) {
-                            let item = this.cityExamineData[i];
+                        for (let i = 0; i < this.cityApprovalList.length; i++) {
+                            let item = this.cityApprovalList[i];
                             if (item.mapStatus === '已聚待审') {
                                 console.log('item', item.checked);
                                 if (!item.checked) {
@@ -399,8 +400,8 @@
             toggleCheckAll () {
                 // 等model变化完再执行事件
                 this.$nextTick(() => {
-                    for (let i = 0; i < this.cityExamineData.length; i++) {
-                        let item = this.cityExamineData[i];
+                    for (let i = 0; i < this.cityApprovalList.length; i++) {
+                        let item = this.cityApprovalList[i];
                         if(this.tableType==0){
                             if (item.mapStatus === '已聚待审') {
                                 item.checked = this.checkAll;
@@ -437,10 +438,10 @@
             toSubmit1(){
                 this.submitData.checkBoxData = [];
                 if(this.tableType == 0){
-                    for(let i=0; i<this.cityExamineData.length; i++){
-                        if(this.cityExamineData[i].mapStatus=='已聚待审'&&this.cityExamineData[i].checked){
-                            console.log('checked的ID:',this.tableType,this.cityExamineData[i].cityId);
-                            this.submitData.checkBoxData.push(this.cityExamineData[i]);
+                    for(let i=0; i<this.cityApprovalList.length; i++){
+                        if(this.cityApprovalList[i].mapStatus=='已聚待审'&&this.cityApprovalList[i].checked){
+                            console.log('checked的ID:',this.tableType,this.cityApprovalList[i].cityId);
+                            this.submitData.checkBoxData.push(this.cityApprovalList[i]);
                         }
                     }
                     console.log('已聚待审设为已审的数据:',this.submitData);
@@ -455,10 +456,10 @@
                     }
                 }
                 if(this.tableType == 1){
-                    for(let i=0; i<this.cityExamineData.length; i++){
-                        if(this.cityExamineData[i].mapStatus=='未聚待审'&&this.cityExamineData[i].checked){
-                            console.log('checked的ID:',this.tableType,this.cityExamineData[i].cityId);
-                            this.submitData.checkBoxData.push(this.cityExamineData[i]);
+                    for(let i=0; i<this.cityApprovalList.length; i++){
+                        if(this.cityApprovalList[i].mapStatus=='未聚待审'&&this.cityApprovalList[i].checked){
+                            console.log('checked的ID:',this.tableType,this.cityApprovalList[i].cityId);
+                            this.submitData.checkBoxData.push(this.cityApprovalList[i]);
                         }
                     }
                     console.log('未聚未审设为已审的数据:',this.submitData);
@@ -476,9 +477,9 @@
                 // 当是已聚待审的时候
                 this.submitData1.checkBoxData = [];
                 if(this.tableType==0){
-                    for(let i=0; i<this.cityExamineData.length; i++){
-                        if(this.cityExamineData[i].mapStatus == '已聚已审'&&this.cityExamineData[i].checked){
-                            this.submitData1.checkBoxData.push(this.cityExamineData[i]);
+                    for(let i=0; i<this.cityApprovalList.length; i++){
+                        if(this.cityApprovalList[i].mapStatus == '已聚已审'&&this.cityApprovalList[i].checked){
+                            this.submitData1.checkBoxData.push(this.cityApprovalList[i]);
                         }
                     }
                     console.log('已聚已审的数据:',this.submitData1.checkBoxData,this.submitData1);
@@ -503,14 +504,16 @@
             },
             // 单个复选框选择的时候
             oneSelect(item){
-                for (let i=0; i<this.cityExamineData.length; i++){
-                    if(this.cityExamineData[i].mapStatus!=='已聚待审'){
-                        if(this.cityExamineData[i].checked){
+                for (let i=0; i<this.cityApprovalList.length; i++){
+                    if(this.cityApprovalList[i].mapStatus!=='已聚待审'){
+                        if(this.cityApprovalList[i].checked){
                             this.disableStatus1 = true;
                         }
                     }else {
-                        if(this.cityExamineData[i].checked){
+                        if(this.cityApprovalList[i].checked){
                             this.disableStatus2 = true;
+                        }else {
+                            this.disableStatus1 = false;
                         }
                     }
                 }
@@ -544,6 +547,20 @@
                 if(this.cityValue==''){
                     this.instance('warning');
                 }else {
+                }
+            },
+            // 10:未聚待审;20:已聚待审;30:已聚已审
+            getStatusValue(status){
+                switch (status){
+                    case 10:
+                        return '未聚待审';
+                        break;
+                    case 20:
+                        return '已聚待审';
+                        break;
+                    case 30:
+                        return '已聚已审';
+                        break;
                 }
             }
         }
