@@ -33,8 +33,8 @@
                             </tr>
                         </table>
                     </div>
-                    <div ref="h1">
-                        <table ref="h2" v-if="cityExamineData.length>0" :style="{'min-width':divWidth1+'px'}">
+                    <div>
+                        <table v-if="cityExamineData.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in cityExamineData" v-if="index>0" :key="item.id" :class="[{trClass: item.status=='已聚待审'}]">
                                 <td><input v-if="item.status!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.status=='已聚待审'?disableStatus1:disableStatus2"></td>
                                 <td @click="getInputValue(item)">{{item.name}}</td>
@@ -835,7 +835,6 @@
         border-collapse:collapse;
         border-spacing:0;
         border-bottom:1px solid #e9eaec;
-        /*border-right: 1px solid #dddee1;*/
     }
     table td, table th{
         border-left:1px solid #e9eaec;
@@ -861,7 +860,6 @@
         position: relative;
         border: 1px solid #dddee1;
         border-top: none;
-        /*border-right: none;*/
         overflow-x: auto;
         .wrapW1{
             min-width: 200%;
