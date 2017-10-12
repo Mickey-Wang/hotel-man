@@ -18,30 +18,30 @@
                             </tr>
                             <tr class="fontColor" v-if="tableType!=1">
                                 <td></td>
-                                <td @click="getInputValue(cityExamineData[0])">{{cityExamineData[0].name}}</td>
-                                <td>{{cityExamineData[0].id}}</td>
-                                <td>{{cityExamineData[0].province}}</td>
-                                <td>{{cityExamineData[0].country}}</td>
-                                <td>{{cityExamineData[0].supplier}}</td>
-                                <td>{{cityExamineData[0].status}}</td>
-                                <td>{{cityExamineData[0].operatorMan}}</td>
-                                <td>{{cityExamineData[0].operatorTime}}</td>
+                                <td @click="getInputValue(cityExamineData[0])">{{cityExamineData[0].cityName}}</td>
+                                <td>{{cityExamineData[0].cityId}}</td>
+                                <td>{{cityExamineData[0].provinceName}}</td>
+                                <td>{{cityExamineData[0].countryName}}</td>
+                                <td>{{cityExamineData[0].supplierName}}</td>
+                                <td>{{cityExamineData[0].mapStatus}}</td>
+                                <td>{{cityExamineData[0].lastOperator}}</td>
+                                <td>{{cityExamineData[0].lastModifyTime}}</td>
                                 <td>{{cityExamineData[0].operator}}</td>
                             </tr>
                         </table>
                     </div>
                     <div ref="h1">
                         <table ref="h2" v-if="cityExamineData.length>0" :style="{'min-width':divWidth1+'px'}">
-                            <tr v-for="(item,index) in cityExamineData" v-if="index>0" :key="item.id" :class="[{trClass: item.status=='已聚待审'}]">
-                                <td><input v-if="item.status!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.status=='已聚待审'?disableStatus1:disableStatus2"></td>
-                                <td @click="getInputValue(item)">{{item.name}}</td>
-                                <td>{{item.id}}</td>
-                                <td>{{item.province}}</td>
-                                <td>{{item.country}}</td>
-                                <td>{{item.supplier}}</td>
-                                <td>{{item.status}}</td>
-                                <td>{{item.operatorMan}}</td>
-                                <td>{{item.operatorTime}}</td>
+                            <tr v-for="(item,index) in cityExamineData" v-if="index>0" :key="item.cityId" :class="[{trClass: item.mapStatus=='已聚待审'}]">
+                                <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.mapStatus=='已聚待审'?disableStatus1:disableStatus2"></td>
+                                <td @click="getInputValue(item)">{{item.cityName}}</td>
+                                <td>{{item.cityId}}</td>
+                                <td>{{item.provinceName}}</td>
+                                <td>{{item.countryName}}</td>
+                                <td>{{item.supplierName}}</td>
+                                <td>{{item.mapStatus}}</td>
+                                <td>{{item.lastOperator}}</td>
+                                <td>{{item.lastModifyTime}}</td>
                                 <td @click="checkShow = true">{{item.operator}}</td>
                             </tr>
                         </table>
@@ -72,14 +72,14 @@
                     </div>
                     <div ref="h3">
                         <table ref="h4" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
-                            <tr v-for="(item,index) in similarCityData" :key="item.id">
+                            <tr v-for="(item,index) in similarCityData" :key="item.cityId">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
-                                <!--<td>{{item.name}}</td>-->
-                                <td v-html="highlight(item.name, cityValue)"></td>
-                                <td>{{item.id}}</td>
-                                <td>{{item.province}}</td>
-                                <td>{{item.country}}</td>
-                                <td>{{item.supplier}}</td>
+                                <!--<td>{{item.cityName}}</td>-->
+                                <td v-html="highlight(item.cityName, cityValue)"></td>
+                                <td>{{item.cityId}}</td>
+                                <td>{{item.provinceName}}</td>
+                                <td>{{item.countryName}}</td>
+                                <td>{{item.supplierName}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="similarCityData==0">
@@ -118,171 +118,165 @@
                 cityHeaderData: [
                     {
                         title: '城市名称',
-                        key: 'name'
+                        key: 'cityName'
                     },
                     {
                         title: '城市ID',
-                        key: 'id'
+                        key: 'cityId'
                     },
                     {
                         title: '省份',
-                        key: 'province'
+                        key: 'provinceName'
                     },
                     {
                         title: '国家',
-                        key: 'country'
+                        key: 'countryName'
                     },
                     {
                         title: '供应商名称',
-                        key: 'supplier'
+                        key: 'supplierName'
                     },
                     {
                         title: '聚合状态',
-                        key: 'status'
+                        key: 'mapStatus'
                     },
                     {
                         title: '操作人',
-                        key: 'operatorMan'
+                        key: 'lastOperator'
                     },
                     {
                         title: '操作时间',
-                        key: 'operatorTime'
+                        key: 'lastModifyTime'
                     },
                     {
                         title: '操作',
                         key: 'operator'
                     }
                 ],
+                JDHotelApproval:[],
                 cityExamineData: [
                     {
-                        name: '阿拉尔',
-                        id: 'JD-H10',
-                        province: '新疆',
-                        country: '中国',
-                        supplier: '京东国内酒店',
-                        status: '',
-                        operatorMan: '',
-                        operatorTime: '',
+                        cityName: '阿拉尔',
+                        cityId: 'JD-H10',
+                        provinceName: '新疆',
+                        countryName: '中国',
+                        supplierName: '京东国内酒店',
+                        mapStatus: '',
+                        lastOperator: '',
+                        lastModifyTime: '',
                         operator: ''
                     },
                     {
-                        name: '阿拉尔市',
-                        id: 'A00061',
-                        province: '新疆',
-                        country: '中国',
-                        supplier: '酒店供应商A',
-                        status: '已聚待审',
-                        operatorMan: 'system',
-                        operatorTime: '2017/08/11 17:19',
+                        cityName: '阿拉尔市',
+                        cityId: 'A00061',
+                        provinceName: '新疆',
+                        countryName: '中国',
+                        supplierName: '酒店供应商A',
+                        mapStatus: '已聚待审',
+                        lastOperator: 'system',
+                        lastModifyTime: '2017/08/11 17:19',
                         operator: '查看'
                     },
                     {
-                        name: '阿拉尔市',
-                        id: 'A00062',
-                        province: '新疆',
-                        country: '中国',
-                        supplier: '酒店供应商B',
-                        status: '已聚待审',
-                        operatorMan: 'system',
-                        operatorTime: '2017/08/11 17:19',
+                        cityName: '阿拉尔市',
+                        cityId: 'A00062',
+                        provinceName: '新疆',
+                        countryName: '中国',
+                        supplierName: '酒店供应商B',
+                        mapStatus: '已聚待审',
+                        lastOperator: 'system',
+                        lastModifyTime: '2017/08/11 17:19',
                         operator: '查看'
                     },
                     {
-                        name: '阿拉尔',
-                        id: 'BUH13',
-                        province: '新疆',
-                        country: '中国',
-                        supplier: '酒店供应商C',
-                        status: '已聚已审',
-                        operatorMan: 'system',
-                        operatorTime: '2017/08/12 18:00',
+                        cityName: '阿拉尔',
+                        cityId: 'BUH13',
+                        provinceName: '新疆',
+                        countryName: '中国',
+                        supplierName: '酒店供应商C',
+                        mapStatus: '已聚已审',
+                        lastOperator: 'system',
+                        lastModifyTime: '2017/08/12 18:00',
                         operator: '查看'
                     },
                     {
-                        name: '阿拉尔',
-                        id: 'CN567',
-                        province: '新疆',
-                        country: '中国',
-                        supplier: '酒店供应商D',
-                        status: '已聚已审',
-                        operatorMan: 'system',
-                        operatorTime: '2017/08/13 19:00',
+                        cityName: '阿拉尔',
+                        cityId: 'CN567',
+                        provinceName: '新疆',
+                        countryName: '中国',
+                        supplierName: '酒店供应商D',
+                        mapStatus: '已聚已审',
+                        lastOperator: 'system',
+                        lastModifyTime: '2017/08/13 19:00',
                         operator: '查看'
                     },
                     {
-                        name: '阿拉尔',
-                        id: 'DTY44',
-                        province: '新疆',
-                        country: '中国',
-                        supplier: '酒店供应商E',
-                        status: '已聚已审',
-                        operatorMan: 'system',
-                        operatorTime: '2017/08/16 19:00',
+                        cityName: '阿拉尔',
+                        cityId: 'DTY44',
+                        provinceName: '新疆',
+                        countryName: '中国',
+                        supplierName: '酒店供应商E',
+                        mapStatus: '已聚已审',
+                        lastOperator: 'system',
+                        lastModifyTime: '2017/08/16 19:00',
                         operator: '查看'
                     },
                     {
-                        name: '阿拉尔',
-                        id: 'DTY45',
-                        province: '新疆',
-                        country: '中国',
-                        supplier: '酒店供应商E',
-                        status: '已聚已审',
-                        operatorMan: 'system',
-                        operatorTime: '2017/08/17 19:00',
+                        cityName: '阿拉尔',
+                        cityId: 'DTY45',
+                        provinceName: '新疆',
+                        countryName: '中国',
+                        supplierName: '酒店供应商E',
+                        mapStatus: '已聚已审',
+                        lastOperator: 'system',
+                        lastModifyTime: '2017/08/17 19:00',
                         operator: '查看'
                     }
                 ],
                 similarHeaderData: [
                     {
                         title: '城市名称',
-                        key: 'name'
+                        key: 'cityName'
                     },
                     {
-                        title: '城市ID',
-                        key: 'id'
+                        title: '城市Id',
+                        key: 'cityId'
                     },
                     {
                         title: '省份',
-                        key: 'province'
+                        key: 'provinceName'
                     },
                     {
                         title: '国家',
-                        key: 'country'
+                        key: 'countryName'
                     },
                     {
                         title: '供应商名称',
-                        key: 'supplier'
+                        key: 'supplierName'
                     }
                 ],
                 similarCityData: [
                     {
-                        name: '阿拉尔',
-                        id: 'JD-H10',
-                        province: '新疆',
-                        country: '中国',
-                        supplier: '京东国内酒店'
+                        cityName: '阿拉尔',
+                        cityId: 'JD-H10',
+                        provinceName: '新疆',
+                        countryName: '中国',
+                        supplierName: '京东国内酒店'
                     },
                     {
-                        name: '阿拉尔市',
-                        id: 'JD-H11',
-                        province: '新疆',
-                        country: '中国',
-                        supplier: '京东国内酒店'
+                        cityName: '阿拉尔市',
+                        cityId: 'JD-H11',
+                        provinceName: '新疆',
+                        countryName: '中国',
+                        supplierName: '京东国内酒店'
                     },
                     {
-                        name: '阿拉善',
-                        id: 'JD-H12',
-                        province: '新疆',
-                        country: '中国',
-                        supplier: '京东国内酒店'
+                        cityName: '阿拉善',
+                        cityId: 'JD-H12',
+                        provinceName: '新疆',
+                        countryName: '中国',
+                        supplierName: '京东国内酒店'
                     },
-//                {
-//                    name: '阿拉善',
-//                    id: 'JD-H13',
-//                    province: '新疆',
-//                    country: '中国',
-//                    supplier: '京东国内酒店'
-//                }
                 ],
                 // 点击查看表格的数据
                 checkTitle:[
@@ -296,37 +290,37 @@
                     },
                     {
                         title: '操作时间',
-                        key: 'operatorTime'
+                        key: 'lastModifyTime'
                     },
                     {
                         title: '操作人',
-                        key: 'operatorMan'
+                        key: 'lastOperator'
                     }
                 ],
                 checkData:[
                     {
                         'oldValue':'已聚待审',
                         'newValue':'已聚已审',
-                        'operatorTime':'2017-08-13 12:09:00',
-                        'operatorMan':'系统'
+                        'lastModifyTime':'2017-08-13 12:09:00',
+                        'lastOperator':'系统'
                     },
                     {
                         'oldValue':'已聚待审',
                         'newValue':'已聚已审',
-                        'operatorTime':'2017-08-13 12:09:00',
-                        'operatorMan':'系统'
+                        'lastModifyTime':'2017-08-13 12:09:00',
+                        'lastOperator':'系统'
                     },
                     {
                         'oldValue':'已聚待审',
                         'newValue':'已聚已审',
-                        'operatorTime':'2017-08-13 12:09:00',
-                        'operatorMan':'系统'
+                        'lastModifyTime':'2017-08-13 12:09:00',
+                        'lastOperator':'系统'
                     },
                     {
                         'oldValue':'已聚待审',
                         'newValue':'已聚已审',
-                        'operatorTime':'2017-08-13 12:09:00',
-                        'operatorMan':'系统'
+                        'lastModifyTime':'2017-08-13 12:09:00',
+                        'lastOperator':'系统'
                     }
                 ],
                 // 全选状态
@@ -381,7 +375,7 @@
                     if(this.tableType==0){
                         for (let i = 0; i < this.cityExamineData.length; i++) {
                             let item = this.cityExamineData[i];
-                            if (item.status === '已聚待审') {
+                            if (item.mapStatus === '已聚待审') {
                                 console.log('item', item.checked);
                                 if (!item.checked) {
                                     check = false;
@@ -408,7 +402,7 @@
                     for (let i = 0; i < this.cityExamineData.length; i++) {
                         let item = this.cityExamineData[i];
                         if(this.tableType==0){
-                            if (item.status === '已聚待审') {
+                            if (item.mapStatus === '已聚待审') {
                                 item.checked = this.checkAll;
                             }else {
                                 // 如果不是已聚待审，则不能进行选择操作
@@ -423,8 +417,8 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
-                console.log('点击获取名字:',item.name);
-                this.cityValue = item.name;
+                console.log('点击获取名字:',item.cityName);
+                this.cityValue = item.cityName;
             },
             // highlight函数
             highlight(value,word){
@@ -444,8 +438,8 @@
                 this.submitData.checkBoxData = [];
                 if(this.tableType == 0){
                     for(let i=0; i<this.cityExamineData.length; i++){
-                        if(this.cityExamineData[i].status=='已聚待审'&&this.cityExamineData[i].checked){
-                            console.log('checked的ID:',this.tableType,this.cityExamineData[i].id);
+                        if(this.cityExamineData[i].mapStatus=='已聚待审'&&this.cityExamineData[i].checked){
+                            console.log('checked的ID:',this.tableType,this.cityExamineData[i].cityId);
                             this.submitData.checkBoxData.push(this.cityExamineData[i]);
                         }
                     }
@@ -462,8 +456,8 @@
                 }
                 if(this.tableType == 1){
                     for(let i=0; i<this.cityExamineData.length; i++){
-                        if(this.cityExamineData[i].status=='未聚待审'&&this.cityExamineData[i].checked){
-                            console.log('checked的ID:',this.tableType,this.cityExamineData[i].id);
+                        if(this.cityExamineData[i].mapStatus=='未聚待审'&&this.cityExamineData[i].checked){
+                            console.log('checked的ID:',this.tableType,this.cityExamineData[i].cityId);
                             this.submitData.checkBoxData.push(this.cityExamineData[i]);
                         }
                     }
@@ -483,7 +477,7 @@
                 this.submitData1.checkBoxData = [];
                 if(this.tableType==0){
                     for(let i=0; i<this.cityExamineData.length; i++){
-                        if(this.cityExamineData[i].status == '已聚已审'&&this.cityExamineData[i].checked){
+                        if(this.cityExamineData[i].mapStatus == '已聚已审'&&this.cityExamineData[i].checked){
                             this.submitData1.checkBoxData.push(this.cityExamineData[i]);
                         }
                     }
@@ -510,7 +504,7 @@
             // 单个复选框选择的时候
             oneSelect(item){
                 for (let i=0; i<this.cityExamineData.length; i++){
-                    if(this.cityExamineData[i].status!=='已聚待审'){
+                    if(this.cityExamineData[i].mapStatus!=='已聚待审'){
                         if(this.cityExamineData[i].checked){
                             this.disableStatus1 = true;
                         }
