@@ -23,23 +23,23 @@
                                 <td>{{item.provinceName}}</td>
                                 <td>{{item.countryName}}</td>
                                 <td>{{item.supplierName}}</td>
-                                <td>{{item.mapStatus}}</td>
-                                <td>{{item.lastOperator}}</td>
-                                <td>{{item.lastModifyTime}}</td>
-                                <td>{{item.operator}}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                             </tr>
                         </table>
                     </div>
                     <div ref="h1">
                         <table ref="h2" v-if="cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
-                            <tr v-for="(item,index) in cityApprovalList" :key="item.cityId" :class="[{trClass: item.mapStatus=='已聚待审'}]">
-                                <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.mapStatus=='已聚待审'?disableStatus1:disableStatus2"></td>
+                            <tr v-for="(item,index) in cityApprovalList" :key="item.cityId" :class="[{trClass: item.mapStatus=='20'}]">
+                                <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.mapStatus=='20'?disableStatus1:disableStatus2"></td>
                                 <td @click="getInputValue(item)">{{item.cityName}}</td>
                                 <td>{{item.cityId}}</td>
                                 <td>{{item.provinceName}}</td>
                                 <td>{{item.countryName}}</td>
                                 <td>{{item.supplierName}}</td>
-                                <td>{{item.mapStatus}}</td>
+                                <td>{{getStatusValue(item.mapStatus)}}</td>
                                 <td>{{item.lastOperator}}</td>
                                 <td>{{item.lastModifyTime}}</td>
                                 <td @click="checkShow = true">{{item.operator}}</td>
@@ -96,8 +96,29 @@
                 v-model="checkShow"
                 title="查看日志"
                 width="800">
-            <div>
-                <Table border height="360" :columns="checkTitle" :data="checkData"></Table>
+            <div class="table table1" style="height: 300px; margin-top: 10px;">
+                <div class="wrap wrapW1 logTable" style="min-width: 100%">
+                    <div ref="w3">
+                        <table style="width: 767px;">
+                            <tr>
+                                <th v-for="(item,index) in checkTitle">{{item.title}}</th>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <table style="width: 767px;">
+                            <tr v-for="(item,index) in checkData" :key="index">
+                                <td>{{getStatusValue(item.originalValue)}}</td>
+                                <td>{{getStatusValue(item.modifedValue)}}</td>
+                                <td>{{item.lastModifyTime}}</td>
+                                <td>{{item.lastOperator}}</td>
+                            </tr>
+                        </table>
+                        <div class="noData" v-if="checkData.length==0">
+                            暂无数据
+                        </div>
+                    </div>
+                </div>
             </div>
             <div slot="footer">
                 <Button v-if="false"></Button>
@@ -159,11 +180,7 @@
                         cityId: 'JD-H10',
                         provinceName: '新疆',
                         countryName: '中国',
-                        supplierName: '京东国内酒店',
-                        mapStatus: '',
-                        lastOperator: '',
-                        lastModifyTime: '',
-                        operator: ''
+                        supplierName: '京东国内酒店'
                     }
                 ],
                 cityApprovalList: [
@@ -173,7 +190,7 @@
                         provinceName: '新疆',
                         countryName: '中国',
                         supplierName: '酒店供应商A',
-                        mapStatus: '已聚待审',
+                        mapStatus: '20',
                         lastOperator: 'system',
                         lastModifyTime: '2017/08/11 17:19',
                         operator: '查看'
@@ -184,7 +201,7 @@
                         provinceName: '新疆',
                         countryName: '中国',
                         supplierName: '酒店供应商B',
-                        mapStatus: '已聚待审',
+                        mapStatus: '20',
                         lastOperator: 'system',
                         lastModifyTime: '2017/08/11 17:19',
                         operator: '查看'
@@ -195,7 +212,7 @@
                         provinceName: '新疆',
                         countryName: '中国',
                         supplierName: '酒店供应商C',
-                        mapStatus: '已聚已审',
+                        mapStatus: '30',
                         lastOperator: 'system',
                         lastModifyTime: '2017/08/12 18:00',
                         operator: '查看'
@@ -206,7 +223,7 @@
                         provinceName: '新疆',
                         countryName: '中国',
                         supplierName: '酒店供应商D',
-                        mapStatus: '已聚已审',
+                        mapStatus: '30',
                         lastOperator: 'system',
                         lastModifyTime: '2017/08/13 19:00',
                         operator: '查看'
@@ -217,7 +234,7 @@
                         provinceName: '新疆',
                         countryName: '中国',
                         supplierName: '酒店供应商E',
-                        mapStatus: '已聚已审',
+                        mapStatus: '30',
                         lastOperator: 'system',
                         lastModifyTime: '2017/08/16 19:00',
                         operator: '查看'
@@ -228,7 +245,7 @@
                         provinceName: '新疆',
                         countryName: '中国',
                         supplierName: '酒店供应商E',
-                        mapStatus: '已聚已审',
+                        mapStatus: '30',
                         lastOperator: 'system',
                         lastModifyTime: '2017/08/17 19:00',
                         operator: '查看'
@@ -283,11 +300,11 @@
                 checkTitle:[
                     {
                         title: '原值',
-                        key: 'oldValue'
+                        key: 'originalValue'
                     },
                     {
                         title: '新值',
-                        key: 'newValue'
+                        key: 'modifedValue'
                     },
                     {
                         title: '操作时间',
@@ -300,27 +317,51 @@
                 ],
                 checkData:[
                     {
-                        'oldValue':'已聚待审',
-                        'newValue':'已聚已审',
+                        'originalValue':'20',
+                        'modifedValue':'30',
                         'lastModifyTime':'2017-08-13 12:09:00',
                         'lastOperator':'系统'
                     },
                     {
-                        'oldValue':'已聚待审',
-                        'newValue':'已聚已审',
+                        'originalValue':'20',
+                        'modifedValue':'30',
                         'lastModifyTime':'2017-08-13 12:09:00',
                         'lastOperator':'系统'
                     },
                     {
-                        'oldValue':'已聚待审',
-                        'newValue':'已聚已审',
+                        'originalValue':'20',
+                        'modifedValue':'30',
                         'lastModifyTime':'2017-08-13 12:09:00',
                         'lastOperator':'系统'
                     },
                     {
-                        'oldValue':'已聚待审',
-                        'newValue':'已聚已审',
+                        'originalValue':'20',
+                        'modifedValue':'30',
                         'lastModifyTime':'2017-08-13 12:09:00',
+                        'lastOperator':'系统'
+                    },
+                    {
+                        'originalValue':'20',
+                        'modifedValue':'30',
+                        'lastModifyTime':'2017-08-13 12:09:00',
+                        'lastOperator':'系统'
+                    },
+                    {
+                        'originalValue':'20',
+                        'modifedValue':'30',
+                        'lastModifyTime':'2017-08-13 12:09:00',
+                        'lastOperator':'系统'
+                    },
+                    {
+                        'originalValue':'20',
+                        'modifedValue':'30',
+                        'lastModifyTime':'2017-08-13 12:09:22',
+                        'lastOperator':'系统'
+                    },
+                    {
+                        'originalValue':'20',
+                        'modifedValue':'30',
+                        'lastModifyTime':'2017-08-13 12:09:22',
                         'lastOperator':'系统'
                     }
                 ],
@@ -361,6 +402,7 @@
             this.cityApprovalList.forEach((item,index)=>{
                 this.$set(item,'checked',false);
             });
+            console.log('数字对应的文字:',this.getStatusValue(20));
         },
         mounted(){
             // 计算一下初始化第一个表格的宽度
@@ -376,7 +418,7 @@
                     if(this.tableType==0){
                         for (let i = 0; i < this.cityApprovalList.length; i++) {
                             let item = this.cityApprovalList[i];
-                            if (item.mapStatus === '已聚待审') {
+                            if (item.mapStatus === '20') {
                                 console.log('item', item.checked);
                                 if (!item.checked) {
                                     check = false;
@@ -403,7 +445,7 @@
                     for (let i = 0; i < this.cityApprovalList.length; i++) {
                         let item = this.cityApprovalList[i];
                         if(this.tableType==0){
-                            if (item.mapStatus === '已聚待审') {
+                            if (item.mapStatus === '20') {
                                 item.checked = this.checkAll;
                             }else {
                                 // 如果不是已聚待审，则不能进行选择操作
@@ -439,7 +481,7 @@
                 this.submitData.checkBoxData = [];
                 if(this.tableType == 0){
                     for(let i=0; i<this.cityApprovalList.length; i++){
-                        if(this.cityApprovalList[i].mapStatus=='已聚待审'&&this.cityApprovalList[i].checked){
+                        if(this.cityApprovalList[i].mapStatus=='20'&&this.cityApprovalList[i].checked){
                             console.log('checked的ID:',this.tableType,this.cityApprovalList[i].cityId);
                             this.submitData.checkBoxData.push(this.cityApprovalList[i]);
                         }
@@ -478,7 +520,7 @@
                 this.submitData1.checkBoxData = [];
                 if(this.tableType==0){
                     for(let i=0; i<this.cityApprovalList.length; i++){
-                        if(this.cityApprovalList[i].mapStatus == '已聚已审'&&this.cityApprovalList[i].checked){
+                        if(this.cityApprovalList[i].mapStatus == '30'&&this.cityApprovalList[i].checked){
                             this.submitData1.checkBoxData.push(this.cityApprovalList[i]);
                         }
                     }
@@ -505,7 +547,7 @@
             // 单个复选框选择的时候
             oneSelect(item){
                 for (let i=0; i<this.cityApprovalList.length; i++){
-                    if(this.cityApprovalList[i].mapStatus!=='已聚待审'){
+                    if(this.cityApprovalList[i].mapStatus!=='20'){
                         if(this.cityApprovalList[i].checked){
                             this.disableStatus1 = true;
                         }
@@ -552,13 +594,13 @@
             // 10:未聚待审;20:已聚待审;30:已聚已审
             getStatusValue(status){
                 switch (status){
-                    case 10:
+                    case '10':
                         return '未聚待审';
                         break;
-                    case 20:
+                    case '20':
                         return '已聚待审';
                         break;
-                    case 30:
+                    case '30':
                         return '已聚已审';
                         break;
                 }
@@ -672,5 +714,11 @@
     }
     .highlightColor{
         color: #2d8cf0 !important;
+    }
+    .logTable table tr th, .logTable table tr td{
+        width: 25%;
+    }
+    .logTable div:nth-of-type(2){
+        height: 89% !important;
     }
 </style>
