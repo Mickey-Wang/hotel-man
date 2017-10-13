@@ -134,12 +134,20 @@
         </Submenu>
         <Submenu name="order">
           <template slot="title">
-            <Icon type="social-yen" :size="iconSize"></Icon>
+            <Icon type="ios-cart" :size="iconSize"></Icon>
             <span class="layout-text">订单管理</span>
           </template>
           <MenuItem name="3-1" class="layout-text">订单1</MenuItem>
           <MenuItem name="3-2" class="layout-text">订单2</MenuItem>
         </Submenu>
+        <MenuItem name="supplier">
+          <Icon type="ios-people" :size="iconSize"></Icon>
+          <span class="layout-text">供应商管理</span>
+        </MenuItem>
+        <MenuItem name="sale">
+          <Icon type="social-yen" :size="iconSize"></Icon>
+          <span class="layout-text">分销管理</span>
+        </MenuItem>
       </Menu>
       </Col>
       <Col :span="spanRight">
