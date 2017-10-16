@@ -4,7 +4,7 @@
             <div class="title">城市审核列表</div>
             <div class="button">
                 <Button type="primary" @click="toSubmit1">提交</Button>
-                <Button type="primary" @click="toSubmit2" v-if="tableType!=1">设为待审</Button>
+                <Button type="primary" @click="toSubmit2" v-if="tableType!=30">设为待审</Button>
                 <Button type="primary">新增</Button>
             </div>
             <div class="total">共计XX条</div>
@@ -13,7 +13,7 @@
                     <div ref="w1">
                         <table :style="{'min-width':divWidth1+'px'}">
                             <tr>
-                                <th><input type="checkbox" v-if="tableType!==1" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
+                                <th><input type="checkbox" v-if="tableType!==30" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
                                 <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
                             </tr>
                             <tr class="fontColor" v-if="tableType!=1" v-for="(item,index) in JDHotelApproval">
@@ -271,8 +271,7 @@
                         hotelId:'001',
                         mapStatus:'20',
                         lastOperator:'系统',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        log:'查看'
+                        lastModifyTime:'2017-8-10 10:15:11'
                     },
                     {
                         hotelName: '北京五棵松和颐酒店',
@@ -285,8 +284,7 @@
                         hotelId:'001',
                         mapStatus:'20',
                         lastOperator:'系统',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        log:'查看'
+                        lastModifyTime:'2017-8-10 10:15:11'
                     },
                     {
                         hotelName: '北京五棵松和颐酒店',
@@ -299,8 +297,7 @@
                         hotelId:'001',
                         mapStatus:'30',
                         lastOperator:'系统',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        log:'查看'
+                        lastModifyTime:'2017-8-10 10:15:11'
                     },
                     {
                         hotelName: '北京五棵松和颐酒店',
@@ -313,8 +310,7 @@
                         hotelId:'001',
                         mapStatus:'30',
                         lastOperator:'系统',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        log:'查看'
+                        lastModifyTime:'2017-8-10 10:15:11'
                     },
                     {
                         hotelName: '北京五棵松和颐酒店',
@@ -327,8 +323,7 @@
                         hotelId:'001',
                         mapStatus:'30',
                         lastOperator:'系统',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        log:'查看'
+                        lastModifyTime:'2017-8-10 10:15:11'
                     },
                     {
                         hotelName: '北京五棵松和颐酒店',
@@ -341,8 +336,7 @@
                         hotelId:'001',
                         mapStatus:'30',
                         lastOperator:'系统',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        log:'查看'
+                        lastModifyTime:'2017-8-10 10:15:11'
                     }
                 ],
                 similarHeaderData: [
@@ -382,8 +376,7 @@
                         address:'北京市朝阳区新源西里东街6号楼',
                         tel:'010-64666626',
                         link:'打开链接',
-                        cityName:'北京',
-                        tree:'Tree信息'
+                        cityName:'北京'
                     },
                     {
                         id: '364469',
@@ -391,8 +384,7 @@
                         address:'北京市朝阳区新源西里东街6号楼',
                         tel:'010-64666626',
                         link:'打开链接',
-                        cityName:'北京',
-                        tree:'Tree信息'
+                        cityName:'北京'
                     },
                     {
                         id: '364469',
@@ -400,8 +392,7 @@
                         address:'北京市朝阳区新源西里东街6号楼',
                         tel:'010-64666626',
                         link:'打开链接',
-                        cityName:'北京',
-                        tree:'Tree信息'
+                        cityName:'北京'
                     },
                 ],
                 // 点击查看表格的数据
@@ -623,18 +614,22 @@
                 divWidth3:'',
                 // 确定表格哪一种(已聚待审、已聚已审、未聚待审)
                 // 这个可以从 getter 里面拿到判断值
-                // 假设0为已聚待审、已聚已审,1未聚待审
-                tableType:0,
+                // 10:未聚待审;20:已聚待审;30:已聚已审
+                tableType:20,
             }
         },
         created(){
             // cityApprovalList数据中set数据 checked: false
             this.cityApprovalList.forEach((item,index)=>{
                 this.$set(item,'checked',false);
+                this.$set(item,'log','查看');
             });
             this.treeData.forEach((item,index)=>{
                 this.$set(item,'checked',false);
             });
+            this.similarCityData.forEach((item,index)=>{
+                this.$set(item,'tree','Tree信息');
+            })
         },
         mounted(){
             // 计算一下初始化第一个表格的宽度
@@ -648,7 +643,7 @@
                 handler () {
                     let check = true;
                     // 先确定是否有已聚待审的数据的存在
-                    if(this.tableType==0){
+                    if(this.tableType==10 || this.tableType==20){
                         for (let i = 0; i < this.cityApprovalList.length; i++) {
                             let item = this.cityApprovalList[i];
                             if (item.mapStatus === '20') {
@@ -678,7 +673,7 @@
                 this.$nextTick(() => {
                     for (let i = 0; i < this.cityApprovalList.length; i++) {
                         let item = this.cityApprovalList[i];
-                        if(this.tableType==0){
+                        if(this.tableType==10 || this.tableType==20){
                             if (item.mapStatus === '20') {
                                 item.checked = this.checkAll;
                             }else {
@@ -713,7 +708,7 @@
             // 点击提交按钮(点击提交按钮)
             toSubmit1(){
                 this.submitData.checkBoxData = [];
-                if(this.tableType == 0){
+                if(this.tableType==10 || this.tableType==20){
                     for(let i=0; i<this.cityApprovalList.length; i++){
                         if(this.cityApprovalList[i].mapStatus=='20'&&this.cityApprovalList[i].checked){
                             console.log('checked的ID:',this.tableType,this.cityApprovalList[i].id);
@@ -731,7 +726,7 @@
                         this.ok(0);
                     }
                 }
-                if(this.tableType == 1){
+                if(this.tableType == 30){
                     for(let i=0; i<this.cityApprovalList.length; i++){
                         if(this.cityApprovalList[i].mapStatus=='未聚待审'&&this.cityApprovalList[i].checked){
                             console.log('checked的ID:',this.tableType,this.cityApprovalList[i].id);
@@ -752,7 +747,7 @@
             toSubmit2(){
                 // 当是已聚待审的时候
                 this.submitData1.checkBoxData = [];
-                if(this.tableType==0){
+                if(this.tableType==10 || this.tableType==20){
                     for(let i=0; i<this.cityApprovalList.length; i++){
                         if(this.cityApprovalList[i].mapStatus == '30'&&this.cityApprovalList[i].checked){
                             this.submitData1.checkBoxData.push(this.cityApprovalList[i]);

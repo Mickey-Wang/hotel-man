@@ -4,7 +4,7 @@
             <div class="title">城市审核列表</div>
             <div class="button">
                 <Button type="primary" @click="toSubmit1">提交</Button>
-                <Button type="primary" @click="toSubmit2" v-if="tableType!=1">设为待审</Button>
+                <Button type="primary" @click="toSubmit2" v-if="tableType!=30">设为待审</Button>
                 <Button type="primary">新增</Button>
             </div>
             <div class="total">共计XX条</div>
@@ -13,10 +13,10 @@
                     <div ref="w1">
                         <table :style="{'min-width':divWidth1+'px'}">
                             <tr>
-                                <th><input type="checkbox" v-if="tableType!==1" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
-                                <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
+                                <th><input type="checkbox" v-if="tableType!=30" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
+                                <th v-for="(item,index) in cityHeaderData" :key="index">{{item.title}}</th>
                             </tr>
-                            <tr v-for="(item,index) in JDHotelApproval" class="fontColor" v-if="tableType!=1">
+                            <tr v-for="(item,index) in JDHotelApproval" :key="index" class="fontColor" v-if="tableType!=1">
                                 <td></td>
                                 <td @click="getInputValue(item)">{{item.cityName}}</td>
                                 <td>{{item.cityId}}</td>
@@ -66,7 +66,7 @@
                         <table :style="{'min-width':divWidth2+'px'}">
                             <tr>
                                 <th></th>
-                                <th v-for="(item,index) in similarHeaderData">{{item.title}}</th>
+                                <th v-for="(item,index) in similarHeaderData" :key="index">{{item.title}}</th>
                             </tr>
                         </table>
                     </div>
@@ -89,7 +89,7 @@
                 </div>
             </div>
         </div>
-        <Modal v-model="modelShow" width="500" :closable="false">
+        <Modal v-model="modelShow" width="500" :closable="false" @on-ok="ok" @on-cancel="cancel">
             <p style="font-size: 16px">{{message}}</p>
         </Modal>
         <Modal
@@ -101,7 +101,7 @@
                     <div ref="w3">
                         <table style="width: 767px;">
                             <tr>
-                                <th v-for="(item,index) in checkTitle">{{item.title}}</th>
+                                <th v-for="(item,index) in checkTitle" :key="index">{{item.title}}</th>
                             </tr>
                         </table>
                     </div>
@@ -192,8 +192,7 @@
                         supplierName: '酒店供应商A',
                         mapStatus: '20',
                         lastOperator: 'system',
-                        lastModifyTime: '2017/08/11 17:19',
-                        operator: '查看'
+                        lastModifyTime: '2017/08/11 17:19'
                     },
                     {
                         cityName: '阿拉尔市',
@@ -203,8 +202,7 @@
                         supplierName: '酒店供应商B',
                         mapStatus: '20',
                         lastOperator: 'system',
-                        lastModifyTime: '2017/08/11 17:19',
-                        operator: '查看'
+                        lastModifyTime: '2017/08/11 17:19'
                     },
                     {
                         cityName: '阿拉尔',
@@ -214,8 +212,7 @@
                         supplierName: '酒店供应商C',
                         mapStatus: '30',
                         lastOperator: 'system',
-                        lastModifyTime: '2017/08/12 18:00',
-                        operator: '查看'
+                        lastModifyTime: '2017/08/12 18:00'
                     },
                     {
                         cityName: '阿拉尔',
@@ -225,8 +222,7 @@
                         supplierName: '酒店供应商D',
                         mapStatus: '30',
                         lastOperator: 'system',
-                        lastModifyTime: '2017/08/13 19:00',
-                        operator: '查看'
+                        lastModifyTime: '2017/08/13 19:00'
                     },
                     {
                         cityName: '阿拉尔',
@@ -236,8 +232,7 @@
                         supplierName: '酒店供应商E',
                         mapStatus: '30',
                         lastOperator: 'system',
-                        lastModifyTime: '2017/08/16 19:00',
-                        operator: '查看'
+                        lastModifyTime: '2017/08/16 19:00'
                     },
                     {
                         cityName: '阿拉尔',
@@ -247,8 +242,7 @@
                         supplierName: '酒店供应商E',
                         mapStatus: '30',
                         lastOperator: 'system',
-                        lastModifyTime: '2017/08/17 19:00',
-                        operator: '查看'
+                        lastModifyTime: '2017/08/17 19:00'
                     }
                 ],
                 similarHeaderData: [
@@ -393,14 +387,17 @@
                 divWidth2:'',
                 // 确定表格哪一种(已聚待审、已聚已审、未聚待审)
                 // 这个可以从 getter 里面拿到判断值
-                // 假设0为已聚待审、已聚已审,1未聚待审
-                tableType:0,
+                // 10:未聚待审;20:已聚待审;30:已聚已审
+                tableType:20,
+                // 确定一下是哪个按钮点击的,提交按钮是1,设为待审按钮是2
+                buttonType:0
             }
         },
         created(){
             // cityApprovalList数据中set数据 checked: false
             this.cityApprovalList.forEach((item,index)=>{
                 this.$set(item,'checked',false);
+                this.$set(item,'operator','查看');
             });
             console.log('数字对应的文字:',this.getStatusValue(20));
         },
@@ -415,7 +412,7 @@
                 handler () {
                     let check = true;
                     // 先确定是否有已聚待审的数据的存在
-                    if(this.tableType==0){
+                    if(this.tableType==10 || this.tableType==20){
                         for (let i = 0; i < this.cityApprovalList.length; i++) {
                             let item = this.cityApprovalList[i];
                             if (item.mapStatus === '20') {
@@ -444,7 +441,7 @@
                 this.$nextTick(() => {
                     for (let i = 0; i < this.cityApprovalList.length; i++) {
                         let item = this.cityApprovalList[i];
-                        if(this.tableType==0){
+                        if(this.tableType==10 || this.tableType==20){
                             if (item.mapStatus === '20') {
                                 item.checked = this.checkAll;
                             }else {
@@ -478,8 +475,10 @@
             },
             // 点击提交按钮(点击提交按钮)
             toSubmit1(){
+                // 确定是提交按钮
+                this.buttonType = 1;
                 this.submitData.checkBoxData = [];
-                if(this.tableType == 0){
+                if(this.tableType==10 || this.tableType==20){
                     for(let i=0; i<this.cityApprovalList.length; i++){
                         if(this.cityApprovalList[i].mapStatus=='20'&&this.cityApprovalList[i].checked){
                             console.log('checked的ID:',this.tableType,this.cityApprovalList[i].cityId);
@@ -493,11 +492,9 @@
                     }else {
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市提交？';
-                        // 点击确定调取接口
-                        this.ok();
                     }
                 }
-                if(this.tableType == 1){
+                if(this.tableType == 30){
                     for(let i=0; i<this.cityApprovalList.length; i++){
                         if(this.cityApprovalList[i].mapStatus=='未聚待审'&&this.cityApprovalList[i].checked){
                             console.log('checked的ID:',this.tableType,this.cityApprovalList[i].cityId);
@@ -508,17 +505,17 @@
                     if(this.submitData.checkBoxData.length!=0 && this.submitData.radioData.length!=0){
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市提交？';
-                        // 点击确定调取接口
-                        this.ok();
                     }else {
                         this.instance('info','未聚待审');
                     }
                 }
             },
             toSubmit2(){
+                // 确定是设为待审按钮
+                this.buttonType = 2;
                 // 当是已聚待审的时候
                 this.submitData1.checkBoxData = [];
-                if(this.tableType==0){
+                if(this.tableType==10 || this.tableType==20){
                     for(let i=0; i<this.cityApprovalList.length; i++){
                         if(this.cityApprovalList[i].mapStatus == '30'&&this.cityApprovalList[i].checked){
                             this.submitData1.checkBoxData.push(this.cityApprovalList[i]);
@@ -530,8 +527,6 @@
                     }else {
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市设为待审？';
-                        // 点击确定调取接口
-                        this.ok();
                     }
                 }
                 console.log('设为已审的数据:',this.submitData1);
@@ -562,7 +557,14 @@
             },
             // 弹框选择确定按钮
             ok () {
-                console.log('点击确定');
+                // 提交，设为已审按钮
+                if(this.buttonType == 1){
+                    console.log('设为已审');
+                }
+                // 设为待审按钮
+                if(this.buttonType == 2){
+                    console.log('设为待审');
+                }
             },
             // 弹框选择取消按钮
             cancel () {
