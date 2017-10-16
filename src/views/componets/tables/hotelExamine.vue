@@ -4,7 +4,7 @@
             <div class="title">城市审核列表</div>
             <div class="button">
                 <Button type="primary" @click="toSubmit1">提交</Button>
-                <Button type="primary" @click="toSubmit2" v-if="tableType!=30">设为待审</Button>
+                <Button type="primary" @click="toSubmit2" v-if="tableType!=10">设为待审</Button>
                 <Button type="primary">新增</Button>
             </div>
             <div class="total">共计XX条</div>
@@ -13,10 +13,10 @@
                     <div ref="w1">
                         <table :style="{'min-width':divWidth1+'px'}">
                             <tr>
-                                <th><input type="checkbox" v-if="tableType!==30" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
+                                <th><input type="checkbox" v-if="tableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
                                 <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-if="tableType!=1" v-for="(item,index) in JDHotelApproval">
+                            <tr class="fontColor" v-if="tableType!=10" v-for="(item,index) in JDHotelApproval">
                                 <td></td>
                                 <td @click="getInputValue(item)">{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
@@ -182,7 +182,7 @@
                 <Button v-if="false"></Button>
             </div>
         </Modal>
-        <Modal v-model="modelShow" width="500" :closable="false">
+        <Modal v-model="modelShow" width="500" :closable="false" @on-ok="ok" @on-cancel="cancel">
             <p style="font-size: 16px">{{message}}</p>
         </Modal>
     </section>
@@ -261,6 +261,7 @@
                 ],
                 cityApprovalList: [
                     {
+                        geoMapId:100,
                         hotelName: '北京五棵松',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
@@ -274,6 +275,7 @@
                         lastModifyTime:'2017-8-10 10:15:11'
                     },
                     {
+                        geoMapId:101,
                         hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
@@ -287,6 +289,7 @@
                         lastModifyTime:'2017-8-10 10:15:11'
                     },
                     {
+                        geoMapId:102,
                         hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
@@ -300,6 +303,7 @@
                         lastModifyTime:'2017-8-10 10:15:11'
                     },
                     {
+                        geoMapId:103,
                         hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
@@ -313,6 +317,7 @@
                         lastModifyTime:'2017-8-10 10:15:11'
                     },
                     {
+                        geoMapId:104,
                         hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
@@ -326,6 +331,7 @@
                         lastModifyTime:'2017-8-10 10:15:11'
                     },
                     {
+                        geoMapId:105,
                         hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
@@ -616,6 +622,8 @@
                 // 这个可以从 getter 里面拿到判断值
                 // 10:未聚待审;20:已聚待审;30:已聚已审
                 tableType:20,
+                // 确定一下是哪个按钮点击的,提交按钮是1,设为待审按钮是2,3为查看Tree信息的按钮
+                buttonType:0
             }
         },
         created(){
@@ -643,7 +651,7 @@
                 handler () {
                     let check = true;
                     // 先确定是否有已聚待审的数据的存在
-                    if(this.tableType==10 || this.tableType==20){
+                    if(this.tableType==20 || this.tableType==30){
                         for (let i = 0; i < this.cityApprovalList.length; i++) {
                             let item = this.cityApprovalList[i];
                             if (item.mapStatus === '20') {
@@ -673,7 +681,7 @@
                 this.$nextTick(() => {
                     for (let i = 0; i < this.cityApprovalList.length; i++) {
                         let item = this.cityApprovalList[i];
-                        if(this.tableType==10 || this.tableType==20){
+                        if(this.tableType==20 || this.tableType==30){
                             if (item.mapStatus === '20') {
                                 item.checked = this.checkAll;
                             }else {
@@ -707,12 +715,14 @@
             },
             // 点击提交按钮(点击提交按钮)
             toSubmit1(){
+                // 确定是提交按钮
+                this.buttonType = 1;
                 this.submitData.checkBoxData = [];
-                if(this.tableType==10 || this.tableType==20){
+                if(this.tableType==20 || this.tableType==30){
                     for(let i=0; i<this.cityApprovalList.length; i++){
                         if(this.cityApprovalList[i].mapStatus=='20'&&this.cityApprovalList[i].checked){
-                            console.log('checked的ID:',this.tableType,this.cityApprovalList[i].id);
-                            this.submitData.checkBoxData.push(this.cityApprovalList[i]);
+                            console.log('checked的ID:',this.tableType,this.cityApprovalList[i].geoMapId);
+                            this.submitData.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
                     }
                     console.log('已聚待审设为已审的数据:',this.submitData);
@@ -722,35 +732,33 @@
                     }else {
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市提交？';
-                        // 点击确定调取接口
-                        this.ok(0);
                     }
                 }
-                if(this.tableType == 30){
+                if(this.tableType == 10){
                     for(let i=0; i<this.cityApprovalList.length; i++){
-                        if(this.cityApprovalList[i].mapStatus=='未聚待审'&&this.cityApprovalList[i].checked){
-                            console.log('checked的ID:',this.tableType,this.cityApprovalList[i].id);
-                            this.submitData.checkBoxData.push(this.cityApprovalList[i]);
+                        if(this.cityApprovalList[i].mapStatus=='30'&&this.cityApprovalList[i].checked){
+                            console.log('checked的ID:',this.tableType,this.cityApprovalList[i].geoMapId);
+                            this.submitData.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
                     }
                     console.log('未聚未审设为已审的数据:',this.submitData);
                     if(this.submitData.checkBoxData.length!=0 && this.submitData.radioData.length!=0){
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市提交？';
-                        // 点击确定调取接口
-                        this.ok(1);
                     }else {
                         this.instance('info','未聚待审');
                     }
                 }
             },
             toSubmit2(){
+                // 确定是设为待审按钮
+                this.buttonType = 2;
                 // 当是已聚待审的时候
                 this.submitData1.checkBoxData = [];
-                if(this.tableType==10 || this.tableType==20){
+                if(this.tableType==20 || this.tableType==30){
                     for(let i=0; i<this.cityApprovalList.length; i++){
                         if(this.cityApprovalList[i].mapStatus == '30'&&this.cityApprovalList[i].checked){
-                            this.submitData1.checkBoxData.push(this.cityApprovalList[i]);
+                            this.submitData1.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
                     }
                     console.log('已聚已审的数据:',this.submitData1.checkBoxData,this.submitData1);
@@ -759,14 +767,13 @@
                     }else {
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市设为待审？';
-                        // 点击确定调取接口
-                        this.ok(2);
                     }
                 }
                 console.log('设为已审的数据:',this.submitData1);
             },
             // tree表格上面的按钮
             treeSubmit(){
+                this.buttonType = 3;
                 this.submitTreeData = [];
                 for(let i=0; i<this.treeData.length; i++){
                     if(this.treeData[i].mapStatus == '30'&&this.treeData[i].checked){
@@ -779,8 +786,6 @@
                 }else {
                     this.modelShow = true;
                     this.message = '请确认是否将已选择城市设为待审？';
-                    // 点击确定调取接口
-                    this.ok(3);
                 }
             },
             // 单选框对应的值
@@ -808,9 +813,23 @@
                 }
             },
             // 弹框选择确定按钮
-            ok (item) {
-                console.log('点击确定',item);
-
+            ok () {
+                // 提交，设为已审按钮(当不是未聚未审的时候)
+                if(this.buttonType==1 && this.tableType!=30){
+                    console.log('非未聚未审的数据,设为已审');
+                }
+                // 提交，设为已审按钮(当是未聚未审的时候)
+                if(this.buttonType==1 && this.tableType==30){
+                    console.log('未聚未审的数据，设为已审');
+                }
+                // 设为待审按钮
+                if(this.buttonType == 2){
+                    console.log('设为待审');
+                }
+                // tree中的设为已聚待审的按钮
+                if(this.buttonType == 3){
+                    console.log('tree中的button');
+                }
             },
             // 弹框选择取消按钮
             cancel () {

@@ -4,7 +4,7 @@
             <div class="title">城市审核列表</div>
             <div class="button">
                 <Button type="primary" @click="toSubmit1">提交</Button>
-                <Button type="primary" @click="toSubmit2" v-if="tableType!=30">设为待审</Button>
+                <Button type="primary" @click="toSubmit2" v-if="tableType!=10">设为待审</Button>
                 <Button type="primary">新增</Button>
             </div>
             <div class="total">共计XX条</div>
@@ -13,10 +13,10 @@
                     <div ref="w1">
                         <table :style="{'min-width':divWidth1+'px'}">
                             <tr>
-                                <th><input type="checkbox" v-if="tableType!=30" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
+                                <th><input type="checkbox" v-if="tableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
                                 <th v-for="(item,index) in cityHeaderData" :key="index">{{item.title}}</th>
                             </tr>
-                            <tr v-for="(item,index) in JDHotelApproval" :key="index" class="fontColor" v-if="tableType!=1">
+                            <tr v-for="(item,index) in JDHotelApproval"  :key="index" class="fontColor" v-if="tableType!=10">
                                 <td></td>
                                 <td @click="getInputValue(item)">{{item.cityName}}</td>
                                 <td>{{item.cityId}}</td>
@@ -185,6 +185,7 @@
                 ],
                 cityApprovalList: [
                     {
+                        geoMapId:100,
                         cityName: '阿拉尔市',
                         cityId: 'A00061',
                         provinceName: '新疆',
@@ -195,6 +196,7 @@
                         lastModifyTime: '2017/08/11 17:19'
                     },
                     {
+                        geoMapId:101,
                         cityName: '阿拉尔市',
                         cityId: 'A00062',
                         provinceName: '新疆',
@@ -205,6 +207,7 @@
                         lastModifyTime: '2017/08/11 17:19'
                     },
                     {
+                        geoMapId:102,
                         cityName: '阿拉尔',
                         cityId: 'BUH13',
                         provinceName: '新疆',
@@ -215,6 +218,7 @@
                         lastModifyTime: '2017/08/12 18:00'
                     },
                     {
+                        geoMapId:103,
                         cityName: '阿拉尔',
                         cityId: 'CN567',
                         provinceName: '新疆',
@@ -225,6 +229,7 @@
                         lastModifyTime: '2017/08/13 19:00'
                     },
                     {
+                        geoMapId:104,
                         cityName: '阿拉尔',
                         cityId: 'DTY44',
                         provinceName: '新疆',
@@ -235,6 +240,7 @@
                         lastModifyTime: '2017/08/16 19:00'
                     },
                     {
+                        geoMapId:105,
                         cityName: '阿拉尔',
                         cityId: 'DTY45',
                         provinceName: '新疆',
@@ -412,7 +418,7 @@
                 handler () {
                     let check = true;
                     // 先确定是否有已聚待审的数据的存在
-                    if(this.tableType==10 || this.tableType==20){
+                    if(this.tableType==20 || this.tableType==30){
                         for (let i = 0; i < this.cityApprovalList.length; i++) {
                             let item = this.cityApprovalList[i];
                             if (item.mapStatus === '20') {
@@ -441,7 +447,7 @@
                 this.$nextTick(() => {
                     for (let i = 0; i < this.cityApprovalList.length; i++) {
                         let item = this.cityApprovalList[i];
-                        if(this.tableType==10 || this.tableType==20){
+                        if(this.tableType==20 || this.tableType==30){
                             if (item.mapStatus === '20') {
                                 item.checked = this.checkAll;
                             }else {
@@ -478,14 +484,13 @@
                 // 确定是提交按钮
                 this.buttonType = 1;
                 this.submitData.checkBoxData = [];
-                if(this.tableType==10 || this.tableType==20){
+                if(this.tableType==20 || this.tableType==30){
                     for(let i=0; i<this.cityApprovalList.length; i++){
                         if(this.cityApprovalList[i].mapStatus=='20'&&this.cityApprovalList[i].checked){
-                            console.log('checked的ID:',this.tableType,this.cityApprovalList[i].cityId);
-                            this.submitData.checkBoxData.push(this.cityApprovalList[i]);
+                            console.log('提交已聚已审执行这里');
+                            this.submitData.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
                     }
-                    console.log('已聚待审设为已审的数据:',this.submitData);
                     // 获取酒店审核列表中选中的城市ID
                     if(this.submitData.checkBoxData.length==0){
                         this.instance('info','已聚待审');
@@ -494,11 +499,10 @@
                         this.message = '请确认是否将已选择城市提交？';
                     }
                 }
-                if(this.tableType == 30){
+                if(this.tableType == 10){
                     for(let i=0; i<this.cityApprovalList.length; i++){
-                        if(this.cityApprovalList[i].mapStatus=='未聚待审'&&this.cityApprovalList[i].checked){
-                            console.log('checked的ID:',this.tableType,this.cityApprovalList[i].cityId);
-                            this.submitData.checkBoxData.push(this.cityApprovalList[i]);
+                        if(this.cityApprovalList[i].mapStatus=='30'&&this.cityApprovalList[i].checked){
+                            this.submitData.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
                     }
                     console.log('未聚未审设为已审的数据:',this.submitData);
@@ -515,10 +519,10 @@
                 this.buttonType = 2;
                 // 当是已聚待审的时候
                 this.submitData1.checkBoxData = [];
-                if(this.tableType==10 || this.tableType==20){
+                if(this.tableType==20 || this.tableType==30){
                     for(let i=0; i<this.cityApprovalList.length; i++){
                         if(this.cityApprovalList[i].mapStatus == '30'&&this.cityApprovalList[i].checked){
-                            this.submitData1.checkBoxData.push(this.cityApprovalList[i]);
+                            this.submitData1.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
                     }
                     console.log('已聚已审的数据:',this.submitData1.checkBoxData,this.submitData1);
@@ -557,9 +561,14 @@
             },
             // 弹框选择确定按钮
             ok () {
-                // 提交，设为已审按钮
-                if(this.buttonType == 1){
-                    console.log('设为已审');
+                // 提交，设为已审按钮(当不是未聚未审的时候)
+                if(this.buttonType==1 && this.tableType!=30){
+                    console.log('非未聚未审的数据,设为已审');
+                    console.log('提交时候展示数据',this.submitData);
+                }
+                // 提交，设为已审按钮(当是未聚未审的时候)
+                if(this.buttonType==1 && this.tableType==30){
+                    console.log('未聚未审的数据，设为已审');
                 }
                 // 设为待审按钮
                 if(this.buttonType == 2){
