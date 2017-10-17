@@ -145,6 +145,10 @@
           <span class="layout-text">供应商管理</span>
         </MenuItem>
         <MenuItem name="sale">
+          <Icon type="ios-sunny" :size="iconSize"></Icon>
+          <span class="layout-text">促销管理</span>
+        </MenuItem>
+        <MenuItem name="sale2">
           <Icon type="social-yen" :size="iconSize"></Icon>
           <span class="layout-text">分销管理</span>
         </MenuItem>
