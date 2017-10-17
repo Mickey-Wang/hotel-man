@@ -198,6 +198,9 @@ export default {
           name: '房型聚合',
           URL: '/mapping/room'
         }]
+      },{
+          name: '供应商管理',
+          url: '/supplier'
       }]
     }
   },
@@ -240,6 +243,10 @@ export default {
           this.selected[0]='聚合系统';
           this.selected[1]='房型聚合';
           break;
+        case 'supplier':
+          this.selected[0]='供应商管理';
+          this.selected[1]='';
+          break;
       }
     },
     select(name){
@@ -255,6 +262,9 @@ export default {
           break;
         case 'room':
           this.$router.push('/mapping/room');
+          break;
+        case 'supplier':
+          this.$router.push('/supplier');
           break;
       }
     },

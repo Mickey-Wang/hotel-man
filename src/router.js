@@ -26,5 +26,12 @@ const routers = [{
     },
     name:'room',
     component: (resolve) => require(['./views/pages/Mapping/roomMapping.vue'], resolve)
+},{
+    path: '/supplier',
+    meta: {
+        title: '供应商信息管理'
+    },
+    name:'supplier',
+    component: (resolve) => require(['./views/pages/Supplier/supplier.vue'], resolve)
 }];
 export default routers;

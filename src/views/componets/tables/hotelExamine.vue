@@ -141,18 +141,18 @@
                                 <th></th>
                                 <th v-for="(item,index) in treeTitle">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor">
+                            <tr class="fontColor" v-for="(item,index) in treeJDHotelApproval" :key="index">
                                 <td></td>
-                                <td>{{treeData[0].hotelName}}</td>
-                                <td>{{treeData[0].address}}</td>
-                                <td>{{treeData[0].tel}}</td>
-                                <td>{{treeData[0].distance}}</td>
-                                <td>{{treeData[0].link}}</td>
-                                <td>{{treeData[0].cityName}}</td>
-                                <td>{{treeData[0].supplierName}}</td>
-                                <td>{{treeData[0].hotelId}}</td>
-                                <td>{{treeData[0].lastModifyTime}}</td>
-                                <td>{{treeData[0].mapStatus}}</td>
+                                <td>{{item.hotelName}}</td>
+                                <td>{{item.address}}</td>
+                                <td>{{item.tel}}</td>
+                                <td>{{item.distance}}</td>
+                                <td>{{item.link}}</td>
+                                <td>{{item.cityName}}</td>
+                                <td>{{item.supplierName}}</td>
+                                <td>{{item.hotelId}}</td>
+                                <td></td>
+                                <td></td>
                             </tr>
                         </table>
                     </div>
@@ -169,7 +169,7 @@
                                 <td>{{item.supplierName}}</td>
                                 <td>{{item.hotelId}}</td>
                                 <td>{{item.lastModifyTime}}</td>
-                                <td>{{item.mapStatus}}</td>
+                                <td>{{getStatusValue(item.mapStatus)}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="treeData.length==0">
@@ -489,7 +489,7 @@
                         key: 'mapStatus'
                     },
                 ],
-                treeData:[
+                treeJDHotelApproval:[
                     {
                         hotelName: '北京五棵松和颐酒店',
                         address: '北京海淀区永定路4号院',
@@ -498,10 +498,10 @@
                         link:'打开链接',
                         cityName:'北京',
                         supplierName:'JD',
-                        hotelId:'001',
-                        lastModifyTime:'',
-                        mapStatus:'',
-                    },
+                        hotelId:'001'
+                    }
+                ],
+                treeData:[
                     {
                         hotelName: '北京五棵松',
                         address: '北京海淀区永定路4号院',
