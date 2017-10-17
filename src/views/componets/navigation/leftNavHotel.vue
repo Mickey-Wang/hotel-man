@@ -284,18 +284,18 @@ export default {
     };
   },
   mounted: function() {
-    this.$http.post('resource/citymapping/navtabsearch.action',{"souceType":10,"dimensionType":10,times:7}).then(rs => {
+    this.$http.post('resource/hotelmapping/navtabsearch',{"souceType":10,"dimensionType":10,times:7}).then(rs => {
       this.supplierList = rs.data.body;
     })
-    this.$http.post('resource/citymapping/navtabsearch.action',{"souceType":10,"dimensionType":20,times:1}).then(rs => {
+    this.$http.post('resource/hotelmapping/navtabsearch',{"souceType":10,"dimensionType":20,times:1}).then(rs => {
       this.nationListChooseBySuppliers = rs.data.body;
       this.nationListChooseByRegions = rs.data.body;
     })
-    this.$http.post('resource/citymapping/navtabsearch.action',{"souceType":10,"dimensionType":40}).then(rs => {
+    this.$http.post('resource/hotelmapping/navtabsearch',{"souceType":10,"dimensionType":40}).then(rs => {
       this.cityListChooseBySuppliers = rs.data.body;
       this.cityListChooseByRegions = rs.data.body;
     })
-    this.$http.post('resource/citymapping/navtabsearch.action',{"souceType":10,"dimensionType":30}).then(rs => {
+    this.$http.post('resource/hotelmapping/navtabsearch',{"souceType":10,"dimensionType":30}).then(rs => {
       this.provinceListChooseBySuppliers = rs.data.body;
       this.provinceListChooseByRegions = rs.data.body;
     })
