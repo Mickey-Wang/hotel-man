@@ -215,71 +215,37 @@ export default {
         label: '未聚未审'
       }],
       //城市数据
-      supplierList: [{
-        id:132,
-        name: '携程',
-        matchedCount: 222,
-        matchedUncheckCount: 333,
-        unmatchedCount: 111
-      }, {
-        id:133,
-        name: '艺龙',
-        matchedCount: 222,
-        matchedUncheckCount: 111,
-        unmatchedCount: 333
-      }],
-      nationListChooseBySuppliers: [{
-        id:81,
-        name: '中国',
-        matchedCount: 222,
-        matchedUncheckCount: 333,
-        unmatchedCount: 111
-      }],
-      nationListChooseByRegions: [{
-        id:81,
-        name: '中国',
-        matchedCount: 222,
-        matchedUncheckCount: 333,
-        unmatchedCount: 111
-      }],
-      provinceListChooseBySuppliers: [{
-        id:876,
-        name: '广东省',
-        matchedCount: 222,
-        matchedUncheckCount: 333,
-        unmatchedCount: 111
-      }, {
-        id:677,
-        name: '湖南省',
-        matchedCount: 222,
-        matchedUncheckCount: 111,
-        unmatchedCount: 333
-      }],
-      provinceListChooseByRegions: [{
-        id:888,
-        name: '广东省',
-        matchedCount: 222,
-        matchedUncheckCount: 333,
-        unmatchedCount: 111
-      }, {
-        id:282,
-        name: '湖南省',
-        matchedCount: 222,
-        matchedUncheckCount: 111,
-        unmatchedCount: 333
-      }],
+      supplierList: [],
+      nationListChooseBySuppliers: [],
+      nationListChooseByRegions: [],
+      // {
+      //   id:282,
+      //   name: '湖南省',
+      //   matchedCount: 222,
+      //   matchedUncheckCount: 111,
+      //   unmatchedCount: 333
+      // }
+      provinceListChooseBySuppliers: [],
+      provinceListChooseByRegions: [],
       cityListChooseBySuppliers: [],
       cityListChooseByRegions: []
     };
   },
   mounted: function() {
-    this.$http.get('city').then(rs => {
-      this.cityListChooseBySuppliers = rs.data.result;
-      this.cityListChooseByRegions = rs.data.result;
+    this.$http.post('resource/citymapping/navtabsearch',{"souceType":10,"dimensionType":10,times:7}).then(rs => {
+      this.supplierList = rs.data.body;
     })
-    this.$http.get('province').then(rs => {
-      this.provinceListChooseBySuppliers = rs.data.result;
-      this.provinceListChooseByRegions = rs.data.result;
+    this.$http.post('resource/citymapping/navtabsearch',{"souceType":10,"dimensionType":20,times:1}).then(rs => {
+      this.nationListChooseBySuppliers = rs.data.body;
+      this.nationListChooseByRegions = rs.data.body;
+    })
+    this.$http.post('resource/citymapping/navtabsearch',{"souceType":10,"dimensionType":40}).then(rs => {
+      this.cityListChooseBySuppliers = rs.data.body;
+      this.cityListChooseByRegions = rs.data.body;
+    })
+    this.$http.post('resource/citymapping/navtabsearch',{"souceType":10,"dimensionType":30}).then(rs => {
+      this.provinceListChooseBySuppliers = rs.data.body;
+      this.provinceListChooseByRegions = rs.data.body;
     })
   },
   computed: {

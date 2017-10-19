@@ -14,7 +14,7 @@
 
 .layout-breadcrumb {
   padding: 5px 10px 0;
-  .ivu-breadcrumb{
+  .ivu-breadcrumb {
     font-size: 12px;
   }
 }
@@ -64,15 +64,14 @@
 .layout-logo-left {
   width: 90%;
   height: 60px; // background: #5b6270;
-  border-radius: 3px;
-  // margin: 15px auto;
+  border-radius: 3px; // margin: 15px auto;
   .logo {
     display: block;
     height: 60px;
-    transition: all 0.5s ease-in-out 1s;    
+    transition: all 0.5s ease-in-out 1s;
   }
   .logo1 {
-    display: block;    
+    display: block;
     height: 40px;
     transition: all 0.5s ease-in-out 1s;
   }
@@ -108,8 +107,8 @@
           <img src="../../public/img/s.jpg" alt="logo" class="logo1" v-show="!logoSelect">
         </div>
         <MenuItem name="index">
-          <Icon type="ios-home" :size="iconSize"></Icon>
-          <span class="layout-text">首页</span>
+        <Icon type="ios-home" :size="iconSize"></Icon>
+        <span class="layout-text">首页</span>
         </MenuItem>
         <Submenu name="confluence">
           <template slot="title">
@@ -141,12 +140,16 @@
           <MenuItem name="3-2" class="layout-text">订单2</MenuItem>
         </Submenu>
         <MenuItem name="supplier">
-          <Icon type="ios-people" :size="iconSize"></Icon>
-          <span class="layout-text">供应商管理</span>
+        <Icon type="ios-people" :size="iconSize"></Icon>
+        <span class="layout-text">供应商管理</span>
         </MenuItem>
         <MenuItem name="sale">
-          <Icon type="social-yen" :size="iconSize"></Icon>
-          <span class="layout-text">分销管理</span>
+        <Icon type="ios-sunny" :size="iconSize"></Icon>
+        <span class="layout-text">促销管理</span>
+        </MenuItem>
+        <MenuItem name="sale2">
+        <Icon type="social-yen" :size="iconSize"></Icon>
+        <span class="layout-text">分销管理</span>
         </MenuItem>
       </Menu>
       </Col>
@@ -169,7 +172,7 @@
         </div>
       </div>
       <div class="layout-copy">
-        Copyright &copy; 2004 - 2017  京东JD.com 版权所有
+        Copyright &copy; 2004 - 2017 京东JD.com 版权所有
       </div>
       </Col>
     </Row>
@@ -181,8 +184,8 @@ export default {
     return {
       spanLeft: 5,
       spanRight: 19,
-      selected:['',''],
-      submenu:['confluence'],
+      selected: ['', ''],
+      submenu: ['confluence'],
       nav: [{
         name: '首页',
         url: '/'
@@ -198,14 +201,14 @@ export default {
           name: '房型聚合',
           URL: '/mapping/room'
         }]
-      },{
-          name: '供应商管理',
-          url: '/supplier'
+      }, {
+        name: '供应商管理',
+        url: '/supplier'
       }]
     }
   },
-  watch:{
-    routerName:function(val,old){
+  watch: {
+    routerName: function(val, old) {
       // console.log(val,old)
       this.changeBreadcrumb(val);
     }
@@ -217,39 +220,39 @@ export default {
     logoSelect() {
       return this.spanLeft === 5 ? true : false;
     },
-    routerName(){
+    routerName() {
       return this.$store.getters.routerName;
     }
   },
-  mounted:function(){
+  mounted: function() {
     this.changeBreadcrumb(this.routerName);
   },
   methods: {
-    changeBreadcrumb(name){
+    changeBreadcrumb(name) {
       switch (name) {
         case 'index':
-          this.selected[0]='';
-          this.selected[1]='';
+          this.selected[0] = '';
+          this.selected[1] = '';
           break;
         case 'city':
-          this.selected[0]='聚合系统';
-          this.selected[1]='城市聚合';
+          this.selected[0] = '聚合系统';
+          this.selected[1] = '城市聚合';
           break;
         case 'hotel':
-          this.selected[0]='聚合系统';
-          this.selected[1]='酒店聚合';
+          this.selected[0] = '聚合系统';
+          this.selected[1] = '酒店聚合';
           break;
         case 'room':
-          this.selected[0]='聚合系统';
-          this.selected[1]='房型聚合';
+          this.selected[0] = '聚合系统';
+          this.selected[1] = '房型聚合';
           break;
         case 'supplier':
-          this.selected[0]='供应商管理';
-          this.selected[1]='';
+          this.selected[0] = '供应商管理';
+          this.selected[1] = '';
           break;
       }
     },
-    select(name){
+    select(name) {
       switch (name) {
         case 'index':
           this.$router.push('/');
