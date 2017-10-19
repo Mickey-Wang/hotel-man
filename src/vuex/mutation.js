@@ -2,7 +2,8 @@
 import {
     START_LOADING,
     FINISH_LOADING,
-    ROUTER_NAME
+    ROUTER_NAME,
+    TABLE_TYPE
 }
 from './mutation-type';
 const  mutations={
@@ -17,6 +18,10 @@ const  mutations={
     //主导航状态同步
     [ROUTER_NAME](state,data) {
         state.routerName = data;
+    },
+    //tableType
+    [TABLE_TYPE](state,data){
+        state.tableType = data;
     }
 };
 export default mutations;

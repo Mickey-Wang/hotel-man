@@ -621,7 +621,7 @@
                 // 确定表格哪一种(已聚待审、已聚已审、未聚待审)
                 // 这个可以从 getter 里面拿到判断值
                 // 10:未聚待审;20:已聚待审;30:已聚已审
-                tableType:20,
+                tableType:this.$store.getters.tableType,
                 // 确定一下是哪个按钮点击的,提交按钮是1,设为待审按钮是2,3为查看Tree信息的按钮
                 buttonType:0
             }

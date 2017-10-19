@@ -4,6 +4,7 @@ export const START_LOADING = 'START_LOADING';
 export const FINISH_LOADING = 'FINISH_LOADING';
 //主导航状态同步
 export const ROUTER_NAME = 'ROUTER_NAME';
-
+//tableType
+export const TABLE_TYPE = 'TABLE_TYPE';
 
 

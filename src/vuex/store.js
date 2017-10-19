@@ -11,6 +11,9 @@ let state = {
   asyncLoading : false,
   //主导航状态同步
   routerName:'',
+  //10:未聚待审;20:已聚待审;30:已聚已审(默认未聚待审)
+  //名字取得不太好，凑合用吧
+  tableType:20
 };
 export default new Vuex.Store({
   state,
