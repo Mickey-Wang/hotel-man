@@ -10,7 +10,7 @@ util.title = function(title) {
 };
 
 const ajaxUrl = env === 'development' ?
-    'http://mockjs.jd.com/hotel/man/' :
+    'http://mock.jd.hk/mock/59e9b5bbf5448721d22c84de/hotelman' :
     env === 'production' ?
     'https://man.hotel.jd.com' :
     'https://man.hotel.jd.com';
