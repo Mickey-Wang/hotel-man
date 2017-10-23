@@ -15,9 +15,9 @@ let state = {
   cityTableType:20,
   hotelTableType:20,
   roomTableType:20,
-  cityCheckList:[],
-  hotelCheckList:[],
-  roomCheckList:[]
+  cityCheckList:{},
+  hotelCheckList:{},
+  roomCheckList:{}
 };
 export default new Vuex.Store({
   state,
