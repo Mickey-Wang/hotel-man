@@ -16,7 +16,7 @@
                     <div ref="w1">
                         <table :style="{'min-width':divWidth1+'px'}">
                             <tr>
-                                <th><input type="checkbox" v-if="cityTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
+                                <th><input type="checkbox" v-if="cityTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="isNot20Check"></th>
                                 <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
                             </tr>
                             <tr class="fontColor" v-if="cityTableType!=10 && JDCityApproval">
@@ -36,7 +36,7 @@
                     <div ref="h1">
                         <table ref="h2" v-if="cityApprovalList && cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in cityApprovalList" :key="item.cityId" :class="[{trClass: item.mapStatus==20}]">
-                                <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.mapStatus==20?disableStatus1:disableStatus2"></td>
+                                <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
                                 <td @click="getInputValue(item)">{{item.cityName}}</td>
                                 <td>{{item.cityId}}</td>
                                 <td>{{item.provinceName}}</td>
@@ -177,6 +177,7 @@
                         key: 'operator'
                     }
                 ],
+                cityApprovalList: [],
                 similarHeaderData: [
                     {
                         title: '城市名称',
@@ -304,7 +305,22 @@
             }
         },
         created(){
-
+            this.$store.subscribe((mutation, state) => {
+                console.log('mutation:', mutation);
+                if(mutation.type === 'CITY_CHECK_LIST'){
+                    this.getCityApprovalList();
+                }
+            });
+            // 下面的方法也可以，但是要深拷贝一下(这个方法里面getCityApprovalList)
+            // this.cityApprovalList = JSON.parse(JSON.stringify(this.$store.getters.cityCheckList.cityApprovalList));
+            /*this.$store.watch((state) =>
+                state.cityCheckList.cityApprovalList,
+                (val) => {
+                    console.log('CHANGE: ', val);
+                    this.getCityApprovalList();
+                }, {
+                    deep: true
+            })*/
         },
         mounted(){
             // 计算一下初始化第一个表格的宽度
@@ -317,12 +333,34 @@
                 return this.$store.getters.cityCheckList.JDCityApproval;
             },
             // 城市审核列表中的供应商城市审核对象
-            cityApprovalList(){
+            /*cityApprovalList(){
                 return this.$store.getters.cityCheckList.cityApprovalList;
-            },
+            },*/
             // cityTableType
             cityTableType(){
                 return this.$store.getters.cityTableType;
+            },
+            is20Check(){
+                for (let i = 0; i < this.cityApprovalList.length; i++) {
+                    let item = this.cityApprovalList[i];
+                    if (item.mapStatus == 20) {
+                        if (item.checked) {
+                           return true;
+                        }
+                    }
+                }
+                return false;
+            },
+            isNot20Check(){
+                for (let i = 0; i < this.cityApprovalList.length; i++) {
+                    let item = this.cityApprovalList[i];
+                    if (item.mapStatus != 20) {
+                        if (item.checked) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
         },
         watch: {
@@ -333,45 +371,39 @@
                     if(this.cityTableType==20 || this.cityTableType==30){
                         for (let i = 0; i < this.cityApprovalList.length; i++) {
                             let item = this.cityApprovalList[i];
-                            if (item.mapStatus === '20') {
-                                console.log('item', item.checked);
+                            if (item.mapStatus === 20) {
                                 if (!item.checked) {
                                     check = false;
-                                    this.disableStatus2 = false;
                                     break;
-                                }
-                            }else {
-                                if(!item.checked){
-                                    this.disableStatus1 = false;
                                 }
                             }
                         }
                         this.checkAll = check;
                     }
-                    console.log('change checkAll', this.checkAll);
                 },
                 deep: true
             }
         },
         methods:{
+            // 获取城市审核列表
+            getCityApprovalList () {
+                if (this.$store.getters.cityCheckList.cityApprovalList) {
+                    this.cityApprovalList = this.$store.getters.cityCheckList.cityApprovalList;
+                }
+                this.cityApprovalList.forEach((item,index)=>{
+                    this.$set(item,'checked',false);
+                });
+            },
+            // 全选
             toggleCheckAll () {
-                // 等model变化完再执行事件
-                this.$nextTick(() => {
-                    for (let i = 0; i < this.cityApprovalList.length; i++) {
-                        let item = this.cityApprovalList[i];
-                        if(this.cityTableType==20 || this.cityTableType==30){
-                            if (item.mapStatus === 20) {
-                                item.checked = this.checkAll;
-                            }else {
-                                // 如果不是已聚待审，则不能进行选择操作
-                                this.disableStatus2 = true;
-                            }
+                for (let i = 0; i < this.cityApprovalList.length; i++) {
+                    let item = this.cityApprovalList[i];
+                    if(this.cityTableType==20 || this.cityTableType==30){
+                        if (item.mapStatus == 20) {
+                            item.checked = this.checkAll;
                         }
                     }
-                    if(!this.checkAll){
-                        this.disableStatus2 = false;
-                    }
-                })
+                }
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
@@ -461,22 +493,6 @@
                 this.submitData1.radioData = [];
                 this.submitData.radioData.push(item);
                 this.submitData1.radioData.push(item);
-            },
-            // 单个复选框选择的时候
-            oneSelect(item){
-                for (let i=0; i<this.cityApprovalList.length; i++){
-                    if(this.cityApprovalList[i].mapStatus!==20){
-                        if(this.cityApprovalList[i].checked){
-                            this.disableStatus1 = true;
-                        }
-                    }else {
-                        if(this.cityApprovalList[i].checked){
-                            this.disableStatus2 = true;
-                        }else {
-                            this.disableStatus1 = false;
-                        }
-                    }
-                }
             },
             // 弹框选择确定按钮
             ok () {
