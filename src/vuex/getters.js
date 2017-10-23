@@ -6,4 +6,9 @@ export const routerName = state => state.routerName;
 export const cityTableType = state => state.cityTableType;
 export const hotelTableType = state => state.hotelTableType;
 export const roomTableType = state => state.roomTableType;
-
+//城市审核列表
+export const cityCheckList = state => state.cityCheckList;
+//酒店审核列表
+export const hotelCheckList = state => state.hotelCheckList;
+//房型审核列表
+export const roomCheckList = state => state.roomCheckList;

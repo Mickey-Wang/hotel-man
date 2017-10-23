@@ -5,7 +5,10 @@ import {
     ROUTER_NAME,
     CITY_TABLETYPE,
     HOTEL_TABLETYPE,
-    ROOM_TABLETYPE
+    ROOM_TABLETYPE,
+    CITY_CHECK_LIST,
+    HOTEL_CHECK_LIST,
+    ROOM_CHECK_LIST
 }
 from './mutation-type';
 const  mutations={
@@ -31,5 +34,17 @@ const  mutations={
     [ROOM_TABLETYPE](state,data){
         state.roomTableType = data;
     },
+    //城市审核列表
+    [CITY_CHECK_LIST](state,data){
+        state.cityCheckList = data;
+    },
+    //酒店审核列表
+    [HOTEL_CHECK_LIST](state,data){
+        state.hotelCheckList = data;
+    },
+    //房型审核列表
+    [ROOM_CHECK_LIST](state,data){
+        state.roomCheckList = data;
+    }
 };
 export default mutations;
