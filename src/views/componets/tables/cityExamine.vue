@@ -17,11 +17,11 @@
                         <table :style="{'min-width':divWidth1+'px'}">
                             <tr>
                                 <th><input type="checkbox" v-if="cityTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
-                                <th v-for="(item,index) in cityHeaderData" :key="index">{{item.title}}</th>
+                                <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-if="cityTableType!=10 && JDCityApproval!=null">
+                            <tr class="fontColor" v-if="cityTableType!=10 && JDCityApproval">
                                 <td></td>
-                                <td @click="getInputValue(item)">{{JDCityApproval.cityName}}</td>
+                                <td @click="getInputValue(JDCityApproval)">{{JDCityApproval.cityName}}</td>
                                 <td>{{JDCityApproval.cityId}}</td>
                                 <td>{{JDCityApproval.provinceName}}</td>
                                 <td>{{JDCityApproval.countryName}}</td>
@@ -35,8 +35,8 @@
                     </div>
                     <div ref="h1">
                         <table ref="h2" v-if="cityApprovalList && cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
-                            <tr v-for="(item,index) in cityApprovalList" :key="item.cityId" :class="[{trClass: item.mapStatus=='20'}]">
-                                <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.mapStatus=='20'?disableStatus1:disableStatus2"></td>
+                            <tr v-for="(item,index) in cityApprovalList" :key="item.cityId" :class="[{trClass: item.mapStatus==20}]">
+                                <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.mapStatus==20?disableStatus1:disableStatus2"></td>
                                 <td @click="getInputValue(item)">{{item.cityName}}</td>
                                 <td>{{item.cityId}}</td>
                                 <td>{{item.provinceName}}</td>
@@ -298,7 +298,7 @@
                 // 确定表格哪一种(已聚待审、已聚已审、未聚待审)
                 // 这个可以从 getter 里面拿到判断值
                 // 10:未聚待审;20:已聚待审;30:已聚已审
-                cityTableType:this.$store.getters.cityTableType,
+                //cityTableType:this.$store.getters.cityTableType,
                 // 确定一下是哪个按钮点击的,提交按钮是1,设为待审按钮是2
                 buttonType:0
             }
@@ -319,6 +319,10 @@
             // 城市审核列表中的供应商城市审核对象
             cityApprovalList(){
                 return this.$store.getters.cityCheckList.cityApprovalList;
+            },
+            // cityTableType
+            cityTableType(){
+                return this.$store.getters.cityTableType;
             }
         },
         watch: {
@@ -356,7 +360,7 @@
                     for (let i = 0; i < this.cityApprovalList.length; i++) {
                         let item = this.cityApprovalList[i];
                         if(this.cityTableType==20 || this.cityTableType==30){
-                            if (item.mapStatus === '20') {
+                            if (item.mapStatus === 20) {
                                 item.checked = this.checkAll;
                             }else {
                                 // 如果不是已聚待审，则不能进行选择操作
@@ -401,7 +405,7 @@
                 this.submitData.checkBoxData = [];
                 if(this.cityTableType==20 || this.cityTableType==30){
                     for(let i=0; i<this.cityApprovalList.length; i++){
-                        if(this.cityApprovalList[i].mapStatus=='20'&&this.cityApprovalList[i].checked){
+                        if(this.cityApprovalList[i].mapStatus==20 && this.cityApprovalList[i].checked){
                             console.log('提交已聚已审执行这里');
                             this.submitData.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
@@ -416,7 +420,7 @@
                 }
                 if(this.cityTableType == 10){
                     for(let i=0; i<this.cityApprovalList.length; i++){
-                        if(this.cityApprovalList[i].mapStatus=='30'&&this.cityApprovalList[i].checked){
+                        if(this.cityApprovalList[i].mapStatus==30 && this.cityApprovalList[i].checked){
                             this.submitData.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
                     }
@@ -436,7 +440,7 @@
                 this.submitData1.checkBoxData = [];
                 if(this.cityTableType==20 || this.cityTableType==30){
                     for(let i=0; i<this.cityApprovalList.length; i++){
-                        if(this.cityApprovalList[i].mapStatus == '30'&&this.cityApprovalList[i].checked){
+                        if(this.cityApprovalList[i].mapStatus == 30 && this.cityApprovalList[i].checked){
                             this.submitData1.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
                     }
@@ -461,7 +465,7 @@
             // 单个复选框选择的时候
             oneSelect(item){
                 for (let i=0; i<this.cityApprovalList.length; i++){
-                    if(this.cityApprovalList[i].mapStatus!=='20'){
+                    if(this.cityApprovalList[i].mapStatus!==20){
                         if(this.cityApprovalList[i].checked){
                             this.disableStatus1 = true;
                         }
