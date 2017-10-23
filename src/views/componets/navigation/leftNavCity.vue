@@ -104,7 +104,7 @@
         </TabPane>
         <TabPane label="城市" style="height:100%" name="city" :disabled="supplierTabDisable[3]">
           <Row class="check-select">
-            <Select v-model="cityID">
+            <Select v-model="checkStateBySuppliers" @on-change="chooseStatebySupplier">
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
@@ -117,7 +117,8 @@
             </Menu>
           </Row>
           <Row type="flex" justify="center">
-            <Page :total="cityTotalSuppliers" size="small" show-total></Page>
+            <!-- <Page :total="cityTotalSuppliers" size="small" show-total></Page> -->
+            <span>共计{{cityTotalSuppliers}}条</span>
           </Row>
         </TabPane>
       </Tabs>
@@ -151,20 +152,21 @@
         </TabPane>
         <TabPane label="城市" style="height:100%" name="city" :disabled="regionTabDisable[2]">
           <Row class="check-select">
-            <Select v-model="cityID">
+            <Select v-model="checkStateByRegions" @on-change="chooseStatebyRegion">
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseCityCopy">
-              <MenuItem :name="item.id" v-for="(item,index) in cityListChooseByRegions" :key="index">
+              <MenuItem :name="item.id||item.name" v-for="(item,index) in cityListChooseByRegions" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
           </Row>
           <Row type="flex" justify="center">
-            <Page :total="cityTotalRegions" size="small" show-total></Page>
+            <!-- <Page :total="cityTotalRegions" size="small" show-total></Page> -->
+            <span>共计{{cityTotalRegions}}条</span>            
           </Row>
         </TabPane>
       </Tabs>
@@ -178,23 +180,23 @@ export default {
   data() {
     return {
       //搜索选项默认
-      searchID: 0,
+      searchID: 'cityId',
       //选项内容
       searchCondition: [{
-        value: 0,
+        value: 'cityId',
         label: '城市id'
       }, {
-        value: 1,
+        value: 'cityName',
         label: '城市名称'
       }],
       //搜索框内容
       searchInput: '',
 
-      //供应商区域按钮
+      //供应商和区域选择按钮
       btnType: 'supplier',
-      //当前供应商选项卡
+      //当前供应商选项卡选中项目
       chooseBySuppliers: "",
-      //当前区域选项卡
+      //当前区域选项卡选中项目
       chooseByRegions: "",
       //供应商选项是否不可用
       supplierTabDisable: [false, true, true, true],
@@ -202,32 +204,38 @@ export default {
       regionTabDisable: [false, true, true],
 
       //城市三种状态id
-      cityID: 0,
+      checkStateBySuppliers: 20,
+      checkStateByRegions:20,
       //城市三种状态内容
       cityCondition: [{
-        value: 0,
+        value: 20,
         label: '已聚待审'
       }, {
-        value: 1,
+        value: 30,
         label: '已聚已审'
       }, {
-        value: 2,
+        value: 10,
         label: '未聚未审'
       }],
-      //城市数据
+      //当前选中的
+      //供应商id
+      currentSupplierId:0,
+      //省份id
+      currentProvinceIdBySuppliers:0,
+      currentProvinceIdByRegions:0,
+      //供应商列表
       supplierList: [],
+      //供应商侧国家列表
       nationListChooseBySuppliers: [],
+      //jd侧国家列表
       nationListChooseByRegions: [],
-      // {
-      //   id:282,
-      //   name: '湖南省',
-      //   matchedCount: 222,
-      //   matchedUncheckCount: 111,
-      //   unmatchedCount: 333
-      // }
+      //供应商侧省份列表
       provinceListChooseBySuppliers: [],
+      //jd侧省份列表
       provinceListChooseByRegions: [],
+      //供应商侧城市列表
       cityListChooseBySuppliers: [],
+      //jd侧城市列表
       cityListChooseByRegions: []
     };
   },
@@ -235,18 +243,10 @@ export default {
     this.$http.post('resource/citymapping/navtabsearch',{"souceType":10,"dimensionType":10,times:7}).then(rs => {
       this.supplierList = rs.data.body;
     })
-    this.$http.post('resource/citymapping/navtabsearch',{"souceType":10,"dimensionType":20,times:1}).then(rs => {
-      this.nationListChooseBySuppliers = rs.data.body;
+    this.$http.post('resource/citymapping/navtabsearch',{"souceType":20,"dimensionType":20,times:1}).then(rs => {
       this.nationListChooseByRegions = rs.data.body;
     })
-    this.$http.post('resource/citymapping/navtabsearch',{"souceType":10,"dimensionType":40}).then(rs => {
-      this.cityListChooseBySuppliers = rs.data.body;
-      this.cityListChooseByRegions = rs.data.body;
-    })
-    this.$http.post('resource/citymapping/navtabsearch',{"souceType":10,"dimensionType":30}).then(rs => {
-      this.provinceListChooseBySuppliers = rs.data.body;
-      this.provinceListChooseByRegions = rs.data.body;
-    })
+        
   },
   computed: {
     btnTypesupplier() {
@@ -263,32 +263,73 @@ export default {
     }
   },
   methods: {
+    
+    //按钮选择
     btnSupplier() {
       this.btnType = 'supplier';
     },
     btnRegion() {
       this.btnType = 'region';
     },
-    chooseSupplier(name) {
+    //选择供应商tab
+    chooseSupplier(id) {
       this.chooseBySuppliers = "nation"
+      this.currentSupplierId = id;
+      this.$http.post('/resource/citymapping/navtabsearch',{"souceType":20,"dimensionType":20,"supplierCode":id,times:1}).then(rs => {
+        this.nationListChooseBySuppliers = rs.data.body;
+      })
     },
-    chooseNation(name) {
+    chooseNation(id) {
       this.chooseBySuppliers = "province"
+      this.$http.post('/resource/citymapping/navtabsearch',{"souceType":20,"dimensionType":30,"countryCode":id}).then(rs => {
+        this.provinceListChooseBySuppliers = rs.data.body;
+      })
     },
-    chooseProvince(name) {
+    chooseProvince(id,map=20) {
+      this.currentProvinceIdBySuppliers = id;
       this.chooseBySuppliers = "city"
+      this.$http.post('/resource/citymapping/navtabsearch',{"souceType":20,"dimensionType":40,"provinceCode":id,mapStatus:map}).then(rs => {
+        this.cityListChooseBySuppliers = rs.data.body;
+      })
     },
-    chooseCity(name) {
-
+    //选择供应商侧城市列表审核状态
+    chooseStatebySupplier(val){
+      this.chooseProvince(this.currentProvinceIdBySuppliers,val)
     },
-    chooseNationCopy(name) {
+    chooseCity(id) {
+      this.$http.get(`/resource/cityMapping/list?cityCode=${id}&supplierCode=${this.currentSupplierId}`).then(rs => {
+        this.$store.commit('CITY_CHECK_LIST',rs.data.body)
+      })
+    },
+    //选择jd侧tab
+    chooseNationCopy(id) {
       this.chooseByRegions = "province"
+      this.$http.post('/resource/citymapping/navtabsearch',{"souceType":10,"dimensionType":30,"countryCode":id}).then(rs => {
+        this.provinceListChooseByRegions = rs.data.body;
+      })
     },
-    chooseProvinceCopy(name) {
+    chooseProvinceCopy(id,map=20) {
       this.chooseByRegions = "city"
+      this.currentProvinceIdByRegions = id
+       this.$http.post('/resource/citymapping/navtabsearch',{"souceType":10,"dimensionType":40,"provinceCode":id,mapStatus:map}).then(rs => {
+        this.cityListChooseByRegions = rs.data.body;
+      })
     },
-    chooseCityCopy(name) {
-
+    //选择JD侧城市列表审核状态
+    chooseStatebyRegion(val){
+      this.chooseProvince(this.currentProvinceIdByRegions,val)
+    },
+    chooseCityCopy(id) {
+      if (this.checkStateByRegions == 10) {//未聚待审
+        this.$http.get(`/resource/cityMapping/list?provinceId=${this.currentProvinceIdByRegions}&cityName=${id}`).then(rs => {
+          this.$store.commit('CITY_CHECK_LIST',rs.data.body)
+        })
+      } else {
+        this.$http.get(`/resource/cityMapping/list?cityId=${id}`).then(rs => {
+          this.$store.commit('CITY_CHECK_LIST',rs.data.body)
+        })
+      }
+      
     }
   }
 }
