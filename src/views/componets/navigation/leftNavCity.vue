@@ -343,15 +343,16 @@ export default {
     //按城市名和id查询
     searchCity(){
       if(this.searchInput == ""){
-        this.$Notice.error({
-          title:'请输入查询内容'
-        })
+        this.$Notice.warning({
+          title: "请输入查询内容",
+          desc:'查询内容不能为空'
+        });
         return;
       }
       this.isCheckStateByRegionsShow = false;      
       if (this.searchID === 'cityId') {
         if(!/^[0-9]*$/.test(this.searchInput)){
-          this.$Notice.error({
+          this.$Notice.warning({
             title:'请输入正确的城市id',
             desc:'请输入数字id'
           })

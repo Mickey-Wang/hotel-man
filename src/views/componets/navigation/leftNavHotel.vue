@@ -117,7 +117,7 @@
         </TabPane>
         <TabPane label="酒店" style="height:100%" name="hotel" :disabled="supplierTabDisable[4]">
           <Row class="check-select">
-            <Select v-model="checkStateBySuppliers">
+            <Select v-model="checkStateBySuppliers" @on-change="chooseStatebySupplier">
               <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
@@ -177,7 +177,7 @@
         </TabPane>
         <TabPane label="酒店" style="height:100%" name="hotel" :disabled="regionTabDisable[3]">
           <Row class="check-select">
-            <Select v-model="checkStateByRegions" v-show="isCheckStateByRegionsShow">
+            <Select v-model="checkStateByRegions" v-show="isCheckStateByRegionsShow" @on-change="chooseStatebyRegion">
               <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
@@ -429,7 +429,7 @@ export default {
       this.$store.commit("HOTEL_TABLETYPE", val);
       this.chooseCityCopy(this.currentProvinceIdByRegions, val);
     },
-    chooseHotelCopy(name) {
+    chooseHotelCopy(id) {
       if (this.checkStateByRegions == 10) {
         //未聚待审
         this.$http.get(
@@ -447,16 +447,17 @@ export default {
     //按城市名和id查询
     searchHotel() {
       if (this.searchInput == "") {
-        this.$Notice.error({
-          title: "请输入查询内容"
+        this.$Notice.warning({
+          title: "请输入查询内容",
+          desc:'查询内容不能为空'
         });
         return;
       }
       this.isCheckStateByRegionsShow = false;
       if (this.searchID === "hotelId") {
         if (!/^[0-9]*$/.test(this.searchInput)) {
-          this.$Notice.error({
-            title: "请输入正确的城市id",
+          this.$Notice.warning({
+            title: "请输入正确的酒店id",
             desc: "请输入数字id"
           });
           return;
@@ -472,12 +473,12 @@ export default {
           });
       } else {
         if (
-          !/^[\u4E00-\u9FA5]{1,9}$/.test(this.searchInput) ||
-          this.searchInput === "市"
+          !/^[\u4E00-\u9FA5]$/.test(this.searchInput) ||
+          this.searchInput === "酒店"
         ) {
           this.$Notice.warning({
-            title: "请输入正确的城市名称",
-            desc: '不能只输入一个"市"字'
+            title: "请输入正确的酒店名称",
+            desc: '不能只输入"酒店"'
           });
           return;
         }
