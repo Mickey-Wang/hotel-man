@@ -3,7 +3,9 @@ import {
     START_LOADING,
     FINISH_LOADING,
     ROUTER_NAME,
-    TABLE_TYPE
+    CITY_TABLETYPE,
+    HOTEL_TABLETYPE,
+    ROOM_TABLETYPE
 }
 from './mutation-type';
 const  mutations={
@@ -20,8 +22,14 @@ const  mutations={
         state.routerName = data;
     },
     //tableType
-    [TABLE_TYPE](state,data){
-        state.tableType = data;
-    }
+    [CITY_TABLETYPE](state,data){
+        state.cityTableType = data;
+    },
+    [HOTEL_TABLETYPE](state,data){
+        state.hotelTableType = data;
+    },
+    [ROOM_TABLETYPE](state,data){
+        state.roomTableType = data;
+    },
 };
 export default mutations;

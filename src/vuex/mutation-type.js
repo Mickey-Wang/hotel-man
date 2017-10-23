@@ -5,6 +5,8 @@ export const FINISH_LOADING = 'FINISH_LOADING';
 //主导航状态同步
 export const ROUTER_NAME = 'ROUTER_NAME';
 //tableType
-export const TABLE_TYPE = 'TABLE_TYPE';
+export const CITY_TABLETYPE = 'CITY_TABLETYPE';
+export const HOTEL_TABLETYPE = 'HOTEL_TABLETYPE';
+export const ROOM_TABLETYPE = 'ROOM_TABLETYPE';
 
 

@@ -274,27 +274,27 @@
                     }
                 ],
                 similarCityData: [
-                    {
-                        cityName: '阿拉尔',
-                        cityId: 'JD-H10',
-                        provinceName: '新疆',
-                        countryName: '中国',
-                        supplierName: '京东国内酒店'
-                    },
-                    {
-                        cityName: '阿拉尔市',
-                        cityId: 'JD-H11',
-                        provinceName: '新疆',
-                        countryName: '中国',
-                        supplierName: '京东国内酒店'
-                    },
-                    {
-                        cityName: '阿拉善',
-                        cityId: 'JD-H12',
-                        provinceName: '新疆',
-                        countryName: '中国',
-                        supplierName: '京东国内酒店'
-                    },
+//                    {
+//                        cityName: '阿拉尔',
+//                        cityId: 'JD-H10',
+//                        provinceName: '新疆',
+//                        countryName: '中国',
+//                        supplierName: '京东国内酒店'
+//                    },
+//                    {
+//                        cityName: '阿拉尔市',
+//                        cityId: 'JD-H11',
+//                        provinceName: '新疆',
+//                        countryName: '中国',
+//                        supplierName: '京东国内酒店'
+//                    },
+//                    {
+//                        cityName: '阿拉善',
+//                        cityId: 'JD-H12',
+//                        provinceName: '新疆',
+//                        countryName: '中国',
+//                        supplierName: '京东国内酒店'
+//                    },
                 ],
                 // 点击查看表格的数据
                 checkTitle:[
@@ -406,6 +406,20 @@
                 this.$set(item,'operator','查看');
             });
             console.log('tableType:',this.$store.getters.tableType);
+
+            // 关键词接口(下面分别是 GET 方式和 POST 方式)
+            /*this.$http.get('resource/geoLandmark/queryCityListByCityName?cityName=阿拉尔').then(res=>{
+                console.log('get',response);
+            }).catch(error=>{
+                console.log('get',error);
+            });*/
+
+            /*this.$http.post('resource/geoLandmark/queryCityListByCityName',{"cityName":"阿拉尔"}).then(res=>{
+                console.log('post',response);
+            }).catch(error=>{
+                console.log('post',error);
+            });*/
+
         },
         mounted(){
             // 计算一下初始化第一个表格的宽度
@@ -465,6 +479,13 @@
             getInputValue(item){
                 console.log('点击获取名字:',item.cityName);
                 this.cityValue = item.cityName;
+                // 按关键词查询京东城市列表接口
+                this.$http.get('resource/geoLandmark/queryCityListByCityName?cityName='+this.cityValue).then(res=>{
+                    console.log('get',res);
+                    this.similarCityData = res.data.body;
+                }).catch(error=>{
+                    console.log('get',error);
+                });
             },
             // highlight函数
             highlight(value,word){
@@ -600,6 +621,12 @@
                 if(this.cityValue==''){
                     this.instance('warning');
                 }else {
+                    this.$http.get('resource/geoLandmark/queryCityListByCityName?cityName='+this.cityValue).then(res=>{
+                        console.log('get',res);
+                        this.similarCityData = res.data.body;
+                    }).catch(error=>{
+                        console.log('get',error);
+                    });
                 }
             },
             // 10:未聚待审;20:已聚待审;30:已聚已审
