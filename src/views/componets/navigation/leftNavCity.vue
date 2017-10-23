@@ -68,8 +68,11 @@
       <!-- 供应商 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseBySuppliers">
         <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
+          <Row>
+            <Input v-model="searchSupplier" placeholder="输入关键词"></Input>
+          </Row>
           <Menu theme="light" width="auto" @on-select="chooseSupplier">
-            <MenuItem :name="item.id" v-for="(item,index) in supplierList" :key="index">
+            <MenuItem :name="item.id" v-for="(item,index) in supplierListFilter" :key="index">
             <span>{{item.name}}</span>
             <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
@@ -191,6 +194,7 @@ export default {
       }],
       //搜索框内容
       searchInput: '',
+      searchSupplier:'',
 
       //供应商和区域选择按钮
       btnType: 'supplier',
@@ -228,6 +232,7 @@ export default {
       currentCityIdBySuppliers:0,
       //供应商列表
       supplierList: [],
+      supplierListFilter:[],
       //供应商侧国家列表
       nationListChooseBySuppliers: [],
       //jd侧国家列表
@@ -245,11 +250,18 @@ export default {
   mounted: function() {
     this.$http.post('resource/cityMapping/navtabsearch',{"souceType":10,"dimensionType":10,times:7}).then(rs => {
       this.supplierList = rs.data.body;
+    }).then(rs=>{
+      this.doSupplierListFilter();
     })
     this.$http.post('resource/cityMapping/navtabsearch',{"souceType":20,"dimensionType":20,times:1}).then(rs => {
       this.nationListChooseByRegions = rs.data.body;
     })
-        
+    
+  },
+  watch:{
+    'searchSupplier':function(val,old){
+      this.doSupplierListFilter();
+    }
   },
   computed: {
     btnTypesupplier() {
@@ -263,10 +275,20 @@ export default {
     },
     cityTotalRegions() {
       return this.cityListChooseByRegions.length;
-    }
+    },
+    
   },
   methods: {
-    
+    doSupplierListFilter(){
+      let arr = [];
+      if(this.searchSupplier == "")return this.supplierListFilter = this.supplierList;
+      this.supplierList.map((val,index)=>{
+        if(val.name.indexOf(this.searchSupplier)>-1){
+          arr.push(val)
+        }
+      })
+      this.supplierListFilter = arr;
+    },
     //按钮选择
     btnSupplier() {
       this.btnType = 'supplier';
