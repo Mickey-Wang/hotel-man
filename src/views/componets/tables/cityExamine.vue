@@ -16,13 +16,13 @@
                                 <th><input type="checkbox" v-if="tableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
                                 <th v-for="(item,index) in cityHeaderData" :key="index">{{item.title}}</th>
                             </tr>
-                            <tr v-for="(item,index) in JDHotelApproval"  :key="index" class="fontColor" v-if="tableType!=10">
+                            <tr class="fontColor" v-if="tableType!=10">
                                 <td></td>
-                                <td @click="getInputValue(item)">{{item.cityName}}</td>
-                                <td>{{item.cityId}}</td>
-                                <td>{{item.provinceName}}</td>
-                                <td>{{item.countryName}}</td>
-                                <td>{{item.supplierName}}</td>
+                                <td @click="getInputValue(item)">{{JDCityApproval.cityName}}</td>
+                                <td>{{JDCityApproval.cityId}}</td>
+                                <td>{{JDCityApproval.provinceName}}</td>
+                                <td>{{JDCityApproval.countryName}}</td>
+                                <td>{{JDCityApproval.supplierName}}</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -174,15 +174,13 @@
                         key: 'operator'
                     }
                 ],
-                JDHotelApproval:[
-                    {
-                        cityName: '阿拉尔',
-                        cityId: 'JD-H10',
-                        provinceName: '新疆',
-                        countryName: '中国',
-                        supplierName: '京东国内酒店'
-                    }
-                ],
+                JDCityApproval:{
+                    cityName: '阿拉尔',
+                    cityId: 'JD-H10',
+                    provinceName: '新疆',
+                    countryName: '中国',
+                    supplierName: '京东国内酒店'
+                },
                 cityApprovalList: [
                     {
                         geoMapId:100,
@@ -273,29 +271,7 @@
                         key: 'supplierName'
                     }
                 ],
-                similarCityData: [
-//                    {
-//                        cityName: '阿拉尔',
-//                        cityId: 'JD-H10',
-//                        provinceName: '新疆',
-//                        countryName: '中国',
-//                        supplierName: '京东国内酒店'
-//                    },
-//                    {
-//                        cityName: '阿拉尔市',
-//                        cityId: 'JD-H11',
-//                        provinceName: '新疆',
-//                        countryName: '中国',
-//                        supplierName: '京东国内酒店'
-//                    },
-//                    {
-//                        cityName: '阿拉善',
-//                        cityId: 'JD-H12',
-//                        provinceName: '新疆',
-//                        countryName: '中国',
-//                        supplierName: '京东国内酒店'
-//                    },
-                ],
+                similarCityData: [],
                 // 点击查看表格的数据
                 checkTitle:[
                     {
@@ -401,31 +377,21 @@
         },
         created(){
             // cityApprovalList数据中set数据 checked: false
-            this.cityApprovalList.forEach((item,index)=>{
+            /*this.cityApprovalList.forEach((item,index)=>{
                 this.$set(item,'checked',false);
                 this.$set(item,'operator','查看');
-            });
-            console.log('tableType:',this.$store.getters.tableType);
-
-            // 关键词接口(下面分别是 GET 方式和 POST 方式)
-            /*this.$http.get('resource/geoLandmark/queryCityListByCityName?cityName=阿拉尔').then(res=>{
-                console.log('get',response);
-            }).catch(error=>{
-                console.log('get',error);
             });*/
-
-            /*this.$http.post('resource/geoLandmark/queryCityListByCityName',{"cityName":"阿拉尔"}).then(res=>{
-                console.log('post',response);
-            }).catch(error=>{
-                console.log('post',error);
-            });*/
-
         },
         mounted(){
             // 计算一下初始化第一个表格的宽度
             this.divWidth1 = this.$refs.w1.offsetWidth;
             this.divWidth2 = this.$refs.w2.offsetWidth;
+            this.cityApprovalList.forEach((item,index)=>{
+                this.$set(item,'checked',false);
+                this.$set(item,'operator','查看');
+            });
             console.log('宽度:', this.divWidth1);
+            console.log('城市列表:',this.$store.getters.cityCheckList);
         },
         watch: {
             cityApprovalList: {
@@ -480,7 +446,7 @@
                 console.log('点击获取名字:',item.cityName);
                 this.cityValue = item.cityName;
                 // 按关键词查询京东城市列表接口
-                this.$http.get('resource/geoLandmark/queryCityListByCityName?cityName='+this.cityValue).then(res=>{
+                this.$http.get('resource/geoLandmark/JDCityList?cityName='+this.cityValue).then(res=>{
                     console.log('get',res);
                     this.similarCityData = res.data.body;
                 }).catch(error=>{
@@ -621,7 +587,7 @@
                 if(this.cityValue==''){
                     this.instance('warning');
                 }else {
-                    this.$http.get('resource/geoLandmark/queryCityListByCityName?cityName='+this.cityValue).then(res=>{
+                    this.$http.get('resource/geoLandmark/JDCityList?cityName='+this.cityValue).then(res=>{
                         console.log('get',res);
                         this.similarCityData = res.data.body;
                     }).catch(error=>{

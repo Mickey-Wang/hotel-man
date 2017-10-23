@@ -1,7 +1,7 @@
 <template>
     <section class="tableWrap">
         <div class="topTable">
-            <div class="title">城市审核列表</div>
+            <div class="title">酒店审核列表</div>
             <div class="button">
                 <Button type="primary" @click="toSubmit1">提交</Button>
                 <Button type="primary" @click="toSubmit2" v-if="tableType!=10">设为待审</Button>
@@ -16,16 +16,16 @@
                                 <th><input type="checkbox" v-if="tableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
                                 <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-if="tableType!=10" v-for="(item,index) in JDHotelApproval">
+                            <tr class="fontColor" v-if="tableType!=10">
                                 <td></td>
-                                <td @click="getInputValue(item)">{{item.hotelName}}</td>
-                                <td>{{item.address}}</td>
-                                <td>{{item.tel}}</td>
-                                <td>{{item.distance}}</td>
-                                <td>{{item.link}}</td>
-                                <td>{{item.cityName}}</td>
-                                <td>{{item.supplierName}}</td>
-                                <td>{{item.hotelId}}</td>
+                                <td @click="getInputValue(item)">{{JDHotelApproval.hotelName}}</td>
+                                <td>{{JDHotelApproval.address}}</td>
+                                <td>{{JDHotelApproval.tel}}</td>
+                                <td>{{JDHotelApproval.distance}}</td>
+                                <td>{{JDHotelApproval.link}}</td>
+                                <td>{{JDHotelApproval.cityName}}</td>
+                                <td>{{JDHotelApproval.supplierName}}</td>
+                                <td>{{JDHotelApproval.hotelId}}</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -61,7 +61,7 @@
         <div class="bottomTable">
             <div class="title">相似城市列表</div>
             <div class="button">
-                <span>城市名称</span>
+                <span>酒店名称</span>
                 <Input v-model="cityValue" placeholder="JD数据模糊比配" style="width: 200px"></Input>
                 <Button type="primary" @click="getSimilar">Go</Button>
             </div>
@@ -247,18 +247,16 @@
                         key: 'log'
                     }
                 ],
-                JDHotelApproval:[
-                    {
-                        hotelName: '北京五棵松和颐酒店',
-                        address: '北京海淀区永定路4号院',
-                        tel:'010-88257117',
-                        distance:'',
-                        link:'打开链接',
-                        cityName:'北京',
-                        supplierName:'JD',
-                        hotelId:'001'
-                    }
-                ],
+                JDHotelApproval:{
+                    hotelName: '北京五棵松和颐酒店',
+                    address: '北京海淀区永定路4号院',
+                    tel:'010-88257117',
+                    distance:'',
+                    link:'打开链接',
+                    cityName:'北京',
+                    supplierName:'JD',
+                    hotelId:'001'
+                },
                 cityApprovalList: [
                     {
                         geoMapId:100,
@@ -375,32 +373,7 @@
                         key: 'tree'
                     },
                 ],
-                similarCityData: [
-                    {
-                        id: '364469',
-                        hotelName: '北京五棵松和颐酒店',
-                        address:'北京市朝阳区新源西里东街6号楼',
-                        tel:'010-64666626',
-                        link:'打开链接',
-                        cityName:'北京'
-                    },
-                    {
-                        id: '364469',
-                        hotelName: '北京燕莎和颐酒店',
-                        address:'北京市朝阳区新源西里东街6号楼',
-                        tel:'010-64666626',
-                        link:'打开链接',
-                        cityName:'北京'
-                    },
-                    {
-                        id: '364469',
-                        hotelName: '北京燕莎和颐酒店',
-                        address:'北京市朝阳区新源西里东街6号楼',
-                        tel:'010-64666626',
-                        link:'打开链接',
-                        cityName:'北京'
-                    },
-                ],
+                similarCityData: [],
                 // 点击查看表格的数据
                 checkTitle:[
                     {
@@ -699,6 +672,12 @@
             getInputValue(item){
                 console.log('点击获取名字:',item.hotelName);
                 this.cityValue = item.hotelName;
+                // 按照关键词模糊查询京东城市列表
+                this.$http.get('resource/hotel/JDHotellist?hotelName=').then(res=>{
+                    this.similarCityData = res.data.body;
+                }).catch(error=>{
+
+                });
             },
             // highlight函数
             highlight(value,word){
