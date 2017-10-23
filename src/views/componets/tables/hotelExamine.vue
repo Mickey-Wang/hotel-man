@@ -18,7 +18,7 @@
                             </tr>
                             <tr class="fontColor" v-if="hotelTableType!=10">
                                 <td></td>
-                                <td @click="getInputValue(item)">{{JDHotelApproval.hotelName}}</td>
+                                <td @click="getInputValue(JDHotelApproval)">{{JDHotelApproval.hotelName}}</td>
                                 <td>{{JDHotelApproval.address}}</td>
                                 <td>{{JDHotelApproval.tel}}</td>
                                 <td>{{JDHotelApproval.distance}}</td>
@@ -48,7 +48,7 @@
                                 <td>{{item.mapStatus}}</td>
                                 <td>{{item.lastOperator}}</td>
                                 <td>{{item.lastModifyTime}}</td>
-                                <td @click="checkShow = true">{{item.log}}</td>
+                                <td @click="checkShow = true">查看</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="cityApprovalList.length==0">
@@ -80,13 +80,13 @@
                         <table ref="h4" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
                             <tr v-for="(item,index) in similarCityData" :key="item.id">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
-                                <td>{{item.id}}</td>
+                                <td>{{item.hotelId}}</td>
                                 <td v-html="highlight(item.hotelName, cityValue)"></td>
                                 <td>{{item.address}}</td>
                                 <td>{{item.tel}}</td>
                                 <td>{{item.link}}</td>
                                 <td>{{item.cityName}}</td>
-                                <td @click="treeShow = true">{{item.tree}}</td>
+                                <td @click="treeShow = true">Tree信息</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="similarCityData==0">
@@ -248,7 +248,7 @@
                     }
                 ],
                 JDHotelApproval:{
-                    hotelName: '北京五棵松和颐酒店',
+                    hotelName: '酒店名称B',
                     address: '北京海淀区永定路4号院',
                     tel:'010-88257117',
                     distance:'',
@@ -260,7 +260,7 @@
                 cityApprovalList: [
                     {
                         geoMapId:100,
-                        hotelName: '北京五棵松',
+                        hotelName: '酒店名称A',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
                         distance:'50m',
@@ -274,7 +274,7 @@
                     },
                     {
                         geoMapId:101,
-                        hotelName: '北京五棵松和颐酒店',
+                        hotelName: '酒店名称A',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
                         distance:'30m',
@@ -288,7 +288,7 @@
                     },
                     {
                         geoMapId:102,
-                        hotelName: '北京五棵松和颐酒店',
+                        hotelName: '酒店名称B',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
                         distance:'30m',
@@ -302,7 +302,7 @@
                     },
                     {
                         geoMapId:103,
-                        hotelName: '北京五棵松和颐酒店',
+                        hotelName: '酒店名称B',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
                         distance:'30m',
@@ -316,7 +316,7 @@
                     },
                     {
                         geoMapId:104,
-                        hotelName: '北京五棵松和颐酒店',
+                        hotelName: '酒店名称B',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
                         distance:'30m',
@@ -330,7 +330,7 @@
                     },
                     {
                         geoMapId:105,
-                        hotelName: '北京五棵松和颐酒店',
+                        hotelName: '酒店名称B',
                         address: '北京海淀区永定路4号院',
                         tel:'010-88257117',
                         distance:'30m',
@@ -601,16 +601,9 @@
         },
         created(){
             // cityApprovalList数据中set数据 checked: false
-            this.cityApprovalList.forEach((item,index)=>{
-                this.$set(item,'checked',false);
-                this.$set(item,'log','查看');
-            });
             this.treeData.forEach((item,index)=>{
                 this.$set(item,'checked',false);
             });
-            this.similarCityData.forEach((item,index)=>{
-                this.$set(item,'tree','Tree信息');
-            })
         },
         mounted(){
             // 计算一下初始化第一个表格的宽度
@@ -673,7 +666,7 @@
                 console.log('点击获取名字:',item.hotelName);
                 this.cityValue = item.hotelName;
                 // 按照关键词模糊查询京东城市列表
-                this.$http.get('resource/hotel/JDHotellist?hotelName=').then(res=>{
+                this.$http.get('resource/hotel/JDHotellist?hotelName='+item.hotelName).then(res=>{
                     this.similarCityData = res.data.body;
                 }).catch(error=>{
 

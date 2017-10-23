@@ -3,9 +3,12 @@
         <div class="topTable">
             <div class="title">城市审核列表</div>
             <div class="button">
-                <Button type="primary" @click="toSubmit1">提交</Button>
-                <Button type="primary" @click="toSubmit2" v-if="cityTableType!=10">设为待审</Button>
-                <Button type="primary">新增</Button>
+                <Button type="primary" @click="toSubmit1" v-if="cityApprovalList">提交</Button>
+                <Button type="primary" disabled v-if="!cityApprovalList">提交</Button>
+                <Button type="primary" @click="toSubmit2" v-if="cityTableType!=10 && cityApprovalList">设为待审</Button>
+                <Button type="primary" disabled v-if="!cityApprovalList">设为待审</Button>
+                <Button type="primary" v-if="cityApprovalList">新增</Button>
+                <Button type="primary" disabled v-if="!cityApprovalList">新增</Button>
             </div>
             <div class="total">共计XX条</div>
             <div class="table table1">
@@ -16,7 +19,7 @@
                                 <th><input type="checkbox" v-if="cityTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="disableStatus1"></th>
                                 <th v-for="(item,index) in cityHeaderData" :key="index">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-if="cityTableType!=10">
+                            <tr class="fontColor" v-if="cityTableType!=10 && JDCityApproval!=null">
                                 <td></td>
                                 <td @click="getInputValue(item)">{{JDCityApproval.cityName}}</td>
                                 <td>{{JDCityApproval.cityId}}</td>
@@ -31,7 +34,7 @@
                         </table>
                     </div>
                     <div ref="h1">
-                        <table ref="h2" v-if="cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
+                        <table ref="h2" v-if="cityApprovalList && cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in cityApprovalList" :key="item.cityId" :class="[{trClass: item.mapStatus=='20'}]">
                                 <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" @change="oneSelect(item)" :disabled="item.mapStatus=='20'?disableStatus1:disableStatus2"></td>
                                 <td @click="getInputValue(item)">{{item.cityName}}</td>
@@ -42,10 +45,10 @@
                                 <td>{{getStatusValue(item.mapStatus)}}</td>
                                 <td>{{item.lastOperator}}</td>
                                 <td>{{item.lastModifyTime}}</td>
-                                <td @click="checkShow = true">{{item.operator}}</td>
+                                <td @click="checkShow = true">查看</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="cityApprovalList.length==0">
+                        <div class="noData" v-if="!cityApprovalList">
                             暂无数据
                         </div>
                     </div>
@@ -172,81 +175,6 @@
                     {
                         title: '操作',
                         key: 'operator'
-                    }
-                ],
-                JDCityApproval:{
-                    cityName: '阿拉尔',
-                    cityId: 'JD-H10',
-                    provinceName: '新疆',
-                    countryName: '中国',
-                    supplierName: '京东国内酒店'
-                },
-                cityApprovalList: [
-                    {
-                        geoMapId:100,
-                        cityName: '阿拉尔市',
-                        cityId: 'A00061',
-                        provinceName: '新疆',
-                        countryName: '中国',
-                        supplierName: '酒店供应商A',
-                        mapStatus: '20',
-                        lastOperator: 'system',
-                        lastModifyTime: '2017/08/11 17:19'
-                    },
-                    {
-                        geoMapId:101,
-                        cityName: '阿拉尔市',
-                        cityId: 'A00062',
-                        provinceName: '新疆',
-                        countryName: '中国',
-                        supplierName: '酒店供应商B',
-                        mapStatus: '20',
-                        lastOperator: 'system',
-                        lastModifyTime: '2017/08/11 17:19'
-                    },
-                    {
-                        geoMapId:102,
-                        cityName: '阿拉尔',
-                        cityId: 'BUH13',
-                        provinceName: '新疆',
-                        countryName: '中国',
-                        supplierName: '酒店供应商C',
-                        mapStatus: '30',
-                        lastOperator: 'system',
-                        lastModifyTime: '2017/08/12 18:00'
-                    },
-                    {
-                        geoMapId:103,
-                        cityName: '阿拉尔',
-                        cityId: 'CN567',
-                        provinceName: '新疆',
-                        countryName: '中国',
-                        supplierName: '酒店供应商D',
-                        mapStatus: '30',
-                        lastOperator: 'system',
-                        lastModifyTime: '2017/08/13 19:00'
-                    },
-                    {
-                        geoMapId:104,
-                        cityName: '阿拉尔',
-                        cityId: 'DTY44',
-                        provinceName: '新疆',
-                        countryName: '中国',
-                        supplierName: '酒店供应商E',
-                        mapStatus: '30',
-                        lastOperator: 'system',
-                        lastModifyTime: '2017/08/16 19:00'
-                    },
-                    {
-                        geoMapId:105,
-                        cityName: '阿拉尔',
-                        cityId: 'DTY45',
-                        provinceName: '新疆',
-                        countryName: '中国',
-                        supplierName: '酒店供应商E',
-                        mapStatus: '30',
-                        lastOperator: 'system',
-                        lastModifyTime: '2017/08/17 19:00'
                     }
                 ],
                 similarHeaderData: [
@@ -376,22 +304,22 @@
             }
         },
         created(){
-            // cityApprovalList数据中set数据 checked: false
-            /*this.cityApprovalList.forEach((item,index)=>{
-                this.$set(item,'checked',false);
-                this.$set(item,'operator','查看');
-            });*/
+
         },
         mounted(){
             // 计算一下初始化第一个表格的宽度
             this.divWidth1 = this.$refs.w1.offsetWidth;
             this.divWidth2 = this.$refs.w2.offsetWidth;
-            this.cityApprovalList.forEach((item,index)=>{
-                this.$set(item,'checked',false);
-                this.$set(item,'operator','查看');
-            });
-            console.log('宽度:', this.divWidth1);
-            console.log('城市列表:',this.$store.getters.cityCheckList);
+        },
+        computed:{
+            // 城市审核列表中的京东城市审核对象
+            JDCityApproval(){
+                return this.$store.getters.cityCheckList.JDCityApproval;
+            },
+            // 城市审核列表中的供应商城市审核对象
+            cityApprovalList(){
+                return this.$store.getters.cityCheckList.cityApprovalList;
+            }
         },
         watch: {
             cityApprovalList: {
@@ -598,13 +526,13 @@
             // 10:未聚待审;20:已聚待审;30:已聚已审
             getStatusValue(status){
                 switch (status){
-                    case '10':
+                    case 10:
                         return '未聚待审';
                         break;
-                    case '20':
+                    case 20:
                         return '已聚待审';
                         break;
-                    case '30':
+                    case 30:
                         return '已聚已审';
                         break;
                 }
