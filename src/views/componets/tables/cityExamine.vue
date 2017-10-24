@@ -313,6 +313,7 @@
             });
             // 下面的方法也可以，但是要深拷贝一下(这个方法里面getCityApprovalList)
             // this.cityApprovalList = JSON.parse(JSON.stringify(this.$store.getters.cityCheckList.cityApprovalList));
+            // 或者是用es6的办法
             /*this.$store.watch((state) =>
                 state.cityCheckList.cityApprovalList,
                 (val) => {
