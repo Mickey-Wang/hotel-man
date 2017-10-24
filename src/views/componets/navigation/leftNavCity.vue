@@ -69,7 +69,7 @@
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseBySuppliers">
         <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
           <Row>
-            <Input v-model="searchSupplier" placeholder="输入关键词"></Input>
+            <Input v-model="searchSupplier" placeholder="输入关键词查询" @on-change="doSupplierListFilter"></Input>
           </Row>
           <Menu theme="light" width="auto" @on-select="chooseSupplier">
             <MenuItem :name="item.id" v-for="(item,index) in supplierListFilter" :key="index">
@@ -258,11 +258,6 @@ export default {
     })
     
   },
-  watch:{
-    'searchSupplier':function(val,old){
-      this.doSupplierListFilter();
-    }
-  },
   computed: {
     btnTypesupplier() {
       return this.btnType == 'supplier' ? 'primary' : 'ghost'
@@ -395,10 +390,21 @@ export default {
           return;
         }
         this.$http.get(`/resource/cityMapping/navSearch?cityName=${this.searchInput}`).then(rs => {
+          if(!this.cityListChooseByRegions.length){
+            this.$Notice.warning({
+              title:'没有找到响应结果',
+              desc:"请重新输入查询条件"
+            })
+          }
           this.cityListChooseByRegions = rs.data.body;
         }).then(rs=>{
           this.btnType = 'region';
           this.chooseByRegions = "city";
+        }).catch(err=>{
+          this.$Notice.error({
+            title:'接口异常',
+            desc:'请稍后再试'
+          })
         })
       }
     }
