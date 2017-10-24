@@ -45,10 +45,11 @@
                                 <td>{{getStatusValue(item.mapStatus)}}</td>
                                 <td>{{item.lastOperator}}</td>
                                 <td>{{item.lastModifyTime}}</td>
-                                <td @click="checkShow = true">查看</td>
+                                <!--<td @click="checkShow = true">查看</td>-->
+                                <td @click="getCheckData(item.geoMapId)">查看</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="!cityApprovalList">
+                        <div class="noData" v-if="cityApprovalList.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -220,56 +221,7 @@
                         key: 'lastOperator'
                     }
                 ],
-                checkData:[
-                    {
-                        'originalValue':'20',
-                        'modifedValue':'30',
-                        'lastModifyTime':'2017-08-13 12:09:00',
-                        'lastOperator':'系统'
-                    },
-                    {
-                        'originalValue':'20',
-                        'modifedValue':'30',
-                        'lastModifyTime':'2017-08-13 12:09:00',
-                        'lastOperator':'系统'
-                    },
-                    {
-                        'originalValue':'20',
-                        'modifedValue':'30',
-                        'lastModifyTime':'2017-08-13 12:09:00',
-                        'lastOperator':'系统'
-                    },
-                    {
-                        'originalValue':'20',
-                        'modifedValue':'30',
-                        'lastModifyTime':'2017-08-13 12:09:00',
-                        'lastOperator':'系统'
-                    },
-                    {
-                        'originalValue':'20',
-                        'modifedValue':'30',
-                        'lastModifyTime':'2017-08-13 12:09:00',
-                        'lastOperator':'系统'
-                    },
-                    {
-                        'originalValue':'20',
-                        'modifedValue':'30',
-                        'lastModifyTime':'2017-08-13 12:09:00',
-                        'lastOperator':'系统'
-                    },
-                    {
-                        'originalValue':'20',
-                        'modifedValue':'30',
-                        'lastModifyTime':'2017-08-13 12:09:22',
-                        'lastOperator':'系统'
-                    },
-                    {
-                        'originalValue':'20',
-                        'modifedValue':'30',
-                        'lastModifyTime':'2017-08-13 12:09:22',
-                        'lastOperator':'系统'
-                    }
-                ],
+                checkData:[],
                 // 全选状态
                 checkAll: false,
                 // 点击全选时，只有未聚待审可以选中
@@ -296,32 +248,17 @@
                 // div的宽度
                 divWidth1:'',
                 divWidth2:'',
-                // 确定表格哪一种(已聚待审、已聚已审、未聚待审)
-                // 这个可以从 getter 里面拿到判断值
                 // 10:未聚待审;20:已聚待审;30:已聚已审
-                //cityTableType:this.$store.getters.cityTableType,
                 // 确定一下是哪个按钮点击的,提交按钮是1,设为待审按钮是2
                 buttonType:0
             }
         },
         created(){
             this.$store.subscribe((mutation, state) => {
-                console.log('mutation:', mutation);
                 if(mutation.type === 'CITY_CHECK_LIST'){
                     this.getCityApprovalList();
                 }
             });
-            // 下面的方法也可以，但是要深拷贝一下(这个方法里面getCityApprovalList)
-            // this.cityApprovalList = JSON.parse(JSON.stringify(this.$store.getters.cityCheckList.cityApprovalList));
-            // 或者是用es6的办法
-            /*this.$store.watch((state) =>
-                state.cityCheckList.cityApprovalList,
-                (val) => {
-                    console.log('CHANGE: ', val);
-                    this.getCityApprovalList();
-                }, {
-                    deep: true
-            })*/
         },
         mounted(){
             // 计算一下初始化第一个表格的宽度
@@ -333,10 +270,6 @@
             JDCityApproval(){
                 return this.$store.getters.cityCheckList.JDCityApproval;
             },
-            // 城市审核列表中的供应商城市审核对象
-            /*cityApprovalList(){
-                return this.$store.getters.cityCheckList.cityApprovalList;
-            },*/
             // cityTableType
             cityTableType(){
                 return this.$store.getters.cityTableType;
@@ -433,13 +366,12 @@
             },
             // 点击提交按钮(点击提交按钮)
             toSubmit1(){
-                // 确定是提交按钮
+                // 确定是提交按钮(设为已聚已审的状态)
                 this.buttonType = 1;
                 this.submitData.checkBoxData = [];
                 if(this.cityTableType==20 || this.cityTableType==30){
                     for(let i=0; i<this.cityApprovalList.length; i++){
                         if(this.cityApprovalList[i].mapStatus==20 && this.cityApprovalList[i].checked){
-                            console.log('提交已聚已审执行这里');
                             this.submitData.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
                     }
@@ -453,7 +385,7 @@
                 }
                 if(this.cityTableType == 10){
                     for(let i=0; i<this.cityApprovalList.length; i++){
-                        if(this.cityApprovalList[i].mapStatus==30 && this.cityApprovalList[i].checked){
+                        if(this.cityApprovalList[i].mapStatus==10 && this.cityApprovalList[i].checked){
                             this.submitData.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
                     }
@@ -477,7 +409,6 @@
                             this.submitData1.checkBoxData.push(this.cityApprovalList[i].geoMapId);
                         }
                     }
-                    console.log('已聚已审的数据:',this.submitData1.checkBoxData,this.submitData1);
                     if(this.submitData1.checkBoxData.length == 0){
                         this.instance('info','已聚已审');
                     }else {
@@ -492,23 +423,48 @@
                 console.log('radio',item);
                 this.submitData.radioData = [];
                 this.submitData1.radioData = [];
-                this.submitData.radioData.push(item);
-                this.submitData1.radioData.push(item);
+                this.submitData.radioData.push(item.cityId);
+                this.submitData1.radioData.push(item.cityId);
             },
             // 弹框选择确定按钮
             ok () {
                 // 提交，设为已审按钮(当不是未聚未审的时候)
-                if(this.buttonType==1 && this.cityTableType!=30){
-                    console.log('非未聚未审的数据,设为已审');
-                    console.log('提交时候展示数据',this.submitData);
+                if(this.buttonType==1 && this.cityTableType!=10){
+                    let checkStr = this.submitData.checkBoxData.join(',');
+                    let radioStr = this.submitData.radioData[0];
+                    if(radioStr == undefined){
+                        radioStr = null;
+                    }
+                    this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
+                        console.log('已聚已审的状态:', res);
+                    }).catch((err)=>{
+
+                    })
                 }
                 // 提交，设为已审按钮(当是未聚未审的时候)
-                if(this.buttonType==1 && this.cityTableType==30){
+                if(this.buttonType==1 && this.cityTableType==10){
                     console.log('未聚未审的数据，设为已审');
+                    let checkStr = this.submitData.checkBoxData.join(',');
+                    let radioStr = this.submitData.radioData[0];
+                    if(radioStr == undefined){
+                        radioStr = null;
+                    }
+                    this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
+                        console.log('已聚已审的状态:', res);
+                    }).catch((err)=>{
+
+                    })
                 }
                 // 设为待审按钮
                 if(this.buttonType == 2){
                     console.log('设为待审');
+                    let checkStr = this.submitData1.checkBoxData.join(',');
+                    let radioStr = this.submitData1.radioData[0];
+                    this.$http.post('/mapping/cityMapping/matchedUncheck',{"geoMapIds":checkStr,"geoId":radioStr}).then(res=>{
+                        console.log('已聚待审的状态:', res);
+                    }).catch(err=>{
+
+                    })
                 }
             },
             // 弹框选择取消按钮
@@ -557,6 +513,16 @@
                         return '已聚已审';
                         break;
                 }
+            },
+            // 获取日志接口
+            getCheckData(dataId){
+                this.checkShow = true;
+                this.$http.get('resource/geoCommon/getLogListByDataId?dataId='+ dataId +'&dataType=1').then(res=>{
+                    console.log('日志接口res:',res.data.body);
+                    this.checkData = res.data.body;
+                }).catch(err=>{
+
+                })
             }
         }
     }
