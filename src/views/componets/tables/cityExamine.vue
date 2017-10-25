@@ -517,7 +517,7 @@
             // 获取日志接口
             getCheckData(dataId){
                 this.checkShow = true;
-                this.$http.get('resource/geoCommon/getLogListByDataId?dataId='+ dataId +'&dataType=1').then(res=>{
+                this.$http.get('mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=1').then(res=>{
                     console.log('日志接口res:',res.data.body);
                     this.checkData = res.data.body;
                 }).catch(err=>{
