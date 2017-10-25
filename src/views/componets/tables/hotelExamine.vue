@@ -90,7 +90,8 @@
                                 <td>{{item.tel}}</td>
                                 <td>{{item.link}}</td>
                                 <td>{{item.cityName}}</td>
-                                <td @click="treeShow = true">Tree信息</td>
+                                <!--<td @click="treeShow = true">Tree信息</td>-->
+                                <td @click="getTreeData(item)">Tree信息</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="similarCityData==0">
@@ -767,6 +768,10 @@
                 }).catch(err=>{
 
                 })
+            },
+            getTreeData(item){
+                this.treeShow = true;
+
             }
         }
     }
