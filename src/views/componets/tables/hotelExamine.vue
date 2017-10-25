@@ -91,7 +91,7 @@
                                 <td>{{item.link}}</td>
                                 <td>{{item.cityName}}</td>
                                 <!--<td @click="treeShow = true">Tree信息</td>-->
-                                <td @click="getTreeData(item)">Tree信息</td>
+                                <td @click="getTreeData(item.hotelId)">Tree信息</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="similarCityData==0">
@@ -255,7 +255,7 @@
                 hotelApprovalList: [],
                 similarHeaderData: [
                     {
-                        title: '城市ID',
+                        title: '酒店ID',
                         key: 'id'
                     },
                     {
@@ -347,104 +347,8 @@
                         key: 'mapStatus'
                     },
                 ],
-                treeJDHotelApproval:[
-                    {
-                        hotelName: '北京五棵松和颐酒店',
-                        address: '北京海淀区永定路4号院',
-                        tel:'010-88257117',
-                        distance:'',
-                        link:'打开链接',
-                        cityName:'北京',
-                        supplierName:'JD',
-                        hotelId:'001'
-                    }
-                ],
-                treeData:[
-                    {
-                        hotelName: '北京五棵松',
-                        address: '北京海淀区永定路4号院',
-                        tel:'010-88257117',
-                        distance:'50m',
-                        link:'打开链接',
-                        cityName:'北京',
-                        supplierName:'携程',
-                        hotelId:'001',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        mapStatus:30
-                    },
-                    {
-                        hotelName: '北京五棵松',
-                        address: '北京海淀区永定路4号院',
-                        tel:'010-88257117',
-                        distance:'50m',
-                        link:'打开链接',
-                        cityName:'北京',
-                        supplierName:'携程',
-                        hotelId:'001',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        mapStatus:30
-                    },
-                    {
-                        hotelName: '北京五棵松',
-                        address: '北京海淀区永定路4号院',
-                        tel:'010-88257117',
-                        distance:'50m',
-                        link:'打开链接',
-                        cityName:'北京',
-                        supplierName:'携程',
-                        hotelId:'001',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        mapStatus:30
-                    },
-                    {
-                        hotelName: '北京五棵松',
-                        address: '北京海淀区永定路4号院',
-                        tel:'010-88257117',
-                        distance:'50m',
-                        link:'打开链接',
-                        cityName:'北京',
-                        supplierName:'携程',
-                        hotelId:'001',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        mapStatus:30
-                    },
-                    {
-                        hotelName: '北京五棵松',
-                        address: '北京海淀区永定路4号院',
-                        tel:'010-88257117',
-                        distance:'50m',
-                        link:'打开链接',
-                        cityName:'北京',
-                        supplierName:'携程',
-                        hotelId:'001',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        mapStatus:30
-                    },
-                    {
-                        hotelName: '北京五棵松',
-                        address: '北京海淀区永定路4号院',
-                        tel:'010-88257117',
-                        distance:'50m',
-                        link:'打开链接',
-                        cityName:'北京',
-                        supplierName:'携程',
-                        hotelId:'001',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        mapStatus:30
-                    },
-                    {
-                        hotelName: '北京五棵松',
-                        address: '北京海淀区永定路4号院',
-                        tel:'010-88257117',
-                        distance:'50m',
-                        link:'打开链接',
-                        cityName:'北京',
-                        supplierName:'携程',
-                        hotelId:'001',
-                        lastModifyTime:'2017-8-10 10:15:11',
-                        mapStatus:30
-                    }
-                ],
+                treeJDHotelApproval:[],
+                treeData:[],
                 // 全选状态
                 checkAll: false,
                 // 点击全选时，只有未聚待审可以选中
@@ -653,7 +557,7 @@
                 this.submitTreeData = [];
                 for(let i=0; i<this.treeData.length; i++){
                     if(this.treeData[i].mapStatus == 30&&this.treeData[i].checked){
-                        this.submitTreeData.push(this.treeData[i]);
+                        this.submitTreeData.push(this.treeData[i].hotelMapId);
                     }
                 }
                 console.log('选择的Tree信息:',this.submitTreeData);
@@ -715,7 +619,12 @@
                 // tree中的设为已聚待审的按钮
                 if(this.buttonType == 3){
                     console.log('tree中的button');
+                    let checkStr = this.submitTreeData.join(',');
+                    this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr}).then(res=>{
+                        console.log('tree已聚待审的状态:', res);
+                    }).catch(err=>{
 
+                    })
                 }
             },
             // 弹框选择取消按钮
@@ -760,6 +669,7 @@
                         break;
                 }
             },
+            // 点击查看日志
             getCheckData(dataId){
                 this.checkShow = true;
                 this.$http.get('mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=2').then(res=>{
@@ -769,9 +679,18 @@
 
                 })
             },
-            getTreeData(item){
+            // 点击查看Tree信息
+            getTreeData(JDHotelId){
                 this.treeShow = true;
+                this.$http.get('mapping/hotelMapping/getHotelTreeByJDHotelId?JDHotelId=' + JDHotelId).then(res=>{
+                    console.log('tree信息JDHotelApproval:',res.data.body.JDHotelApproval);
+                    console.log('tree信息hotelApprovalList:',res.data.body.hotelApprovalList);
+                    this.treeJDHotelApproval = [];
+                    this.treeJDHotelApproval.push(res.data.body.JDHotelApproval);
+                    this.treeData = res.data.body.hotelApprovalList;
+                }).catch(err=>{
 
+                })
             }
         }
     }
