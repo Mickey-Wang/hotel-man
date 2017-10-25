@@ -234,11 +234,6 @@
                     checkBoxData:[],
                     radioData:[]
                 },
-                // 点击设为待审的入参
-                submitData1:{
-                    checkBoxData:[],
-                    radioData:[]
-                },
                 // 控制模态框显示
                 modelShow:false,
                 // 控制查看模态框显示
@@ -364,17 +359,21 @@
                     return beforeStr + '<span style="color: #2d8cf0;">' + word + '</span>' + this.highlight(afterStr, word);
                 }
             },
+            // for 循环提取出来
+            getForData(status){
+                for(let i=0; i<this.cityApprovalList.length; i++){
+                    if(this.cityApprovalList[i].mapStatus==status && this.cityApprovalList[i].checked){
+                        this.submitData.checkBoxData.push(this.cityApprovalList[i].geoMapId);
+                    }
+                }
+            },
             // 点击提交按钮(点击提交按钮)
             toSubmit1(){
                 // 确定是提交按钮(设为已聚已审的状态)
                 this.buttonType = 1;
                 this.submitData.checkBoxData = [];
                 if(this.cityTableType==20 || this.cityTableType==30){
-                    for(let i=0; i<this.cityApprovalList.length; i++){
-                        if(this.cityApprovalList[i].mapStatus==20 && this.cityApprovalList[i].checked){
-                            this.submitData.checkBoxData.push(this.cityApprovalList[i].geoMapId);
-                        }
-                    }
+                    this.getForData(20);
                     // 获取酒店审核列表中选中的城市ID
                     if(this.submitData.checkBoxData.length==0){
                         this.instance('info','已聚待审');
@@ -384,11 +383,7 @@
                     }
                 }
                 if(this.cityTableType == 10){
-                    for(let i=0; i<this.cityApprovalList.length; i++){
-                        if(this.cityApprovalList[i].mapStatus==10 && this.cityApprovalList[i].checked){
-                            this.submitData.checkBoxData.push(this.cityApprovalList[i].geoMapId);
-                        }
-                    }
+                    this.getForData(10);
                     console.log('未聚未审设为已审的数据:',this.submitData);
                     if(this.submitData.checkBoxData.length!=0 && this.submitData.radioData.length!=0){
                         this.modelShow = true;
@@ -397,44 +392,39 @@
                         this.instance('info','未聚待审');
                     }
                 }
+                console.log('设为已聚已审的数据:',this.submitData);
             },
             toSubmit2(){
                 // 确定是设为待审按钮
                 this.buttonType = 2;
                 // 当是已聚待审的时候
-                this.submitData1.checkBoxData = [];
+                this.submitData.checkBoxData = [];
                 if(this.cityTableType==20 || this.cityTableType==30){
-                    for(let i=0; i<this.cityApprovalList.length; i++){
-                        if(this.cityApprovalList[i].mapStatus == 30 && this.cityApprovalList[i].checked){
-                            this.submitData1.checkBoxData.push(this.cityApprovalList[i].geoMapId);
-                        }
-                    }
-                    if(this.submitData1.checkBoxData.length == 0){
+                    this.getForData(30);
+                    if(this.submitData.checkBoxData.length == 0){
                         this.instance('info','已聚已审');
                     }else {
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市设为待审？';
                     }
                 }
-                console.log('设为已审的数据:',this.submitData1);
+                console.log('设为待审的数据:',this.submitData);
             },
             // 单选框对应的值
             radioSelect(item){
                 console.log('radio',item);
                 this.submitData.radioData = [];
-                this.submitData1.radioData = [];
                 this.submitData.radioData.push(item.cityId);
-                this.submitData1.radioData.push(item.cityId);
             },
             // 弹框选择确定按钮
             ok () {
                 // 提交，设为已审按钮(当不是未聚未审的时候)
+                let checkStr = this.submitData.checkBoxData.join(',');
+                let radioStr = this.submitData.radioData[0];
+                if(radioStr == undefined){
+                    radioStr = null;
+                }
                 if(this.buttonType==1 && this.cityTableType!=10){
-                    let checkStr = this.submitData.checkBoxData.join(',');
-                    let radioStr = this.submitData.radioData[0];
-                    if(radioStr == undefined){
-                        radioStr = null;
-                    }
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
                         console.log('已聚已审的状态:', res);
                     }).catch((err)=>{
@@ -444,11 +434,6 @@
                 // 提交，设为已审按钮(当是未聚未审的时候)
                 if(this.buttonType==1 && this.cityTableType==10){
                     console.log('未聚未审的数据，设为已审');
-                    let checkStr = this.submitData.checkBoxData.join(',');
-                    let radioStr = this.submitData.radioData[0];
-                    if(radioStr == undefined){
-                        radioStr = null;
-                    }
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
                         console.log('已聚已审的状态:', res);
                     }).catch((err)=>{
@@ -458,8 +443,6 @@
                 // 设为待审按钮
                 if(this.buttonType == 2){
                     console.log('设为待审');
-                    let checkStr = this.submitData1.checkBoxData.join(',');
-                    let radioStr = this.submitData1.radioData[0];
                     this.$http.post('/mapping/cityMapping/matchedUncheck',{"geoMapIds":checkStr,"geoId":radioStr}).then(res=>{
                         console.log('已聚待审的状态:', res);
                     }).catch(err=>{
