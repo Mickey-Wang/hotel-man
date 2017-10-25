@@ -130,7 +130,7 @@
             </Menu>
           </Row>
           <Row type="flex" justify="center">
-            <Page :total="hotelTotalSuppliers" size="small" show-total></Page>
+            <Page :current.sync="curPageSuppliers" :total="hotelTotalSuppliers" :page-size="hotelPageSizeSuppliers" @on-change="choosePageSuppliers" size="small" show-total></Page>
           </Row>
         </TabPane>
       </Tabs>
@@ -190,7 +190,7 @@
             </Menu>
           </Row>
           <Row type="flex" justify="center">
-            <Page :total="hotelTotalRegions" size="small" show-total></Page>
+            <Page :current.sync="curPageRegions" :total="hotelTotalRegions" :page-size="hotelPageSizeRegions" @on-change="choosePageRegions" size="small" show-total></Page>
           </Row>
         </TabPane>
       </Tabs>
@@ -204,11 +204,11 @@ export default {
   data() {
     return {
       //搜索选项默认
-      searchID: 'hotelId',
+      searchID: "hotelId",
       //选项内容
       searchCondition: [
         {
-          value: 'hotelId',
+          value: "hotelId",
           label: "酒店id"
         },
         {
@@ -251,13 +251,13 @@ export default {
       ],
       //当前选中的
       //供应商id
-      currentSupplierId:0,
+      currentSupplierId: 0,
       //省份id
-      currentProvinceIdBySuppliers:0,
-      currentProvinceIdByRegions:0,
-      currentCityIdBySuppliers:0,
-      currentCityIdByRegions:0,
-      currentHotelIdBySuppliers:0,
+      currentProvinceIdBySuppliers: 0,
+      currentProvinceIdByRegions: 0,
+      currentCityIdBySuppliers: 0,
+      currentCityIdByRegions: 0,
+      currentHotelIdBySuppliers: 0,
       //城市数据
       supplierList: [],
       nationListChooseBySuppliers: [],
@@ -268,6 +268,14 @@ export default {
       cityListChooseByRegions: [],
       hotelListChooseBySuppliers: [],
       hotelListChooseByRegions: [],
+      //分页信息
+      curPageSuppliers:1,
+      curPageRegions:1,
+      hotelTotalSuppliers:0,
+      hotelTotalRegions:0,
+      hotelPageSizeSuppliers:20,
+      hotelPageSizeRegions:20,
+      
     };
   },
   mounted: function() {
@@ -278,7 +286,7 @@ export default {
         times: 7
       })
       .then(rs => {
-        this.supplierList = rs.data.body;
+        this.supplierList = rs.data.body.statisticList;
       });
     this.$http
       .post("/mapping/hotelmapping/navtabsearch", {
@@ -287,7 +295,7 @@ export default {
         times: 1
       })
       .then(rs => {
-        this.nationListChooseByRegions = rs.data.body;
+        this.nationListChooseByRegions = rs.data.body.statisticList;
       });
   },
   computed: {
@@ -297,14 +305,15 @@ export default {
     btnTypeRegion() {
       return this.btnType == "region" ? "primary" : "ghost";
     },
-    hotelTotalSuppliers() {
-      return this.hotelListChooseBySuppliers.length;
-    },
-    hotelTotalRegions() {
-      return this.hotelListChooseByRegions.length;
-    }
   },
   methods: {
+    //分页按钮选择
+    choosePageSuppliers(page){
+      this.chooseCity(this.currentCityIdBySuppliers, this.checkStateBySuppliers, page);
+    },
+    choosePageRegions(page){
+      this.chooseCity(this.currentCityIdByRegions, this.checkStateByRegions, page);      
+    },
     //按钮选择
     btnSupplier() {
       this.btnType = "supplier";
@@ -326,7 +335,7 @@ export default {
           times: 1
         })
         .then(rs => {
-          this.nationListChooseBySuppliers = rs.data.body;
+          this.nationListChooseBySuppliers = rs.data.body.statisticList;
         });
     },
     chooseNation(id) {
@@ -338,7 +347,7 @@ export default {
           countryCode: id
         })
         .then(rs => {
-          this.provinceListChooseBySuppliers = rs.data.body;
+          this.provinceListChooseBySuppliers = rs.data.body.statisticList;
         });
     },
     chooseProvince(id) {
@@ -347,13 +356,13 @@ export default {
         .post("/mapping/hotelMapping/navtabsearch", {
           souceType: 20,
           dimensionType: 40,
-          provinceCode: id,
+          provinceCode: id
         })
         .then(rs => {
-          this.cityListChooseBySuppliers = rs.data.body;
+          this.cityListChooseBySuppliers = rs.data.body.statisticList;
         });
     },
-    chooseCity(id, map = 20) {
+    chooseCity(id, map = 20 ,page = 1 ,pageSize = 20) {
       this.chooseBySuppliers = "hotel";
       this.currentCityIdBySuppliers = id;
       this.$http
@@ -361,22 +370,28 @@ export default {
           souceType: 20,
           dimensionType: 50,
           cityCode: id,
-          mapStatus: map
+          mapStatus: map,
+          page:page,
+          pageSize:pageSize
         })
         .then(rs => {
-          this.hotelListChooseBySuppliers = rs.data.body;
+          this.hotelListChooseBySuppliers = rs.data.body.statisticList;
+          this.hotelTotalSuppliers = rs.data.body.count;
         });
     },
     //选择供应商侧城市列表审核状态
     chooseStatebySupplier(val) {
       this.$store.commit("HOTEL_TABLETYPE", val);
+      this.curPageSuppliers = 1,
       this.chooseCity(this.currentCityIdBySuppliers, val);
     },
-    chooseHotel(id){
+    chooseHotel(id) {
       this.$http
         .get(
-          `/mapping/hotelMapping/list?cityCode=${this.currentCityIdBySuppliers}&supplierCode=${this
-            .currentSupplierId}&hotelCode=${id}`
+          `/mapping/hotelMapping/list?cityCode=${this
+            .currentCityIdBySuppliers}&supplierCode=${this
+            .currentSupplierId}&hotelCode=${id}&mapStatus=${this
+            .checkStateBySuppliers}`
         )
         .then(rs => {
           this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
@@ -393,7 +408,7 @@ export default {
           countryCode: id
         })
         .then(rs => {
-          this.provinceListChooseByRegions = rs.data.body;
+          this.provinceListChooseByRegions = rs.data.body.statisticList;
         });
     },
     chooseProvinceCopy(id, map = 20) {
@@ -402,14 +417,14 @@ export default {
         .post("/mapping/hotelMapping/navtabsearch", {
           souceType: 10,
           dimensionType: 40,
-          provinceCode: id,
+          provinceCode: id
         })
         .then(rs => {
-          this.cityListChooseByRegions = rs.data.body;
+          this.cityListChooseByRegions = rs.data.body.statisticList;
         });
     },
 
-    chooseCityCopy(id,map=20) {
+    chooseCityCopy(id, map = 20) {
       this.chooseByRegions = "hotel";
       this.currentCityIdByRegions = id;
       this.$http
@@ -420,28 +435,38 @@ export default {
           mapStatus: map
         })
         .then(rs => {
-          this.hotelListChooseByRegions = rs.data.body;
+          this.hotelListChooseByRegions = rs.data.body.statisticList;
+          this.hotelTotalRegions = rs.data.body.count;
         });
       this.isCheckStateByRegionsShow = true;
     },
     //选择区域酒店列表审核状态
     chooseStatebyRegion(val) {
       this.$store.commit("HOTEL_TABLETYPE", val);
+      this.curPageSuppliers = 1,
       this.chooseCityCopy(this.currentProvinceIdByRegions, val);
     },
     chooseHotelCopy(id) {
       if (this.checkStateByRegions == 10) {
         //未聚待审
-        this.$http.get(
-            `/mapping/hotelMapping/list?cityId=${this.currentCityIdByRegions}&hotelName=${id}`
+        this.$http
+          .get(
+            `/mapping/hotelMapping/list?cityId=${this
+              .currentCityIdByRegions}&hotelName=${id}&mapStatus=${this
+              .checkStateByRegions}`
           )
           .then(rs => {
             this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
           });
       } else {
-        this.$http.get(`/mapping/hotelMapping/list?hotelId=${id}`).then(rs => {
-          this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
-        });
+        this.$http
+          .get(
+            `/mapping/hotelMapping/list?hotelId=${id}&mapStatus=${this
+              .checkStateByRegions}`
+          )
+          .then(rs => {
+            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
+          });
       }
     },
     //按城市名和id查询
@@ -449,7 +474,7 @@ export default {
       if (this.searchInput == "") {
         this.$Notice.warning({
           title: "请输入查询内容",
-          desc:'查询内容不能为空'
+          desc: "查询内容不能为空"
         });
         return;
       }
