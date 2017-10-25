@@ -22,7 +22,7 @@
   }
   .menu-box-large {
     .menu-box;
-    height: 90%;    
+    height: 90%;
   }
   .ivu-tabs .ivu-tabs-content {
     height: 100%;
@@ -183,21 +183,24 @@ export default {
   data() {
     return {
       //搜索选项默认
-      searchID: 'cityId',
+      searchID: "cityId",
       //选项内容
-      searchCondition: [{
-        value: 'cityId',
-        label: '城市id'
-      }, {
-        value: 'cityName',
-        label: '城市名称'
-      }],
+      searchCondition: [
+        {
+          value: "cityId",
+          label: "城市id"
+        },
+        {
+          value: "cityName",
+          label: "城市名称"
+        }
+      ],
       //搜索框内容
-      searchInput: '',
-      searchSupplier:'',
+      searchInput: "",
+      searchSupplier: "",
 
       //供应商和区域选择按钮
-      btnType: 'supplier',
+      btnType: "supplier",
       //当前供应商选项卡选中项目
       chooseBySuppliers: "",
       //当前区域选项卡选中项目
@@ -208,34 +211,38 @@ export default {
       regionTabDisable: [false, true, true],
 
       //供应商选项卡选中项目
-      supplierMenuSelect:0,
+      supplierMenuSelect: 0,
 
       //城市三种状态id
       checkStateBySuppliers: 20,
-      checkStateByRegions:20,
+      checkStateByRegions: 20,
       //是否显示区域审核城市状态选择
-      isCheckStateByRegionsShow:true,
+      isCheckStateByRegionsShow: true,
       //城市三种状态内容
-      cityCondition: [{
-        value: 20,
-        label: '已聚待审'
-      }, {
-        value: 30,
-        label: '已聚已审'
-      }, {
-        value: 10,
-        label: '未聚未审'
-      }],
+      cityCondition: [
+        {
+          value: 20,
+          label: "已聚待审"
+        },
+        {
+          value: 30,
+          label: "已聚已审"
+        },
+        {
+          value: 10,
+          label: "未聚未审"
+        }
+      ],
       //当前选中的
       //供应商id
-      currentSupplierId:0,
+      currentSupplierId: 0,
       //省份id
-      currentProvinceIdBySuppliers:0,
-      currentProvinceIdByRegions:0,
-      currentCityIdBySuppliers:0,
+      currentProvinceIdBySuppliers: 0,
+      currentProvinceIdByRegions: 0,
+      currentCityIdBySuppliers: 0,
       //供应商列表
       supplierList: [],
-      supplierListFilter:[],
+      supplierListFilter: [],
       //供应商侧国家列表
       nationListChooseBySuppliers: [],
       //jd侧国家列表
@@ -251,172 +258,243 @@ export default {
     };
   },
   mounted: function() {
-    this.$http.post('/mapping/cityMapping/navtabsearch',{"souceType":10,"dimensionType":10,times:7}).then(rs => {
-      this.supplierList = rs.data.body;
-    }).then(rs=>{
-      this.doSupplierListFilter();
-    })
-    this.$http.post('/mapping/cityMapping/navtabsearch',{"souceType":20,"dimensionType":20,times:1}).then(rs => {
-      this.nationListChooseByRegions = rs.data.body;
-    })
-    
+    this.$http
+      .post("/mapping/cityMapping/navtabsearch", {
+        souceType: 10,
+        dimensionType: 10,
+        times: 7
+      })
+      .then(rs => {
+        this.supplierList = rs.data.body;
+      })
+      .then(rs => {
+        this.doSupplierListFilter();
+      });
+    this.$http
+      .post("/mapping/cityMapping/navtabsearch", {
+        souceType: 20,
+        dimensionType: 20,
+        times: 1
+      })
+      .then(rs => {
+        this.nationListChooseByRegions = rs.data.body;
+      });
   },
   computed: {
     btnTypesupplier() {
-      return this.btnType == 'supplier' ? 'primary' : 'ghost'
+      return this.btnType == "supplier" ? "primary" : "ghost";
     },
     btnTypeRegion() {
-      return this.btnType == 'region' ? 'primary' : 'ghost'
+      return this.btnType == "region" ? "primary" : "ghost";
     },
     cityTotalSuppliers() {
       return this.cityListChooseBySuppliers.length;
     },
     cityTotalRegions() {
       return this.cityListChooseByRegions.length;
-    },
-    
+    }
   },
   methods: {
-    doClickSupplierTab(){},
-    doSupplierListFilter(){
+    doClickSupplierTab() {},
+    doSupplierListFilter() {
       let arr = [];
-      if(this.searchSupplier == "")return this.supplierListFilter = this.supplierList;
-      this.supplierList.map((val,index)=>{
-        if(val.name.indexOf(this.searchSupplier)>-1){
-          arr.push(val)
+      if (this.searchSupplier == "")
+        return (this.supplierListFilter = this.supplierList);
+      this.supplierList.map((val, index) => {
+        if (val.name.indexOf(this.searchSupplier) > -1) {
+          arr.push(val);
         }
-      })
+      });
       this.supplierListFilter = arr;
     },
     //按钮选择
     btnSupplier() {
-      this.btnType = 'supplier';
-      this.$store.commit('CITY_TABLETYPE',20)//将数据状态重置为20
+      this.btnType = "supplier";
+      this.$store.commit("CITY_TABLETYPE", 20); //将数据状态重置为20
     },
     btnRegion() {
-      this.$store.commit('CITY_TABLETYPE',20)
-      this.btnType = 'region';
+      this.$store.commit("CITY_TABLETYPE", 20);
+      this.btnType = "region";
     },
     //选择供应商tab
     chooseSupplier(id) {
-      this.chooseBySuppliers = "nation"
-      console.log(this.$refs.supplierMenu.updateActiveName)
-      this.$refs.supplierMenu.updateActiveName();
-      console.log(id,this.supplierMenuSelect)
+      this.chooseBySuppliers = "nation";
+      // console.log(this.$refs.supplierMenu.updateActiveName)
+      // this.$refs.supplierMenu.updateActiveName();
+      // console.log(id,this.supplierMenuSelect)
       this.currentSupplierId = id;
-      this.$http.post('/mapping/cityMapping/navtabsearch',{"souceType":20,"dimensionType":20,"supplierCode":id,times:1}).then(rs => {
-        this.nationListChooseBySuppliers = rs.data.body;
-      })
+      this.$http
+        .post("/mapping/cityMapping/navtabsearch", {
+          souceType: 20,
+          dimensionType: 20,
+          supplierCode: id,
+          times: 1
+        })
+        .then(rs => {
+          this.nationListChooseBySuppliers = rs.data.body;
+        });
     },
     chooseNation(id) {
-      this.chooseBySuppliers = "province"
-      this.$http.post('/mapping/cityMapping/navtabsearch',{"souceType":20,"dimensionType":30,"countryCode":id}).then(rs => {
-        this.provinceListChooseBySuppliers = rs.data.body;
-      })
+      this.chooseBySuppliers = "province";
+      this.$http
+        .post("/mapping/cityMapping/navtabsearch", {
+          souceType: 20,
+          dimensionType: 30,
+          countryCode: id
+        })
+        .then(rs => {
+          this.provinceListChooseBySuppliers = rs.data.body;
+        });
     },
-    chooseProvince(id,map=20) {
+    chooseProvince(id, map = 20) {
       this.currentProvinceIdBySuppliers = id;
-      this.chooseBySuppliers = "city"
-      this.$http.post('/mapping/cityMapping/navtabsearch',{"souceType":20,"dimensionType":40,"provinceCode":id,mapStatus:map}).then(rs => {
-        this.cityListChooseBySuppliers = rs.data.body;
-      })
+      this.chooseBySuppliers = "city";
+      this.$http
+        .post("/mapping/cityMapping/navtabsearch", {
+          souceType: 20,
+          dimensionType: 40,
+          provinceCode: id,
+          mapStatus: map
+        })
+        .then(rs => {
+          this.cityListChooseBySuppliers = rs.data.body;
+        });
     },
-      //选择供应商侧城市列表审核状态
-    chooseStatebySupplier(val){
-      this.$store.commit('CITY_TABLETYPE',val)
-      this.chooseProvince(this.currentProvinceIdBySuppliers,val)
+    //选择供应商侧城市列表审核状态
+    chooseStatebySupplier(val) {
+      this.$store.commit("CITY_TABLETYPE", val);
+      this.chooseProvince(this.currentProvinceIdBySuppliers, val);
     },
     chooseCity(id) {
-      this.$http.get(`/mapping/cityMapping/list?cityCode=${id}&supplierCode=${this.currentSupplierId}`).then(rs => {
-        this.$store.commit('CITY_CHECK_LIST',rs.data.body)
-      })
+      this.$http
+        .get(
+          `/mapping/cityMapping/list?cityCode=${id}&supplierCode=${this
+            .currentSupplierId}&mapStatus=${this.checkStateBySuppliers}`
+        )
+        .then(rs => {
+          this.$store.commit("CITY_CHECK_LIST", rs.data.body);
+        });
     },
 
     //选择jd侧tab
     chooseNationCopy(id) {
-      this.chooseByRegions = "province"
-      this.$http.post('/mapping/cityMapping/navtabsearch',{"souceType":10,"dimensionType":30,"countryCode":id}).then(rs => {
-        this.provinceListChooseByRegions = rs.data.body;
-      })
+      this.chooseByRegions = "province";
+      this.$http
+        .post("/mapping/cityMapping/navtabsearch", {
+          souceType: 10,
+          dimensionType: 30,
+          countryCode: id
+        })
+        .then(rs => {
+          this.provinceListChooseByRegions = rs.data.body;
+        });
     },
-    chooseProvinceCopy(id,map=20) {
-      this.chooseByRegions = "city"
-      this.currentProvinceIdByRegions = id
-       this.$http.post('/mapping/cityMapping/navtabsearch',{"souceType":10,"dimensionType":40,"provinceCode":id,mapStatus:map}).then(rs => {
-        this.cityListChooseByRegions = rs.data.body;
-      })
+    chooseProvinceCopy(id, map = 20) {
+      this.chooseByRegions = "city";
+      this.currentProvinceIdByRegions = id;
+      this.$http
+        .post("/mapping/cityMapping/navtabsearch", {
+          souceType: 10,
+          dimensionType: 40,
+          provinceCode: id,
+          mapStatus: map
+        })
+        .then(rs => {
+          this.cityListChooseByRegions = rs.data.body;
+        });
       this.isCheckStateByRegionsShow = true;
     },
-      //选择区域城市列表审核状态
-    chooseStatebyRegion(val){
-      this.$store.commit('CITY_TABLETYPE',val)
-      this.chooseProvinceCopy(this.currentProvinceIdByRegions,val)
+    //选择区域城市列表审核状态
+    chooseStatebyRegion(val) {
+      this.$store.commit("CITY_TABLETYPE", val);
+      this.chooseProvinceCopy(this.currentProvinceIdByRegions, val);
     },
     chooseCityCopy(id) {
-      if (this.checkStateByRegions == 10) {//未聚待审
-        this.$http.get(`/mapping/cityMapping/list?provinceId=${this.currentProvinceIdByRegions}&cityName=${id}`).then(rs => {
-          this.$store.commit('CITY_CHECK_LIST',rs.data.body)
-        })
+      if (this.checkStateByRegions == 10) {
+        //未聚待审
+        this.$http
+          .get(
+            `/mapping/cityMapping/list?provinceId=${this
+              .currentProvinceIdByRegions}&cityName=${id}&mapStatus=${this
+              .checkStateByRegions}`
+          )
+          .then(rs => {
+            this.$store.commit("CITY_CHECK_LIST", rs.data.body);
+          });
       } else {
-        this.$http.get(`/mapping/cityMapping/list?cityId=${id}`).then(rs => {
-          this.$store.commit('CITY_CHECK_LIST',rs.data.body)
-        })
+        this.$http
+          .get(
+            `/mapping/cityMapping/list?cityId=${id}&mapStatus=${this
+              .checkStateByRegions}`
+          )
+          .then(rs => {
+            this.$store.commit("CITY_CHECK_LIST", rs.data.body);
+          });
       }
-      
     },
     //按城市名和id查询
-    searchCity(){
-      if(this.searchInput == ""){
+    searchCity() {
+      if (this.searchInput == "") {
         this.$Notice.warning({
           title: "请输入查询内容",
-          desc:'查询内容不能为空'
+          desc: "查询内容不能为空"
         });
         return;
       }
-      this.isCheckStateByRegionsShow = false;      
-      if (this.searchID === 'cityId') {
-        if(!/^[0-9]*$/.test(this.searchInput)){
+      this.isCheckStateByRegionsShow = false;
+      if (this.searchID === "cityId") {
+        if (!/^[0-9]*$/.test(this.searchInput)) {
           this.$Notice.warning({
-            title:'请输入正确的城市id',
-            desc:'请输入数字id'
-          })
+            title: "请输入正确的城市id",
+            desc: "请输入数字id"
+          });
           return;
         }
-        this.$http.get(`/mapping/cityMapping/navSearch?cityId=${this.searchInput}`).then(rs => {
-          this.cityListChooseByRegions = rs.data.body;
-        }).then(rs=>{
-          this.btnType = 'region';
-          this.chooseByRegions = "city";
-        })
+        this.$http
+          .get(`/mapping/cityMapping/navSearch?cityId=${this.searchInput}`)
+          .then(rs => {
+            this.cityListChooseByRegions = rs.data.body;
+          })
+          .then(rs => {
+            this.btnType = "region";
+            this.chooseByRegions = "city";
+          });
       } else {
-        if(!/^[\u4E00-\u9FA5]{1,9}$/.test(this.searchInput)||this.searchInput === '市'){
+        if (
+          !/^[\u4E00-\u9FA5]{1,9}$/.test(this.searchInput) ||
+          this.searchInput === "市"
+        ) {
           this.$Notice.warning({
-            title:'请输入正确的城市名称',
-            desc:'不能只输入一个"市"字'
-          })
+            title: "请输入正确的城市名称",
+            desc: '不能只输入一个"市"字'
+          });
           return;
         }
-        this.$http.get(`/mapping/cityMapping/navSearch?cityName=${this.searchInput}`).then(rs => {
-          if(!this.cityListChooseByRegions.length){
-            this.$Notice.warning({
-              title:'没有找到响应结果',
-              desc:"请重新输入查询条件"
-            })
-          }
-          this.cityListChooseByRegions = rs.data.body;
-        }).then(rs=>{
-          this.btnType = 'region';
-          this.chooseByRegions = "city";
-        }).catch(err=>{
-          this.$Notice.error({
-            title:'接口异常',
-            desc:'请稍后再试'
+        this.$http
+          .get(`/mapping/cityMapping/navSearch?cityName=${this.searchInput}`)
+          .then(rs => {
+            if (!this.cityListChooseByRegions.length) {
+              this.$Notice.warning({
+                title: "没有找到响应结果",
+                desc: "请重新输入查询条件"
+              });
+            }
+            this.cityListChooseByRegions = rs.data.body;
           })
-        })
+          .then(rs => {
+            this.btnType = "region";
+            this.chooseByRegions = "city";
+          })
+          .catch(err => {
+            this.$Notice.error({
+              title: "接口异常",
+              desc: "请稍后再试"
+            });
+          });
       }
     }
   }
-}
+};
 </script>
 
 
