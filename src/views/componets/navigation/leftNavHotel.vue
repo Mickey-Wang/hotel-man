@@ -272,7 +272,7 @@ export default {
   },
   mounted: function() {
     this.$http
-      .post("resource/hotelmapping/navtabsearch", {
+      .post("/mapping/hotelmapping/navtabsearch", {
         souceType: 20,
         dimensionType: 10,
         times: 7
@@ -281,7 +281,7 @@ export default {
         this.supplierList = rs.data.body;
       });
     this.$http
-      .post("resource/hotelmapping/navtabsearch", {
+      .post("/mapping/hotelmapping/navtabsearch", {
         souceType: 10,
         dimensionType: 20,
         times: 1
@@ -319,7 +319,7 @@ export default {
       this.chooseBySuppliers = "nation";
       this.currentSupplierId = id;
       this.$http
-        .post("/resource/hotelMapping/navtabsearch", {
+        .post("/mapping/hotelMapping/navtabsearch", {
           souceType: 20,
           dimensionType: 20,
           supplierCode: id,
@@ -332,7 +332,7 @@ export default {
     chooseNation(id) {
       this.chooseBySuppliers = "province";
       this.$http
-        .post("/resource/hotelMapping/navtabsearch", {
+        .post("/mapping/hotelMapping/navtabsearch", {
           souceType: 20,
           dimensionType: 30,
           countryCode: id
@@ -344,7 +344,7 @@ export default {
     chooseProvince(id) {
       this.chooseBySuppliers = "city";
       this.$http
-        .post("/resource/hotelMapping/navtabsearch", {
+        .post("/mapping/hotelMapping/navtabsearch", {
           souceType: 20,
           dimensionType: 40,
           provinceCode: id,
@@ -357,7 +357,7 @@ export default {
       this.chooseBySuppliers = "hotel";
       this.currentCityIdBySuppliers = id;
       this.$http
-        .post("/resource/hotelMapping/navtabsearch", {
+        .post("/mapping/hotelMapping/navtabsearch", {
           souceType: 20,
           dimensionType: 50,
           cityCode: id,
@@ -375,7 +375,7 @@ export default {
     chooseHotel(id){
       this.$http
         .get(
-          `/resource/hotelMapping/list?cityCode=${this.currentCityIdBySuppliers}&supplierCode=${this
+          `/mapping/hotelMapping/list?cityCode=${this.currentCityIdBySuppliers}&supplierCode=${this
             .currentSupplierId}&hotelCode=${id}`
         )
         .then(rs => {
@@ -387,7 +387,7 @@ export default {
     chooseNationCopy(id) {
       this.chooseByRegions = "province";
       this.$http
-        .post("/resource/hotelMapping/navtabsearch", {
+        .post("/mapping/hotelMapping/navtabsearch", {
           souceType: 10,
           dimensionType: 30,
           countryCode: id
@@ -399,7 +399,7 @@ export default {
     chooseProvinceCopy(id, map = 20) {
       this.chooseByRegions = "city";
       this.$http
-        .post("/resource/hotelMapping/navtabsearch", {
+        .post("/mapping/hotelMapping/navtabsearch", {
           souceType: 10,
           dimensionType: 40,
           provinceCode: id,
@@ -413,7 +413,7 @@ export default {
       this.chooseByRegions = "hotel";
       this.currentCityIdByRegions = id;
       this.$http
-        .post("/resource/hotelMapping/navtabsearch", {
+        .post("/mapping/hotelMapping/navtabsearch", {
           souceType: 10,
           dimensionType: 50,
           cityCode: id,
@@ -433,13 +433,13 @@ export default {
       if (this.checkStateByRegions == 10) {
         //未聚待审
         this.$http.get(
-            `/resource/hotelMapping/list?cityId=${this.currentCityIdByRegions}&hotelName=${id}`
+            `/mapping/hotelMapping/list?cityId=${this.currentCityIdByRegions}&hotelName=${id}`
           )
           .then(rs => {
             this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
           });
       } else {
-        this.$http.get(`/resource/hotelMapping/list?hotelId=${id}`).then(rs => {
+        this.$http.get(`/mapping/hotelMapping/list?hotelId=${id}`).then(rs => {
           this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
         });
       }
@@ -463,7 +463,7 @@ export default {
           return;
         }
         this.$http
-          .get(`/resource/hotelMapping/navSearch?hotelId=${this.searchInput}`)
+          .get(`/mapping/hotelMapping/navSearch?hotelId=${this.searchInput}`)
           .then(rs => {
             this.hotelListChooseByRegions = rs.data.body;
           })
@@ -483,7 +483,7 @@ export default {
           return;
         }
         this.$http
-          .get(`/resource/hotelMapping/navSearch?hotelName=${this.searchInput}`)
+          .get(`/mapping/hotelMapping/navSearch?hotelName=${this.searchInput}`)
           .then(rs => {
             this.hotelListChooseByRegions = rs.data.body;
           })
