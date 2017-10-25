@@ -312,7 +312,7 @@ export default {
       this.chooseCity(this.currentCityIdBySuppliers, this.checkStateBySuppliers, page);
     },
     choosePageRegions(page){
-      this.chooseCity(this.currentCityIdByRegions, this.checkStateByRegions, page);      
+      this.chooseCityCopy(this.currentCityIdByRegions, this.checkStateByRegions, page);      
     },
     //按钮选择
     btnSupplier() {

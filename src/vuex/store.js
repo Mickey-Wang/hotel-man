@@ -15,9 +15,13 @@ let state = {
     cityTableType:20,
     hotelTableType:20,
     roomTableType:20,
+    //审核列表数据
     cityCheckList:{},
     hotelCheckList:{},
-    roomCheckList:{}
+    roomCheckList:{},
+    //同步状态
+    citySyncMappingDataState:false,
+    hotelSyncMappingDataState:false,
 };
 export default new Vuex.Store({
     state,

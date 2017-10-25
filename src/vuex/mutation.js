@@ -8,7 +8,9 @@ import {
     ROOM_TABLETYPE,
     CITY_CHECK_LIST,
     HOTEL_CHECK_LIST,
-    ROOM_CHECK_LIST
+    ROOM_CHECK_LIST,
+    CITY_SYNC_MAPPING_DATA_STATE,
+    HOTEL_SYNC_MAPPING_DATA_STATE
 }
 from './mutation-type';
 const  mutations={
@@ -45,6 +47,13 @@ const  mutations={
     //房型审核列表
     [ROOM_CHECK_LIST](state,data){
         state.roomCheckList = data;
+    },
+    //mapping数据同步
+    [CITY_SYNC_MAPPING_DATA_STATE](state){
+        state.citySyncMappingDataState = !state.citySyncMappingDataState;
+    },
+    [HOTEL_SYNC_MAPPING_DATA_STATE](state){
+        state.hotelSyncMappingDataState = !state.hotelSyncMappingDataState;
     }
 };
 export default mutations;
