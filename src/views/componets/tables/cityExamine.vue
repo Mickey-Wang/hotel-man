@@ -10,7 +10,7 @@
                 <Button type="primary" v-if="cityApprovalList.length!=0">新增</Button>
                 <Button type="primary" disabled v-if="cityApprovalList.length==0">新增</Button>
             </div>
-            <div class="total">共计XX条</div>
+            <div class="total">共计{{cityTotalNum}}条</div>
             <div class="table table1">
                 <div class="wrap wrapW1">
                     <div ref="w1">
@@ -36,7 +36,7 @@
                     <div ref="h1">
                         <table ref="h2" v-if="cityApprovalList && cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in cityApprovalList" :key="item.cityId" :class="[{trClass: item.mapStatus==20}]">
-                                <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
+                                <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
                                 <td @click="getInputValue(item)">{{item.cityName}}</td>
                                 <td>{{item.cityId}}</td>
                                 <td>{{item.provinceName}}</td>
@@ -63,7 +63,7 @@
                 <Input v-model="cityValue" placeholder="JD数据模糊比配" style="width: 200px"></Input>
                 <Button type="primary" @click="getSimilar">Go</Button>
             </div>
-            <div class="total">共计XX条</div>
+            <div class="total">共计{{similarTotalNum}}条</div>
             <div class="table table2">
                 <div class="wrap wrapW2">
                     <div ref="w2">
@@ -291,6 +291,12 @@
                     }
                 }
                 return false;
+            },
+            cityTotalNum(){
+                return this.cityApprovalList.length;
+            },
+            similarTotalNum(){
+                return this.similarCityData.length;
             }
         },
         watch: {
@@ -321,6 +327,8 @@
                     this.cityApprovalList = this.$store.getters.cityCheckList.cityApprovalList;
                     this.cityTableType = this.$store.getters.cityTableType;
                     this.similarCityData = [];
+                    this.submitData.radioData = [];
+                    this.similar = '';
                 }
                 this.cityApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);
@@ -336,6 +344,7 @@
                         }
                     }
                 }
+                this.pushCheckBoxData();
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
@@ -384,6 +393,7 @@
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市提交？';
                     }
+                    console.log('20 or 30的设为已审submitData:',this.submitData);
                 }
                 if(this.cityTableType == 10){
                     this.getForData(10);
@@ -394,8 +404,8 @@
                     }else {
                         this.instance('info','未聚待审');
                     }
+                    console.log('10 的设为已审submitData:',this.submitData);
                 }
-                console.log('设为已聚已审的数据:',this.submitData);
             },
             toSubmit2(){
                 // 确定是设为待审按钮
@@ -410,8 +420,8 @@
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市设为待审？';
                     }
+                    console.log('20 or 30 的设为待审submitData:',this.submitData);
                 }
-                console.log('设为待审的数据:',this.submitData);
             },
             // 单选框对应的值
             radioSelect(item){
@@ -430,6 +440,7 @@
                 if(this.buttonType==1 && this.cityTableType!=10){
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
                         console.log('已聚已审的状态:', res);
+                        console.log('20 or 30 设为已审的接口');
                     }).catch((err)=>{
 
                     })
@@ -439,6 +450,7 @@
                     console.log('未聚未审的数据，设为已审');
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
                         console.log('已聚已审的状态:', res);
+                        console.log('10 设为已审的接口');
                     }).catch((err)=>{
 
                     })
@@ -448,6 +460,7 @@
                     console.log('设为待审');
                     this.$http.post('/mapping/cityMapping/matchedUncheck',{"geoMapIds":checkStr,"geoId":radioStr}).then(res=>{
                         console.log('已聚待审的状态:', res);
+                        console.log('20 or 30 设为待审的接口');
                     }).catch(err=>{
 
                     })
@@ -509,6 +522,24 @@
                 }).catch(err=>{
 
                 })
+            },
+            // 当勾选复选框的时候,重置一下radio的value值
+            clearRadioValue(){
+                this.pushCheckBoxData();
+            },
+            // 判断所选的状态如果是选中的状态，this.submitData.checkBoxData 中
+            pushCheckBoxData(){
+                this.submitData.checkBoxData = [];
+                for(let i=0; i<this.cityApprovalList.length; i++){
+                    let item = this.cityApprovalList[i];
+                    if(item.checked){
+                        this.submitData.checkBoxData.push(item);
+                    }
+                }
+                console.log('checkBoxData的长度:',this.submitData.checkBoxData.length);
+                if(this.submitData.checkBoxData.length==0){
+                    this.similar = '';
+                }
             }
         }
     }
