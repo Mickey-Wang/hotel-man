@@ -244,6 +244,7 @@
                 divWidth1:'',
                 divWidth2:'',
                 // 10:未聚待审;20:已聚待审;30:已聚已审
+                cityTableType:20,
                 // 确定一下是哪个按钮点击的,提交按钮是1,设为待审按钮是2
                 buttonType:0
             }
@@ -266,9 +267,9 @@
                 return this.$store.getters.cityCheckList.JDCityApproval;
             },
             // cityTableType
-            cityTableType(){
+            /*cityTableType(){
                 return this.$store.getters.cityTableType;
-            },
+            },*/
             is20Check(){
                 for (let i = 0; i < this.cityApprovalList.length; i++) {
                     let item = this.cityApprovalList[i];
@@ -318,6 +319,8 @@
             getCityApprovalList () {
                 if (this.$store.getters.cityCheckList.cityApprovalList) {
                     this.cityApprovalList = this.$store.getters.cityCheckList.cityApprovalList;
+                    this.cityTableType = this.$store.getters.cityTableType;
+                    this.similarCityData = [];
                 }
                 this.cityApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);
