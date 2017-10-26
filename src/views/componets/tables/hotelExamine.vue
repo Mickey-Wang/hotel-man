@@ -36,7 +36,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div>
+                    <div :style="{'height':hotelTableType==10?'85%':'71%'}">
                         <table v-if="hotelApprovalList && hotelApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in hotelApprovalList" :key="item.hotelId" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
@@ -80,8 +80,8 @@
                             </tr>
                         </table>
                     </div>
-                    <div ref="h3">
-                        <table ref="h4" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
+                    <div style="height: 78%;">
+                        <table v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
                             <tr v-for="(item,index) in similarCityData" :key="item.id">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <td>{{item.hotelId}}</td>
@@ -758,7 +758,7 @@
                 }
             }
             div:nth-of-type(2){
-                height: 74%;
+                /*height: 74%;*/
                 overflow: auto;
                 table{
                     table-layout: fixed;
