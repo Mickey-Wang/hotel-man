@@ -19,7 +19,7 @@
                                 <th><input type="checkbox" v-if="cityTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="isNot20Check"></th>
                                 <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-if="cityTableType!=10 && JDCityApproval">
+                            <tr class="fontColor" v-if="cityTableType!=10 && JDCityApproval && cityApprovalList.length!=0">
                                 <td></td>
                                 <td @click="getInputValue(JDCityApproval)">{{JDCityApproval.cityName}}</td>
                                 <td>{{JDCityApproval.cityId}}</td>
@@ -266,10 +266,6 @@
             JDCityApproval(){
                 return this.$store.getters.cityCheckList.JDCityApproval;
             },
-            // cityTableType
-            /*cityTableType(){
-                return this.$store.getters.cityTableType;
-            },*/
             is20Check(){
                 for (let i = 0; i < this.cityApprovalList.length; i++) {
                     let item = this.cityApprovalList[i];
@@ -441,6 +437,8 @@
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
                         console.log('已聚已审的状态:', res);
                         console.log('20 or 30 设为已审的接口');
+                        this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
+                        this.modelShow = false;
                     }).catch((err)=>{
 
                     })
@@ -451,6 +449,8 @@
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
                         console.log('已聚已审的状态:', res);
                         console.log('10 设为已审的接口');
+                        this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
+                        this.modelShow = false;
                     }).catch((err)=>{
 
                     })
@@ -461,6 +461,8 @@
                     this.$http.post('/mapping/cityMapping/matchedUncheck',{"geoMapIds":checkStr,"geoId":radioStr}).then(res=>{
                         console.log('已聚待审的状态:', res);
                         console.log('20 or 30 设为待审的接口');
+                        this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
+                        this.modelShow = false;
                     }).catch(err=>{
 
                     })

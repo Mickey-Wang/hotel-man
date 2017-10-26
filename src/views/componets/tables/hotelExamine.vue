@@ -19,7 +19,7 @@
                                 <th><input type="checkbox" v-if="hotelTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="isNot20Check"></th>
                                 <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-if="hotelTableType!=10 && JDHotelApproval">
+                            <tr class="fontColor" v-if="hotelTableType!=10 && JDHotelApproval && hotelApprovalList.length!=0">
                                 <td></td>
                                 <td @click="getInputValue(JDHotelApproval)">{{JDHotelApproval.hotelName}}</td>
                                 <td>{{JDHotelApproval.address}}</td>
@@ -398,9 +398,6 @@
             JDHotelApproval(){
                 return this.$store.getters.hotelCheckList.JDHotelApproval;
             },
-            /*hotelTableType(){
-                return this.$store.getters.hotelTableType;
-            },*/
             is20Check(){
                 for (let i = 0; i < this.hotelApprovalList.length; i++) {
                     let item = this.hotelApprovalList[i];
@@ -587,6 +584,8 @@
                 if(this.buttonType==1 && this.hotelTableType!=10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
                         console.log('已聚已审的状态:', res);
+                        this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
+                        this.modelShow = false;
                     }).catch((err)=>{
 
                     })
@@ -595,6 +594,8 @@
                 if(this.buttonType==1 && this.hotelTableType==10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
                         console.log('已聚已审的状态:', res);
+                        this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
+                        this.modelShow = false;
                     }).catch((err)=>{
 
                     })
@@ -603,6 +604,8 @@
                 if(this.buttonType == 2){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
                         console.log('已聚待审的状态:', res);
+                        this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
+                        this.modelShow = false;
                     }).catch(err=>{
 
                     })
@@ -611,6 +614,8 @@
                 if(this.buttonType == 3){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
                         console.log('tree已聚待审的状态:', res);
+                        //this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
+                        //this.treeShow = false;
                     }).catch(err=>{
 
                     })
