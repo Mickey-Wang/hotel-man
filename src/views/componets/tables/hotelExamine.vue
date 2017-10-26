@@ -4,13 +4,13 @@
             <div class="title">酒店审核列表</div>
             <div class="button">
                 <Button type="primary" @click="toSubmit1" v-if="hotelApprovalList.length!=0">提交</Button>
-                <Button type="primary" disabled v-if="hotelApprovalList.length==0">提交</Button>
+                <Button type="primary" disabled v-else>提交</Button>
                 <Button type="primary" @click="toSubmit2" v-if="hotelTableType!=10 && hotelApprovalList.length!=0">设为待审</Button>
                 <Button type="primary" disabled v-if="hotelApprovalList.length==0">设为待审</Button>
                 <Button type="primary" v-if="hotelApprovalList.length!=0">新增</Button>
-                <Button type="primary" disabled v-if="hotelApprovalList.length==0">新增</Button>
+                <Button type="primary" disabled v-else>新增</Button>
             </div>
-            <div class="total">共计XX条</div>
+            <div class="total">共计{{hotelTotalNum}}条</div>
             <div class="table table1">
                 <div class="wrap wrapW1">
                     <div ref="w1">
@@ -39,7 +39,7 @@
                     <div>
                         <table v-if="hotelApprovalList && hotelApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in hotelApprovalList" :key="item.hotelId" :class="[{trClass: item.mapStatus==20}]">
-                                <td><input v-if="item.mapStatus!=''" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
+                                <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
                                 <td @click="getInputValue(item)">{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
                                 <td>{{item.tel}}</td>
@@ -69,7 +69,7 @@
                 <Input v-model="cityValue" placeholder="JD数据模糊比配" style="width: 200px"></Input>
                 <Button type="primary" @click="getSimilar">Go</Button>
             </div>
-            <div class="total">共计XX条</div>
+            <div class="total">共计{{similarTotalNum}}条</div>
             <div class="table table2">
                 <div class="wrap wrapW2">
                     <div ref="w2">
@@ -361,11 +361,6 @@
                     checkBoxData:[],
                     radioData:[]
                 },
-                // 点击设为待审的入参
-                submitData1:{
-                    checkBoxData:[],
-                    radioData:[]
-                },
                 // 点击tree上面的提交待审的数据
                 submitTreeData:[],
                 // 控制模态框显示
@@ -381,6 +376,7 @@
                 divWidth2:'',
                 divWidth3:'',
                 // 10:未聚待审;20:已聚待审;30:已聚已审
+                hotelTableType:20,
                 // 确定一下是哪个按钮点击的,提交按钮是1,设为待审按钮是2,3为查看Tree信息的按钮
                 buttonType:0
             }
@@ -397,15 +393,14 @@
             this.divWidth1 = this.$refs.w1.offsetWidth;
             this.divWidth2 = this.$refs.w2.offsetWidth;
             this.divWidth3 = this.$refs.w3.offsetWidth;
-            console.log('宽度:', this.divWidth3);
         },
         computed:{
             JDHotelApproval(){
                 return this.$store.getters.hotelCheckList.JDHotelApproval;
             },
-            hotelTableType(){
+            /*hotelTableType(){
                 return this.$store.getters.hotelTableType;
-            },
+            },*/
             is20Check(){
                 for (let i = 0; i < this.hotelApprovalList.length; i++) {
                     let item = this.hotelApprovalList[i];
@@ -427,6 +422,12 @@
                     }
                 }
                 return false;
+            },
+            hotelTotalNum(){
+                return this.hotelApprovalList.length;
+            },
+            similarTotalNum(){
+                return this.similarCityData.length;
             }
         },
         watch: {
@@ -454,6 +455,10 @@
             getHotelApprovalList(){
                 if (this.$store.getters.hotelCheckList.hotelApprovalList) {
                     this.hotelApprovalList = this.$store.getters.hotelCheckList.hotelApprovalList;
+                    this.hotelTableType = this.$store.getters.hotelTableType;
+                    this.similarCityData = [];
+                    this.submitData.radioData = [];
+                    this.similar = '';
                 }
                 this.hotelApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);
@@ -470,6 +475,7 @@
                         }
                     }
                 }
+                this.pushCheckBoxData();
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
@@ -495,17 +501,21 @@
                     return beforeStr + '<span style="color: #2d8cf0;">' + word + '</span>' + this.highlight(afterStr, word);
                 }
             },
+            // for 循环提取出来
+            getForData(status){
+                for(let i=0; i<this.hotelApprovalList.length; i++){
+                    if(this.hotelApprovalList[i].mapStatus==status && this.hotelApprovalList[i].checked){
+                        this.submitData.checkBoxData.push(this.hotelApprovalList[i].hotelMapId);
+                    }
+                }
+            },
             // 点击提交按钮(点击提交按钮)
             toSubmit1(){
                 // 确定是提交按钮
                 this.buttonType = 1;
                 this.submitData.checkBoxData = [];
                 if(this.hotelTableType==20 || this.hotelTableType==30){
-                    for(let i=0; i<this.hotelApprovalList.length; i++){
-                        if(this.hotelApprovalList[i].mapStatus==20 && this.hotelApprovalList[i].checked){
-                            this.submitData.checkBoxData.push(this.hotelApprovalList[i].hotelMapId);
-                        }
-                    }
+                    this.getForData(20);
                     console.log('已聚待审设为已审的数据:',this.submitData);
                     // 获取酒店审核列表中选中的城市ID
                     if(this.submitData.checkBoxData.length==0){
@@ -516,11 +526,7 @@
                     }
                 }
                 if(this.hotelTableType == 10){
-                    for(let i=0; i<this.hotelApprovalList.length; i++){
-                        if(this.hotelApprovalList[i].mapStatus==10 && this.hotelApprovalList[i].checked){
-                            this.submitData.checkBoxData.push(this.hotelApprovalList[i].hotelMapId);
-                        }
-                    }
+                    this.getForData(10);
                     console.log('未聚未审设为已审的数据:',this.submitData);
                     if(this.submitData.checkBoxData.length!=0 && this.submitData.radioData.length!=0){
                         this.modelShow = true;
@@ -534,34 +540,30 @@
                 // 确定是设为待审按钮
                 this.buttonType = 2;
                 // 当是已聚待审的时候
-                this.submitData1.checkBoxData = [];
+                this.submitData.checkBoxData = [];
                 if(this.hotelTableType==20 || this.hotelTableType==30){
-                    for(let i=0; i<this.hotelApprovalList.length; i++){
-                        if(this.hotelApprovalList[i].mapStatus == 30&&this.hotelApprovalList[i].checked){
-                            this.submitData1.checkBoxData.push(this.hotelApprovalList[i].hotelMapId);
-                        }
-                    }
-                    console.log('已聚已审的数据:',this.submitData1.checkBoxData,this.submitData1);
-                    if(this.submitData1.checkBoxData.length == 0){
+                    this.getForData(30);
+                    if(this.submitData.checkBoxData.length == 0){
                         this.instance('info','已聚已审');
                     }else {
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市设为待审？';
                     }
                 }
-                console.log('设为已审的数据:',this.submitData1);
+                console.log('设为已审的数据:',this.submitData);
             },
             // tree表格上面的按钮
             treeSubmit(){
                 this.buttonType = 3;
-                this.submitTreeData = [];
+                //this.submitTreeData = [];
+                this.submitData.checkBoxData = [];
                 for(let i=0; i<this.treeData.length; i++){
                     if(this.treeData[i].mapStatus == 30&&this.treeData[i].checked){
-                        this.submitTreeData.push(this.treeData[i].hotelMapId);
+                        this.submitData.checkBoxData.push(this.treeData[i].hotelMapId);
                     }
                 }
-                console.log('选择的Tree信息:',this.submitTreeData);
-                if(this.submitTreeData.length == 0){
+                console.log('选择的Tree信息:',this.submitData.checkBoxData);
+                if(this.submitData.checkBoxData.length == 0){
                     this.instance('info','已聚已审');
                 }else {
                     this.modelShow = true;
@@ -572,19 +574,17 @@
             radioSelect(item){
                 console.log('radio',item);
                 this.submitData.radioData = [];
-                this.submitData1.radioData = [];
                 this.submitData.radioData.push(item.hotelId);
-                this.submitData1.radioData.push(item.hotelId);
             },
             // 弹框选择确定按钮
             ok () {
+                let checkStr = this.submitData.checkBoxData.join(',');
+                let radioStr = this.submitData.radioData[0];
+                if(radioStr == undefined){
+                    radioStr = null;
+                }
                 // 提交，设为已审按钮(当不是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType!=10){
-                    let checkStr = this.submitData.checkBoxData.join(',');
-                    let radioStr = this.submitData.radioData[0];
-                    if(radioStr == undefined){
-                        radioStr = null;
-                    }
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
                         console.log('已聚已审的状态:', res);
                     }).catch((err)=>{
@@ -593,12 +593,6 @@
                 }
                 // 提交，设为已审按钮(当是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType==10){
-                    console.log('未聚未审的数据，设为已审');
-                    let checkStr = this.submitData.checkBoxData.join(',');
-                    let radioStr = this.submitData.radioData[0];
-                    if(radioStr == undefined){
-                        radioStr = null;
-                    }
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
                         console.log('已聚已审的状态:', res);
                     }).catch((err)=>{
@@ -607,9 +601,6 @@
                 }
                 // 设为待审按钮
                 if(this.buttonType == 2){
-                    console.log('设为待审');
-                    let checkStr = this.submitData1.checkBoxData.join(',');
-                    let radioStr = this.submitData1.radioData[0];
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
                         console.log('已聚待审的状态:', res);
                     }).catch(err=>{
@@ -618,9 +609,7 @@
                 }
                 // tree中的设为已聚待审的按钮
                 if(this.buttonType == 3){
-                    console.log('tree中的button');
-                    let checkStr = this.submitTreeData.join(',');
-                    this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr}).then(res=>{
+                    this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
                         console.log('tree已聚待审的状态:', res);
                     }).catch(err=>{
 
@@ -691,6 +680,24 @@
                 }).catch(err=>{
 
                 })
+            },
+            // 当勾选复选框的时候,重置一下radio的value值
+            clearRadioValue(){
+                this.pushCheckBoxData();
+            },
+            // 判断所选的状态如果是选中的状态，this.submitData.checkBoxData 中
+            pushCheckBoxData(){
+                this.submitData.checkBoxData = [];
+                for(let i=0; i<this.hotelApprovalList.length; i++){
+                    let item = this.hotelApprovalList[i];
+                    if(item.checked){
+                        this.submitData.checkBoxData.push(item);
+                    }
+                }
+                console.log('checkBoxData的长度:',this.submitData.checkBoxData.length);
+                if(this.submitData.checkBoxData.length==0){
+                    this.similar = '';
+                }
             }
         }
     }

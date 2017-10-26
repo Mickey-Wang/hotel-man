@@ -4,11 +4,11 @@
             <div class="title">城市审核列表</div>
             <div class="button">
                 <Button type="primary" @click="toSubmit1" v-if="cityApprovalList.length!=0">提交</Button>
-                <Button type="primary" disabled v-if="cityApprovalList.length==0">提交</Button>
+                <Button type="primary" disabled v-else>提交</Button>
                 <Button type="primary" @click="toSubmit2" v-if="cityTableType!=10 && cityApprovalList.length!=0">设为待审</Button>
                 <Button type="primary" disabled v-if="cityApprovalList.length==0">设为待审</Button>
                 <Button type="primary" v-if="cityApprovalList.length!=0">新增</Button>
-                <Button type="primary" disabled v-if="cityApprovalList.length==0">新增</Button>
+                <Button type="primary" disabled v-else>新增</Button>
             </div>
             <div class="total">共计{{cityTotalNum}}条</div>
             <div class="table table1">
