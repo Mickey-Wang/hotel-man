@@ -66,6 +66,7 @@
       </ButtonGroup>
     </Row>
     <Row style="height:88%;position:relative;">
+      <Spin size="large" fix v-if="listShow"></Spin>
       <!-- 供应商 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseTabBySuppliers" @on-click="doClickSupplierTab">
         <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
@@ -215,7 +216,7 @@ export default {
 
       //供应商选项卡选中项目
       supplierMenuSelect: 0,
-
+      listShow:false,
       //城市三种状态id
       checkStateBySuppliers: 20,
       checkStateByRegions: 20,
@@ -314,9 +315,11 @@ export default {
     //列表和表格同步更新数据
     refreshData(){
       this.btnType = this.getDataType
+      this.listShow = true
       if(this.getDataType == 'supplier'){
         this.chooseTabBySuppliers = 'city'
         this.chooseProvince(this.currentProvinceIdBySuppliers,this.checkStateBySuppliers).then(rs=>{
+          this.listShow = false
           return this.chooseCity(this.currentCityIndexBySuppliers)
         }).then(rs=>{
           this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE');
@@ -324,6 +327,7 @@ export default {
       }else{
         this.chooseTabByRegions = 'city'
         this.chooseProvinceCopy(this.currentProvinceIdByRegions, this.checkStateByRegions).then(rs=>{
+          this.listShow = false
           return this.chooseCityCopy(this.currentCityIndexByRegions)
         }).then(rs=>{
           this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE');
