@@ -122,11 +122,11 @@
         <Submenu name="static">
           <template slot="title">
             <Icon type="images" :size="iconSize"></Icon>
-            <span class="layout-text">静态数据</span>
+            <span class="layout-text">静态基础数据</span>
           </template>
-          <MenuItem name="hotel" class="layout-text">酒店管理</MenuItem>
-          <MenuItem name="destination" class="layout-text">目的地管理</MenuItem>
-          <MenuItem name="picture" class="layout-text">图片管理</MenuItem>
+          <MenuItem name="hotelMan" class="layout-text">酒店管理</MenuItem>
+          <MenuItem name="destinationMan" class="layout-text">目的地管理</MenuItem>
+          <MenuItem name="pictureMan" class="layout-text">图片管理</MenuItem>
           <MenuItem name="2-1" class="layout-text">商圈管理</MenuItem>
           <MenuItem name="2-2" class="layout-text">品牌管理</MenuItem>
           <MenuItem name="2-3" class="layout-text">地标管理</MenuItem>
@@ -242,9 +242,13 @@ export default {
           this.selected[0] = '聚合系统';
           this.selected[1] = '酒店聚合';
           break;
-        case 'room':
-          this.selected[0] = '聚合系统';
-          this.selected[1] = '房型聚合';
+        case 'destinationMan':
+          this.selected[0] = '静态资源';
+          this.selected[1] = '目的地管理';
+          break;
+        case 'pictureMan':
+          this.selected[0] = '静态资源';
+          this.selected[1] = '图片管理';
           break;
         case 'supplier':
           this.selected[0] = '供应商管理';
@@ -265,6 +269,12 @@ export default {
           break;
         case 'room':
           this.$router.push('/mapping/room');
+          break;
+        case 'destinationMan':
+          this.$router.push('/resource/destination');
+          break;
+        case 'pictureMan':
+          this.$router.push('/resource/picture');
           break;
         case 'supplier':
           this.$router.push('/supplier');
