@@ -56,7 +56,7 @@
       </Col>
       <Col span="4" style="text-align:center">
       <Button type="primary" shape="circle" icon="ios-search" @click="searchHotel"></Button>
-      <Button type="dashed" shape="circle" icon="ios-refresh" @click="changeState"></Button>
+      <!-- <Button type="dashed" shape="circle" icon="ios-refresh" @click="changeState"></Button> -->
       </Col>
     </Row>
     <Row>
