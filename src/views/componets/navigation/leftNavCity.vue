@@ -56,7 +56,7 @@
       </Col>
       <Col span="4" style="text-align:center">
       <Button type="primary" shape="circle" icon="ios-search" @click="searchCity"></Button>
-      <Button type="dashed" shape="circle" icon="ios-refresh" @click="changeState"></Button>
+      <!-- <Button type="dashed" shape="circle" icon="ios-refresh" @click="changeState"></Button> -->
       </Col>
     </Row>
     <Row>
@@ -74,7 +74,7 @@
             <Input v-model="searchSupplier" placeholder="输入关键词查询" @on-change="doSupplierListFilter"></Input>
           </Row>
           <Menu theme="light" width="auto" @on-select="chooseSupplier" ref="supplierMenu" :active-name="supplierMenuSelect">
-            <MenuItem :name="item.id" v-for="(item,index) in supplierListFilter" :key="index">
+            <MenuItem :name="index" v-for="(item,index) in supplierListFilter" :key="index">
             <span>{{item.name}}</span>
             <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
@@ -114,7 +114,7 @@
             </Select>
           </Row>
           <Row class-name="menu-box">
-            <Menu theme="light" width="auto" @on-select="chooseCity" :active-name="currentCityIndexBySuppliers">
+            <Menu theme="light" width="auto" @on-select="chooseCity">
               <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
@@ -204,7 +204,7 @@ export default {
       //供应商和区域选择按钮是supplier/region
       btnType: "supplier",
       //最后一次数据获取是supplier/region
-      getDataType:"",
+      getDataType:"supplier",
       //当前供应商选项卡选中项目
       chooseTabBySuppliers: "",
       //当前区域选项卡选中项目
@@ -334,8 +334,6 @@ export default {
         })
       }
     },
-    //点击供应商审核tab
-    doClickSupplierTab() {},
     doSupplierListFilter() {
       let arr = [];
       if (this.searchSupplier == "")
@@ -347,6 +345,7 @@ export default {
       });
       this.supplierListFilter = arr;
     },
+    //点击供应商审核tab
     //按钮选择
     btnSupplier() {
       this.btnType = "supplier";
@@ -357,6 +356,11 @@ export default {
       this.btnType = "region";
     },
     //选择供应商tab
+    doClickSupplierTab(name) {
+      // console.log(name)
+      if(name == 'suppliers')this.supplierMenuSelect = 1;
+    },
+    //选择供应商tab下的列表内容
     chooseSupplier(id) {
       this.chooseTabBySuppliers = "nation";
       // console.log(this.$refs.supplierMenu.updateActiveName)
