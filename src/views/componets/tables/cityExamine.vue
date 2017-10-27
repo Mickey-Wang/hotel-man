@@ -66,6 +66,7 @@
                 <span>城市名称</span>
                 <Input v-model="cityValue" placeholder="JD数据模糊比配" style="width: 200px"></Input>
                 <Button type="primary" @click="getSimilar">Go</Button>
+                
             </div>
             <div class="total">共计{{similarTotalNum}}条</div>
             <div class="table table2">
