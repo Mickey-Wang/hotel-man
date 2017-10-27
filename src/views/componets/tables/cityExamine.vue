@@ -16,8 +16,8 @@
                     <div ref="w1">
                         <table :style="{'min-width':divWidth1+'px'}">
                             <tr>
-                                <th><input type="checkbox" v-if="cityTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="isNot20Check"></th>
-                                <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
+                                <th style="border-top: none;"><input type="checkbox" v-if="cityTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="isNot20Check"></th>
+                                <th style="border-top: none;" v-for="(item,index) in cityHeaderData">{{item.title}}</th>
                             </tr>
                             <tr class="fontColor" v-if="cityTableType!=10 && JDCityApproval && cityApprovalList.length!=0">
                                 <td></td>
@@ -54,6 +54,10 @@
                         </div>
                     </div>
                 </div>
+                <Spin fix v-if="citySyncMappingDataState">
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>Loading</div>
+                </Spin>
             </div>
         </div>
         <div class="bottomTable">
@@ -76,7 +80,7 @@
                     </div>
                     <div style="height: 78%;">
                         <table ref="h4" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
-                            <tr v-for="(item,index) in similarCityData" :key="item.cityId">
+                            <tr v-for="(item,index) in similarCityData" :key="index">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <!--<td>{{item.cityName}}</td>-->
                                 <td v-html="highlight(item.cityName, cityValue)"></td>
@@ -91,6 +95,10 @@
                         </div>
                     </div>
                 </div>
+                <Spin fix v-if="spinShow">
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>Loading</div>
+                </Spin>
             </div>
         </div>
         <Modal v-model="modelShow" width="500" :closable="false" @on-ok="ok" @on-cancel="cancel">
@@ -109,7 +117,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div>
+                    <div style="overflow-x: hidden">
                         <table style="width: 767px;">
                             <tr v-for="(item,index) in checkData" :key="index">
                                 <td>{{getStatusValue(item.originalValue)}}</td>
@@ -246,7 +254,9 @@
                 // 10:未聚待审;20:已聚待审;30:已聚已审
                 cityTableType:20,
                 // 确定一下是哪个按钮点击的,提交按钮是1,设为待审按钮是2
-                buttonType:0
+                buttonType:0,
+                // 控制loading
+                spinShow:false
             }
         },
         created(){
@@ -293,6 +303,9 @@
             },
             similarTotalNum(){
                 return this.similarCityData.length;
+            },
+            citySyncMappingDataState(){
+                return this.$store.getters.citySyncMappingDataState;
             }
         },
         watch: {
@@ -344,12 +357,14 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
+                this.spinShow = true;
                 console.log('点击获取名字:',item.cityName);
                 this.cityValue = item.cityName;
                 // 按关键词查询京东城市列表接口
                 this.$http.get('resource/geoLandmark/JDCityList?cityName='+this.cityValue).then(res=>{
                     console.log('get',res);
                     this.similarCityData = res.data.body;
+                    this.spinShow = false;
                 }).catch(error=>{
                     console.log('get',error);
                 });
@@ -576,7 +591,7 @@
         min-width: 100%;
         position: relative;
         border: 1px solid #dddee1;
-        border-top: none;
+        /*border-top: none;*/
         /*border-right: none;*/
         overflow-x: auto;
         .wrapW1{
@@ -658,5 +673,13 @@
     }
     .logTable div:nth-of-type(2){
         height: 89% !important;
+    }
+    .demo-spin-icon-load{
+        animation: ani-demo-spin 1s linear infinite;
+    }
+    @keyframes ani-demo-spin {
+        from { transform: rotate(0deg);}
+        50%  { transform: rotate(180deg);}
+        to   { transform: rotate(360deg);}
     }
 </style>

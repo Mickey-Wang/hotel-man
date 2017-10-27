@@ -114,7 +114,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div>
+                    <div style="overflow-x: hidden">
                         <table style="width: 767px;">
                             <tr v-for="(item,index) in checkData" :key="index">
                                 <td>{{getStatusValue(item.originalValue)}}</td>
@@ -161,7 +161,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div>
+                    <div style="overflow-x: hidden">
                         <table style="width: 1266px;">
                             <tr v-for="(item,index) in treeData" v-if="index>0" :key="item.id">
                                 <td><input type="checkbox" v-model="item.checked"/></td>
@@ -614,8 +614,8 @@
                 if(this.buttonType == 3){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
                         console.log('tree已聚待审的状态:', res);
-                        //this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
-                        //this.treeShow = false;
+                        this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
+                        this.treeShow = false;
                     }).catch(err=>{
 
                     })
