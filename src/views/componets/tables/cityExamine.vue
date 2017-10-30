@@ -470,6 +470,7 @@
                         console.log('20 or 30 设为已审的接口');
                         this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
+                        this.cityValue = '';
                     }).catch((err)=>{
 
                     })
@@ -481,6 +482,7 @@
                         console.log('10 设为已审的接口');
                         this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
+                        this.cityValue = '';
                     }).catch((err)=>{
 
                     })
@@ -492,6 +494,7 @@
                         console.log('20 or 30 设为待审的接口');
                         this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
+                        this.cityValue = '';
                     }).catch(err=>{
 
                     })

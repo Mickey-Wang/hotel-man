@@ -622,6 +622,7 @@
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
                         this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
+                        this.hotelValue = '';
                     }).catch((err)=>{
 
                     })
@@ -631,6 +632,7 @@
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
                         this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
+                        this.hotelValue = '';
                     }).catch((err)=>{
 
                     })
@@ -640,6 +642,7 @@
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
                         this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
+                        this.hotelValue = '';
                     }).catch(err=>{
 
                     })
@@ -649,6 +652,7 @@
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
                         this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                         this.treeShow = false;
+                        this.hotelValue = '';
                     }).catch(err=>{
 
                     })
