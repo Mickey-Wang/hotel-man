@@ -16,8 +16,8 @@
                     <div ref="w1">
                         <table :style="{'min-width':divWidth1+'px'}">
                             <tr>
-                                <th><input type="checkbox" v-if="hotelTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="isNot20Check"></th>
-                                <th v-for="(item,index) in cityHeaderData">{{item.title}}</th>
+                                <th style="border-top: none;"><input type="checkbox" v-if="hotelTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="isNot20Check"></th>
+                                <th style="border-top: none;" v-for="(item,index) in cityHeaderData" :key="index">{{item.title}}</th>
                             </tr>
                             <tr class="fontColor" v-if="hotelTableType!=10 && JDHotelApproval && hotelApprovalList.length!=0">
                                 <td></td>
@@ -60,13 +60,17 @@
                         </div>
                     </div>
                 </div>
+                <Spin fix v-if="hotelSyncMappingDataState">
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>Loading</div>
+                </Spin>
             </div>
         </div>
         <div class="bottomTable">
             <div class="title">相似城市列表</div>
             <div class="button">
                 <span>酒店名称</span>
-                <Input v-model="cityValue" placeholder="JD数据模糊比配" style="width: 200px"></Input>
+                <Input v-model="hotelValue" placeholder="JD数据模糊比配" style="width: 200px"></Input>
                 <Button type="primary" @click="getSimilar">Go</Button>
             </div>
             <div class="total">共计{{similarTotalNum}}条</div>
@@ -76,7 +80,7 @@
                         <table :style="{'min-width':divWidth2+'px'}">
                             <tr>
                                 <th></th>
-                                <th v-for="(item,index) in similarHeaderData">{{item.title}}</th>
+                                <th v-for="(item,index) in similarHeaderData" :key="index">{{item.title}}</th>
                             </tr>
                         </table>
                     </div>
@@ -85,7 +89,7 @@
                             <tr v-for="(item,index) in similarCityData" :key="item.id">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <td>{{item.hotelId}}</td>
-                                <td v-html="highlight(item.hotelName, cityValue)"></td>
+                                <td v-html="highlight(item.hotelName, hotelValue)"></td>
                                 <td>{{item.address}}</td>
                                 <td>{{item.tel}}</td>
                                 <td>{{item.link}}</td>
@@ -99,6 +103,10 @@
                         </div>
                     </div>
                 </div>
+                <Spin fix v-if="spinShow">
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>Loading</div>
+                </Spin>
             </div>
         </div>
         <Modal
@@ -110,7 +118,7 @@
                     <div ref="w3">
                         <table style="width: 767px;">
                             <tr>
-                                <th v-for="(item,index) in checkTitle">{{item.title}}</th>
+                                <th v-for="(item,index) in checkTitle" :key="index">{{item.title}}</th>
                             </tr>
                         </table>
                     </div>
@@ -119,8 +127,8 @@
                             <tr v-for="(item,index) in checkData" :key="index">
                                 <td>{{getStatusValue(item.originalValue)}}</td>
                                 <td>{{getStatusValue(item.modifedValue)}}</td>
-                                <td>{{item.lastModifyTime}}</td>
-                                <td>{{item.lastOperator}}</td>
+                                <td>{{item.operateTime}}</td>
+                                <td>{{item.operator}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="checkData.length==0">
@@ -128,6 +136,10 @@
                         </div>
                     </div>
                 </div>
+                <Spin fix v-if="spinShow">
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>Loading</div>
+                </Spin>
             </div>
             <div slot="footer">
                 <Button v-if="false"></Button>
@@ -144,7 +156,7 @@
                         <table style="width: 1266px;">
                             <tr>
                                 <th></th>
-                                <th v-for="(item,index) in treeTitle">{{item.title}}</th>
+                                <th v-for="(item,index) in treeTitle" :key="index">{{item.title}}</th>
                             </tr>
                             <tr class="fontColor" v-for="(item,index) in treeJDHotelApproval" :key="index">
                                 <td></td>
@@ -182,6 +194,10 @@
                         </div>
                     </div>
                 </div>
+                <Spin fix v-if="spinShow">
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>Loading</div>
+                </Spin>
             </div>
             <div slot="footer">
                 <Button v-if="false"></Button>
@@ -199,7 +215,7 @@
                 // 单选
                 similar: '',
                 // 相似搜索框的关键字
-                cityValue: '',
+                hotelValue: '',
                 // 未聚待审的背景色
                 classShow: false,
                 cityHeaderData: [
@@ -378,7 +394,11 @@
                 // 10:未聚待审;20:已聚待审;30:已聚已审
                 hotelTableType:20,
                 // 确定一下是哪个按钮点击的,提交按钮是1,设为待审按钮是2,3为查看Tree信息的按钮
-                buttonType:0
+                buttonType:0,
+                // 控制loading
+                spinShow:false,
+                // 已聚已审数据的长度
+                arrListLen:0
             }
         },
         created(){
@@ -425,24 +445,29 @@
             },
             similarTotalNum(){
                 return this.similarCityData.length;
+            },
+            hotelSyncMappingDataState(){
+                return this.$store.getters.hotelSyncMappingDataState;
             }
         },
         watch: {
             hotelApprovalList: {
                 handler () {
-                    let check = true;
-                    // 先确定是否有已聚待审的数据的存在
-                    if(this.hotelTableType==20 || this.hotelTableType==30){
-                        for (let i = 0; i < this.hotelApprovalList.length; i++) {
-                            let item = this.hotelApprovalList[i];
-                            if (item.mapStatus === 20) {
-                                if (!item.checked) {
-                                    check = false;
-                                    break;
+                    if(this.arrListLen!=0){
+                        let check = true;
+                        // 先确定是否有已聚待审的数据的存在
+                        if(this.hotelTableType==20 || this.hotelTableType==30){
+                            for (let i = 0; i < this.hotelApprovalList.length; i++) {
+                                let item = this.hotelApprovalList[i];
+                                if (item.mapStatus === 20) {
+                                    if (!item.checked) {
+                                        check = false;
+                                        break;
+                                    }
                                 }
                             }
+                            this.checkAll = check;
                         }
-                        this.checkAll = check;
                     }
                 },
                 deep: true
@@ -452,6 +477,16 @@
             getHotelApprovalList(){
                 if (this.$store.getters.hotelCheckList.hotelApprovalList) {
                     this.hotelApprovalList = this.$store.getters.hotelCheckList.hotelApprovalList;
+                    // 把已聚已审的数据提取到一个数组里面，计算一下数据里面已聚已审的长度
+                    let arrList = [];
+                    for(let i=0; i<this.hotelApprovalList.length; i++){
+                        let item = this.hotelApprovalList[i];
+                        if(item.mapStatus == 20){
+                            arrList.push(item);
+                        }
+                    }
+                    this.arrListLen = arrList.length;
+                    //==
                     this.hotelTableType = this.$store.getters.hotelTableType;
                     this.similarCityData = [];
                     this.submitData.radioData = [];
@@ -476,11 +511,13 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
+                this.spinShow = true;
                 console.log('点击获取名字:',item.hotelName);
-                this.cityValue = item.hotelName;
+                this.hotelValue = item.hotelName;
                 // 按照关键词模糊查询京东城市列表
                 this.$http.get('resource/hotel/JDHotellist?hotelName='+item.hotelName).then(res=>{
                     this.similarCityData = res.data.body;
+                    this.spinShow = false;
                 }).catch(error=>{
 
                 });
@@ -513,7 +550,6 @@
                 this.submitData.checkBoxData = [];
                 if(this.hotelTableType==20 || this.hotelTableType==30){
                     this.getForData(20);
-                    console.log('已聚待审设为已审的数据:',this.submitData);
                     // 获取酒店审核列表中选中的城市ID
                     if(this.submitData.checkBoxData.length==0){
                         this.instance('info','已聚待审');
@@ -521,16 +557,17 @@
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市提交？';
                     }
+                    console.log('1 20 or 30的设为已审submitData:',this.submitData);
                 }
                 if(this.hotelTableType == 10){
                     this.getForData(10);
-                    console.log('未聚未审设为已审的数据:',this.submitData);
                     if(this.submitData.checkBoxData.length!=0 && this.submitData.radioData.length!=0){
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市提交？';
                     }else {
                         this.instance('info','未聚待审');
                     }
+                    console.log('1 10 的设为已审submitData:',this.submitData);
                 }
             },
             toSubmit2(){
@@ -547,7 +584,7 @@
                         this.message = '请确认是否将已选择城市设为待审？';
                     }
                 }
-                console.log('设为已审的数据:',this.submitData);
+                console.log('2 20 or 30 的设为待审submitData:',this.submitData);
             },
             // tree表格上面的按钮
             treeSubmit(){
@@ -559,7 +596,7 @@
                         this.submitData.checkBoxData.push(this.treeData[i].hotelMapId);
                     }
                 }
-                console.log('选择的Tree信息:',this.submitData.checkBoxData);
+                console.log('选择的Tree信息:',this.submitData);
                 if(this.submitData.checkBoxData.length == 0){
                     this.instance('info','已聚已审');
                 }else {
@@ -583,7 +620,6 @@
                 // 提交，设为已审按钮(当不是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType!=10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
-                        console.log('已聚已审的状态:', res);
                         this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
                     }).catch((err)=>{
@@ -593,7 +629,6 @@
                 // 提交，设为已审按钮(当是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType==10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
-                        console.log('已聚已审的状态:', res);
                         this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
                     }).catch((err)=>{
@@ -603,7 +638,6 @@
                 // 设为待审按钮
                 if(this.buttonType == 2){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
-                        console.log('已聚待审的状态:', res);
                         this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
                     }).catch(err=>{
@@ -613,7 +647,6 @@
                 // tree中的设为已聚待审的按钮
                 if(this.buttonType == 3){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
-                        console.log('tree已聚待审的状态:', res);
                         this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                         this.treeShow = false;
                     }).catch(err=>{
@@ -643,10 +676,16 @@
             },
             // 点击Go，获取京东相似数据
             getSimilar(){
-                if(this.cityValue==''){
+                if(this.hotelValue==''){
                     this.instance('warning');
                 }else {
-
+                    this.spinShow = true;
+                    this.$http.get('resource/hotel/JDHotellist?hotelName='+this.hotelValue).then(res=>{
+                        this.similarCityData = res.data.body;
+                        this.spinShow = false;
+                    }).catch(error=>{
+                        console.log('get',error);
+                    });
                 }
             },
             // 10:未聚待审;20:已聚待审;30:已聚已审
@@ -665,9 +704,11 @@
             },
             // 点击查看日志
             getCheckData(dataId){
+                this.spinShow = true;
                 this.checkShow = true;
                 this.$http.get('mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=2').then(res=>{
                     console.log('日志接口res:',res.data.body);
+                    this.spinShow = false;
                     this.checkData = res.data.body;
                 }).catch(err=>{
 
@@ -676,9 +717,11 @@
             // 点击查看Tree信息
             getTreeData(JDHotelId){
                 this.treeShow = true;
+                this.spinShow = true;
                 this.$http.get('mapping/hotelMapping/getHotelTreeByJDHotelId?JDHotelId=' + JDHotelId).then(res=>{
                     console.log('tree信息JDHotelApproval:',res.data.body.JDHotelApproval);
                     console.log('tree信息hotelApprovalList:',res.data.body.hotelApprovalList);
+                    this.spinShow = false;
                     this.treeJDHotelApproval = [];
                     this.treeJDHotelApproval.push(res.data.body.JDHotelApproval);
                     this.treeData = res.data.body.hotelApprovalList;
@@ -702,6 +745,7 @@
                 console.log('checkBoxData的长度:',this.submitData.checkBoxData.length);
                 if(this.submitData.checkBoxData.length==0){
                     this.similar = '';
+                    this.submitData.radioData = [];
                 }
             }
         }
@@ -739,7 +783,7 @@
         min-width: 100%;
         position: relative;
         border: 1px solid #dddee1;
-        border-top: none;
+        /*border-top: none;*/
         overflow-x: auto;
         .wrapW1{
             min-width: 200%;

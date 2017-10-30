@@ -17,7 +17,7 @@
                         <table :style="{'min-width':divWidth1+'px'}">
                             <tr>
                                 <th style="border-top: none;"><input type="checkbox" v-if="cityTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="isNot20Check"></th>
-                                <th style="border-top: none;" v-for="(item,index) in cityHeaderData">{{item.title}}</th>
+                                <th style="border-top: none;" v-for="(item,index) in cityHeaderData" :key="index">{{item.title}}</th>
                             </tr>
                             <tr class="fontColor" v-if="cityTableType!=10 && JDCityApproval && cityApprovalList.length!=0">
                                 <td></td>
@@ -122,8 +122,8 @@
                             <tr v-for="(item,index) in checkData" :key="index">
                                 <td>{{getStatusValue(item.originalValue)}}</td>
                                 <td>{{getStatusValue(item.modifedValue)}}</td>
-                                <td>{{item.lastModifyTime}}</td>
-                                <td>{{item.lastOperator}}</td>
+                                <td>{{item.operateTime}}</td>
+                                <td>{{item.operator}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="checkData.length==0">
@@ -131,6 +131,10 @@
                         </div>
                     </div>
                 </div>
+                <Spin fix v-if="spinShow">
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>Loading</div>
+                </Spin>
             </div>
             <div slot="footer">
                 <Button v-if="false"></Button>
@@ -256,7 +260,9 @@
                 // 确定一下是哪个按钮点击的,提交按钮是1,设为待审按钮是2
                 buttonType:0,
                 // 控制loading
-                spinShow:false
+                spinShow:false,
+                // 已聚已审数据的长度
+                arrListLen:0
             }
         },
         created(){
@@ -311,19 +317,21 @@
         watch: {
             cityApprovalList: {
                 handler () {
-                    let check = true;
-                    // 先确定是否有已聚待审的数据的存在
-                    if(this.cityTableType==20 || this.cityTableType==30){
-                        for (let i = 0; i < this.cityApprovalList.length; i++) {
-                            let item = this.cityApprovalList[i];
-                            if (item.mapStatus === 20) {
-                                if (!item.checked) {
-                                    check = false;
-                                    break;
+                    if(this.arrListLen!=0){
+                        let check = true;
+                        // 先确定是否有已聚待审的数据的存在
+                        if(this.cityTableType==20 || this.cityTableType==30){
+                            for (let i = 0; i < this.cityApprovalList.length; i++) {
+                                let item = this.cityApprovalList[i];
+                                if (item.mapStatus === 20) {
+                                    if (!item.checked) {
+                                        check = false;
+                                        break;
+                                    }
                                 }
                             }
+                            this.checkAll = check;
                         }
-                        this.checkAll = check;
                     }
                 },
                 deep: true
@@ -334,6 +342,16 @@
             getCityApprovalList () {
                 if (this.$store.getters.cityCheckList.cityApprovalList) {
                     this.cityApprovalList = this.$store.getters.cityCheckList.cityApprovalList;
+                    // 把已聚已审的数据提取到一个数组里面，计算一下数据里面已聚已审的长度
+                    let arrList = [];
+                    for(let i=0; i<this.cityApprovalList.length; i++){
+                        let item = this.cityApprovalList[i];
+                        if(item.mapStatus == 20){
+                            arrList.push(item);
+                        }
+                    }
+                    this.arrListLen = arrList.length;
+                    //====
                     this.cityTableType = this.$store.getters.cityTableType;
                     this.similarCityData = [];
                     this.submitData.radioData = [];
@@ -361,8 +379,7 @@
                 console.log('点击获取名字:',item.cityName);
                 this.cityValue = item.cityName;
                 // 按关键词查询京东城市列表接口
-                this.$http.get('resource/geoLandmark/JDCityList?cityName='+this.cityValue).then(res=>{
-                    console.log('get',res);
+                this.$http.get('resource/geoCommon/JDCityList?cityName='+this.cityValue).then(res=>{
                     this.similarCityData = res.data.body;
                     this.spinShow = false;
                 }).catch(error=>{
@@ -404,7 +421,7 @@
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市提交？';
                     }
-                    console.log('20 or 30的设为已审submitData:',this.submitData);
+                    console.log('1 20 or 30的设为已审submitData:',this.submitData);
                 }
                 if(this.cityTableType == 10){
                     this.getForData(10);
@@ -415,7 +432,7 @@
                     }else {
                         this.instance('info','未聚待审');
                     }
-                    console.log('10 的设为已审submitData:',this.submitData);
+                    console.log('1 10 的设为已审submitData:',this.submitData);
                 }
             },
             toSubmit2(){
@@ -431,7 +448,7 @@
                         this.modelShow = true;
                         this.message = '请确认是否将已选择城市设为待审？';
                     }
-                    console.log('20 or 30 的设为待审submitData:',this.submitData);
+                    console.log('2 20 or 30 的设为待审submitData:',this.submitData);
                 }
             },
             // 单选框对应的值
@@ -450,7 +467,6 @@
                 }
                 if(this.buttonType==1 && this.cityTableType!=10){
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
-                        console.log('已聚已审的状态:', res);
                         console.log('20 or 30 设为已审的接口');
                         this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
@@ -462,7 +478,6 @@
                 if(this.buttonType==1 && this.cityTableType==10){
                     console.log('未聚未审的数据，设为已审');
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
-                        console.log('已聚已审的状态:', res);
                         console.log('10 设为已审的接口');
                         this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
@@ -474,7 +489,6 @@
                 if(this.buttonType == 2){
                     console.log('设为待审');
                     this.$http.post('/mapping/cityMapping/matchedUncheck',{"geoMapIds":checkStr,"geoId":radioStr}).then(res=>{
-                        console.log('已聚待审的状态:', res);
                         console.log('20 or 30 设为待审的接口');
                         this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
                         this.modelShow = false;
@@ -509,7 +523,7 @@
                     this.instance('warning');
                 }else {
                     this.spinShow = true;
-                    this.$http.get('resource/geoLandmark/JDCityList?cityName='+this.cityValue).then(res=>{
+                    this.$http.get('resource/geoCommon/JDCityList?cityName='+this.cityValue).then(res=>{
                         console.log('get',res);
                         this.spinShow = false;
                         this.similarCityData = res.data.body;
@@ -535,8 +549,10 @@
             // 获取日志接口
             getCheckData(dataId){
                 this.checkShow = true;
+                this.spinShow = true;
                 this.$http.get('mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=1').then(res=>{
                     console.log('日志接口res:',res.data.body);
+                    this.spinShow = false;
                     this.checkData = res.data.body;
                 }).catch(err=>{
 
@@ -556,8 +572,10 @@
                     }
                 }
                 console.log('checkBoxData的长度:',this.submitData.checkBoxData.length);
+                // 复选框里面没有被选中了，清除一下radio的值
                 if(this.submitData.checkBoxData.length==0){
                     this.similar = '';
+                    this.submitData.radioData = [];
                 }
             }
         }
