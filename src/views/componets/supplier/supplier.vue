@@ -34,7 +34,7 @@
             <div class="tableWrap">
                 <div class="table">
                     <div ref="w1">
-                        <table style="min-width: 1182px;">
+                        <table style="min-width: 1182px;" class="thWidth">
                             <tr>
                                 <th><input v-model="checkAll" @click="toggleCheckAll" type="checkbox"/></th>
                                 <th v-for="(item,index) in supplierHeader" :key="index">{{item.title}}</th>
@@ -44,14 +44,14 @@
                         </table>
                     </div>
                     <div>
-                        <table style="min-width: 1182px;">
+                        <table style="min-width: 1182px;" class="tdWidth">
                             <tr v-for="(item,index) in supplierList" :key="index">
                                 <td><input type="checkbox" v-model="item.checked"/></td>
                                 <td>{{item.supplierId}}</td>
-                                <td>{{item.name}}</td>
+                                <td><Tooltip :content="item.name" placement="right-start"><span class="wSpan">{{item.name}}</span></Tooltip></td>
                                 <td>{{item.accessType}}</td>
                                 <td>{{item.popBusinessCode}}</td>
-                                <td>{{item.popStoreName}}</td>
+                                <td><Tooltip :content="item.popStoreName" placement="right-start"><span class="wSpan">{{item.popStoreName}}</span></Tooltip></td>
                                 <td>{{item.returnCommissionRatio}}</td>
                                 <td>{{item.channels}}</td>
                                 <td>{{item.payType}}</td>
@@ -213,10 +213,10 @@ export default {
             supplierList:[
                 {
                     supplierId:'3487854',
-                    name:'艺龙网现付',
+                    name:'艺龙网现付艺龙网现付艺龙网现付',
                     accessType:'API直连',
                     popBusinessCode:'613411111',
-                    popStoreName:'艺龙旅行网',
+                    popStoreName:'艺龙旅行网艺龙旅行网艺龙旅行网',
                     returnCommissionRatio:'5%',
                     channels:'全部',
                     payType:'现付',
@@ -343,6 +343,45 @@ export default {
                 },
                 {
                     supplierId:'3487864',
+                    name:'艺龙网现付',
+                    accessType:'API直连',
+                    popBusinessCode:'613411111',
+                    popStoreName:'艺龙旅行网',
+                    returnCommissionRatio:'5%',
+                    channels:'全部',
+                    payType:'现付',
+                    operator:'系统',
+                    lastOperateTime:'2017-01-01 16:59:02',
+                    status:'已上线'
+                },
+                {
+                    supplierId:'3487865',
+                    name:'艺龙网现付',
+                    accessType:'API直连',
+                    popBusinessCode:'613411111',
+                    popStoreName:'艺龙旅行网',
+                    returnCommissionRatio:'5%',
+                    channels:'全部',
+                    payType:'现付',
+                    operator:'系统',
+                    lastOperateTime:'2017-01-01 16:59:02',
+                    status:'已上线'
+                },
+                {
+                    supplierId:'3487865',
+                    name:'艺龙网现付',
+                    accessType:'API直连',
+                    popBusinessCode:'613411111',
+                    popStoreName:'艺龙旅行网',
+                    returnCommissionRatio:'5%',
+                    channels:'全部',
+                    payType:'现付',
+                    operator:'系统',
+                    lastOperateTime:'2017-01-01 16:59:02',
+                    status:'已上线'
+                },
+                {
+                    supplierId:'3487865',
                     name:'艺龙网现付',
                     accessType:'API直连',
                     popBusinessCode:'613411111',
@@ -494,6 +533,13 @@ table tr td:nth-last-of-type(1){
                             background: #f8f8f9;
                         }
                     }
+                    .thWidth{
+                        tr{
+                            th:nth-of-type(3),th:nth-of-type(6){
+                                width: 100px;
+                            }
+                        }
+                    }
                 }
                 div:nth-of-type(2){
                     height: 91%;
@@ -502,6 +548,21 @@ table tr td:nth-last-of-type(1){
                         table-layout: fixed;
                         tr:nth-of-type(1) td{
                             border-top: none;
+                        }
+                    }
+                    .tdWidth{
+                        tr{
+                            td:nth-of-type(3),td:nth-of-type(6){
+                                width: 100px;
+                                .wSpan{
+                                    width: 100px;
+                                    display: inline-block;
+                                    margin-top: 8px;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                }
+                            }
                         }
                     }
                 }
