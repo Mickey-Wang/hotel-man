@@ -40,10 +40,10 @@
 				</Row>
 			</Row>
 			<Row>
-        <Col span="6">
+        <Col span="5">
           <Table stripe border :columns="columns1" :data="provinceList"></Table>
         </Col>
-        <Col span="9">
+        <Col span="10">
           <Table stripe border :columns="columns2" :data="cityList"></Table>
         </Col>
         <Col span="9">
@@ -62,34 +62,42 @@ export default {
       columns1: [
         {
             title: '省份id',
-            key: 'provinceId'
+            key: 'provinceId',
+            "sortable": true,
+            align:"center"
         },
         {
             title: '省份名称',
-            key: 'provinceName'
+            key: 'provinceName',
+            align:"center"          
         },
         {
             title: '',
-            key: 'provinceNext'
+            key: 'provinceNext',
+            align:"center"          
         }
       ],
       columns2: [
         {
             title: '城市id',
-            key: 'cityId'
+            key: 'cityId',
+            align:"center"            
         },
         {
             title: '城市名称',
-            key: 'cityName'
+            key: 'cityName',
+            align:"center"
         },
         {
             title: '操作',
             key: 'cityOpr',
+            align:"center",
+            "width": 110,
             render: (h, params) => {
                 return h('div', [
                     h('Select', {
                         props: {
-                            placeholder:'123'
+                            placeholder:'请选择'
                         }
                     },[
                       h('Option',{
@@ -100,7 +108,7 @@ export default {
                       }),
                       h('Option',{
                         props:{
-                          value:0,
+                          value:1,
                           label:'上线'
                         }
                       })
@@ -110,29 +118,58 @@ export default {
         },
         {
             title: '日志',
-            key: 'cityLog'
+            key: 'cityLog',
+            align:"center"
         },
         {
             title: '',
-            key: 'cityNext'
+            key: 'cityNext',
+            align:"center"
         }
       ],
       columns3: [
         {
             title: '行政区id',
-            key: 'areaId'
+            key: 'areaId',
+            align:"center"
         },
         {
             title: '行政区名称',
-            key: 'areaName'
+            key: 'areaName',
+            align:"center"
         },
         {
             title: '操作',
-            key: 'areaOpr'
+            key: 'areaOpr',
+            width:110,
+            align:"center",
+            render: (h, params) => {
+              return h('div', [
+                  h('Select', {
+                      props: {
+                          placeholder:'请选择'
+                      }
+                  },[
+                    h('Option',{
+                      props:{
+                        value:0,
+                        label:'下线'
+                      }
+                    }),
+                    h('Option',{
+                      props:{
+                        value:1,
+                        label:'上线'
+                      }
+                    })
+                  ]),
+              ]);
+            }
         },
         {
             title: '日志',
-            key: 'areaLog'
+            key: 'areaLog',
+            align:"center"
         }
       ],
       provinceList: [
@@ -141,11 +178,11 @@ export default {
            provinceName:'北京',
            provinceNext:'展开'
         },{
-           provinceId:'10001',
+           provinceId:'10002',
            provinceName:'北京',
            provinceNext:'展开'
         },{
-           provinceId:'10001',
+           provinceId:'10003',
            provinceName:'北京',
            provinceNext:'展开'
         },
