@@ -47,5 +47,12 @@ const routers = [{
     },
     name:'supplier',
     component: (resolve) => require(['./views/pages/Supplier/supplier.vue'], resolve)
+},{
+    path:'/supplierMsg/:str',
+    meta:{
+       title:'供应商信息'
+    },
+    name:'supplierMsg',
+    component: (resolve) => require(['./views/pages/supplier/supplierMsg.vue'], resolve)
 }];
 export default routers;

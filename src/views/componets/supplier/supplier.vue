@@ -28,7 +28,7 @@
         </div>
         <div class="tableSection">
             <div class="button">
-                <Button type="primary">新增</Button>
+                <Button type="primary" @click="toAdd">新增</Button>
                 <Button type="primary">导出</Button>
             </div>
             <div class="tableWrap">
@@ -446,6 +446,14 @@ export default {
                     item.checked = this.checkAll;
                 }
             })
+        },
+        toAdd(){
+            this.$router.push({
+                name:'supplierMsg',
+                params:{
+                    'str':'add'
+                }
+            });
         }
     }
 }

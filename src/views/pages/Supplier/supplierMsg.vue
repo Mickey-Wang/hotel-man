@@ -1,7 +1,7 @@
 <template>
     <div class="layout-row">
         <Row class="layout-row">
-            <supplier></supplier>
+            <supplierMsg></supplierMsg>
         </Row>
     </div>
 </template>
@@ -28,7 +28,7 @@
 </style>
 
 <script>
-    import supplier from '../../componets/supplier/supplier.vue'
+    import supplierMsg from '../../componets/supplier/supplierMsg.vue'
     export default {
         data() {
             return {
@@ -36,7 +36,7 @@
             }
         },
         components: {
-            supplier
+            supplierMsg
         }
     }
 </script>

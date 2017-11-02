@@ -34,7 +34,7 @@
                         </table>
                     </div>
                     <div :style="{'height':cityTableType==10?'85%':'71%'}">
-                        <table v-if="cityApprovalList && cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
+                        <table v-if="cityApprovalList && cityApprovalList.length>0" style="min-width: 1118px;">
                             <tr v-for="(item,index) in cityApprovalList" :key="item.cityId" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
                                 <td @click="getInputValue(item)">{{item.cityName}}</td>
@@ -649,6 +649,9 @@
                 }
             }
         }
+    }
+    .overFlowTable{
+        overflow-x: hidden;
     }
     .table1{
         height: 85%;

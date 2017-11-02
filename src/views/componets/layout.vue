@@ -263,6 +263,10 @@ export default {
           this.selected[0] = '供应商管理';
           this.selected[1] = '';
           break;
+        case 'supplierMsg':
+          this.selected[0] = '供应商管理';
+          this.selected[1] = '供应商信息';
+          break;
       }
     },
     select(name) {
