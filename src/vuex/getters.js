@@ -15,3 +15,5 @@ export const roomCheckList = state => state.roomCheckList;
 //同步状态
 export const citySyncMappingDataState = state =>state.citySyncMappingDataState;
 export const hotelSyncMappingDataState = state =>state.hotelSyncMappingDataState;
+//获取现在右边是伸展还是收缩
+export const isShrinkStatus = state => state.isShrinkStatus;

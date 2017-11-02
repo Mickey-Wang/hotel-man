@@ -312,6 +312,9 @@
             },
             citySyncMappingDataState(){
                 return this.$store.getters.citySyncMappingDataState;
+            },
+            isShrinkStatus(){
+                return this.$store.getters.isShrinkStatus;
             }
         },
         watch: {
@@ -335,6 +338,11 @@
                     }
                 },
                 deep: true
+            },
+            isShrinkStatus:function (newValue, oldValue) {
+                if(!newValue){
+                    this.divWidth1 = 1118;
+                }
             }
         },
         methods:{
@@ -360,6 +368,8 @@
                 this.cityApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);
                 });
+                this.divWidth1 = this.$refs.w1.offsetWidth;
+                this.divWidth2 = this.$refs.w2.offsetWidth;
             },
             // 全选
             toggleCheckAll () {
@@ -641,6 +651,7 @@
             div:nth-of-type(2){
                 /*height: 74%;*/
                 overflow: auto;
+                overflow-x: hidden;
                 table{
                     table-layout: fixed;
                     tr:nth-of-type(1) td{

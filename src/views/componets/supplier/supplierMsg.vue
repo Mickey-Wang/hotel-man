@@ -78,7 +78,12 @@
             <div class="sameStyle name">
                 <div class="left"></div>
                 <div class="right">
+                    <input type="checkbox">
                     <span>每天的</span>
+                    <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue1" placeholder="选择时间" style="width: 112px"></TimePicker>
+                    <span>到</span>
+                    <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue2" placeholder="选择时间" style="width: 112px"></TimePicker>
+                    <span>处理</span>
                 </div>
             </div>
         </div>
@@ -203,7 +208,10 @@ export default {
                 }
             ],
             // 多选框
-            checkedDates1:['星期一','星期二','星期三','星期四','星期五']
+            checkedDates1:['星期一','星期二','星期三','星期四','星期五'],
+            // 时间默认值
+            timeValue1:'00:00',
+            timeValue2:'23:00'
         }
     }
 }

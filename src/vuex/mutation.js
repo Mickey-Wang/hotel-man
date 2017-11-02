@@ -10,7 +10,8 @@ import {
     HOTEL_CHECK_LIST,
     ROOM_CHECK_LIST,
     CITY_SYNC_MAPPING_DATA_STATE,
-    HOTEL_SYNC_MAPPING_DATA_STATE
+    HOTEL_SYNC_MAPPING_DATA_STATE,
+    IS_SHRINK_STATUS
 }
 from './mutation-type';
 const  mutations={
@@ -54,6 +55,10 @@ const  mutations={
     },
     [HOTEL_SYNC_MAPPING_DATA_STATE](state){
         state.hotelSyncMappingDataState = !state.hotelSyncMappingDataState;
+    },
+    //获取现在右边是伸展还是收缩
+    [IS_SHRINK_STATUS](state,data){
+        state.isShrinkStatus = data;
     }
 };
 export default mutations;

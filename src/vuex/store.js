@@ -22,6 +22,8 @@ let state = {
     //同步状态
     citySyncMappingDataState:false,
     hotelSyncMappingDataState:false,
+    //获取现在右边是伸展还是收缩
+    isShrinkStatus:false
 };
 export default new Vuex.Store({
     state,

@@ -304,9 +304,11 @@ export default {
       if (this.spanLeft === 5) {
         this.spanLeft = 1;
         this.spanRight = 23;
+        this.$store.commit('IS_SHRINK_STATUS',true);
       } else {
         this.spanLeft = 5;
         this.spanRight = 19;
+        this.$store.commit('IS_SHRINK_STATUS',false);
       }
     }
   }
