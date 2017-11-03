@@ -504,7 +504,7 @@
                     this.$set(item,'checked',false);
                 });
                 this.divWidth1 = this.$refs.w1.offsetWidth;
-                this.divWidth2 = this.$refs.w2.offsetWidth;
+                //this.divWidth2 = this.$refs.w2.offsetWidth;
             },
             // 全选
             toggleCheckAll () {
@@ -521,6 +521,7 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
+                this.divWidth2 = this.$refs.w2.offsetWidth;
                 this.spinShow = true;
                 console.log('点击获取名字:',item.hotelName);
                 this.hotelValue = item.hotelName;
@@ -690,6 +691,7 @@
             },
             // 点击Go，获取京东相似数据
             getSimilar(){
+                this.divWidth2 = this.$refs.w2.offsetWidth;
                 if(this.hotelValue==''){
                     this.instance('warning');
                 }else {
