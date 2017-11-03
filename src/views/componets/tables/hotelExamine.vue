@@ -503,8 +503,9 @@
                 this.hotelApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);
                 });
-                this.divWidth1 = this.$refs.w1.offsetWidth;
-                //this.divWidth2 = this.$refs.w2.offsetWidth;
+                if(this.$refs.w1){
+                    this.divWidth1 = this.$refs.w1.offsetWidth;
+                }
             },
             // 全选
             toggleCheckAll () {
