@@ -271,6 +271,8 @@
                     this.getCityApprovalList();
                 }
             });
+            //如果切换左边需要数据也在的话
+            //this.getCityApprovalList();
         },
         mounted(){
             // 计算一下初始化第一个表格的宽度
@@ -342,6 +344,7 @@
             isShrinkStatus:function (newValue, oldValue) {
                 if(!newValue){
                     this.divWidth1 = 1118;
+                    this.divWidth2 = 860;
                 }
             }
         },

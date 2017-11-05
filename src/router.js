@@ -50,7 +50,8 @@ const routers = [{
 },{
     path:'/supplierMsg/:str',
     meta:{
-       title:'供应商信息'
+       title:'供应商信息',
+       activeName: 'supplier'
     },
     name:'supplierMsg',
     component: (resolve) => require(['./views/pages/supplier/supplierMsg.vue'], resolve)
