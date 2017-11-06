@@ -58,32 +58,73 @@
                 </div>
                 <div class="right">
                     <span>请选择</span>
-                    <input type="checkbox" id="one" value="星期一" v-model="checkedDates1">
-                    <label for="one">星期一</label>
-                    <input type="checkbox" id="two" value="星期二" v-model="checkedDates1">
-                    <label for="two">星期二</label>
-                    <input type="checkbox" id="three" value="星期三" v-model="checkedDates1">
-                    <label for="three">星期三</label>
-                    <input type="checkbox" id="four" value="星期四" v-model="checkedDates1">
-                    <label for="four">星期四</label>
-                    <input type="checkbox" id="five" value="星期五" v-model="checkedDates1">
-                    <label for="five">星期三</label>
-                    <input type="checkbox" id="six" value="星期六" v-model="checkedDates1">
-                    <label for="six">星期六</label>
-                    <input type="checkbox" id="seven" value="星期日" v-model="checkedDates1">
-                    <label for="seven">星期日</label>
+                    <CheckboxGroup v-model="weekDates1" style="width: 470px; display: inline-block;">
+                        <Checkbox label="星期一"></Checkbox>
+                        <Checkbox label="星期二"></Checkbox>
+                        <Checkbox label="星期三"></Checkbox>
+                        <Checkbox label="星期四"></Checkbox>
+                        <Checkbox label="星期五"></Checkbox>
+                        <Checkbox label="星期六"></Checkbox>
+                        <Checkbox label="星期日"></Checkbox>
+                    </CheckboxGroup>
                     <Icon type="ios-plus" size="20"></Icon>
                 </div>
             </div>
             <div class="sameStyle name">
                 <div class="left"></div>
                 <div class="right">
-                    <input type="checkbox">
+                    <Checkbox v-model="selectedValue1"></Checkbox>
                     <span>每天的</span>
                     <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue1" placeholder="选择时间" style="width: 112px"></TimePicker>
                     <span>到</span>
                     <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue2" placeholder="选择时间" style="width: 112px"></TimePicker>
                     <span>处理</span>
+                </div>
+            </div>
+            <div class="sameStyle name serviceTime">
+                <div class="left"></div>
+                <div class="right">
+                    <span>请选择</span>
+                    <CheckboxGroup v-model="weekDates2" style="width: 470px; display: inline-block;">
+                        <Checkbox label="星期一"></Checkbox>
+                        <Checkbox label="星期二"></Checkbox>
+                        <Checkbox label="星期三"></Checkbox>
+                        <Checkbox label="星期四"></Checkbox>
+                        <Checkbox label="星期五"></Checkbox>
+                        <Checkbox label="星期六"></Checkbox>
+                        <Checkbox label="星期日"></Checkbox>
+                    </CheckboxGroup>
+                    <Icon type="ios-plus" size="20" style="margin-right: 10px;"></Icon>
+                    <Icon type="ios-close" size="20"></Icon>
+                </div>
+            </div>
+            <div class="sameStyle name">
+                <div class="left"></div>
+                <div class="right">
+                    <Checkbox v-model="selectedValue2"></Checkbox>
+                    <span>每天的</span>
+                    <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue1" placeholder="选择时间" style="width: 112px"></TimePicker>
+                    <span>到</span>
+                    <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue2" placeholder="选择时间" style="width: 112px"></TimePicker>
+                    <span>处理</span>
+                </div>
+            </div>
+            <div class="sameStyle">
+                <div class="left">
+                    <span><em>*</em>可开具发票类型</span>
+                </div>
+                <div class="right">
+                    <span>请选择</span>
+                    <CheckboxGroup v-model="invoiceData" style="width: 600px; display: inline-block;">
+                        <Checkbox label="代订房费"></Checkbox>
+                        <Checkbox label="代订住宿费"></Checkbox>
+                        <Checkbox label="旅游服务费"></Checkbox>
+                        <Checkbox label="会议服务费"></Checkbox>
+                        <Checkbox label="住宿费"></Checkbox>
+                        <Checkbox label="旅游费"></Checkbox>
+                        <Checkbox label="其他"></Checkbox>
+                    </CheckboxGroup>
+                    <Input v-model="invoiceValue" style="width: 200px"></Input>
                 </div>
             </div>
         </div>
@@ -208,12 +249,18 @@ export default {
                 }
             ],
             // 多选框
-            checkedDates1:['星期一','星期二','星期三','星期四','星期五'],
+            weekDates1:['星期一','星期二','星期三','星期四','星期五'],
+            weekDates2:['星期六','星期日'],
             // 时间默认值
+            selectedValue1:true,
+            selectedValue2:true,
             timeValue1:'00:00',
-            timeValue2:'23:00'
+            timeValue2:'23:00',
+            // 发票
+            invoiceData:[],
+            invoiceValue:''
         }
-    }
+    },
 }
 </script>
 <style lang="less" scoped rel="stylesheet/less">
