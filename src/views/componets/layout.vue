@@ -158,7 +158,7 @@
         <Button type="text" @click="toggleClick">
           <Icon type="navicon" size="32"></Icon>
         </Button>
-        <Button type="dashed" shape="circle" icon="ios-refresh" @click="changeState"></Button>
+        <!-- <Button type="dashed" shape="circle" icon="ios-refresh" @click="changeState"></Button> -->
 
       </div>
       <div class="layout-breadcrumb">
@@ -230,13 +230,13 @@ export default {
     this.changeBreadcrumb(this.routerName);
   },
   methods: {
-    changeState(){
-      if (this.routerName == 'city') {
-        this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE');      
-      } else {
-        this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE');      
-      }
-    },
+    // changeState(){
+    //   if (this.routerName == 'city') {
+    //     this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE');      
+    //   } else {
+    //     this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE');      
+    //   }
+    // },
     changeBreadcrumb(name) {
       switch (name) {
         case 'index':

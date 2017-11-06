@@ -29,7 +29,7 @@ const router = new VueRouter(RouterConfig);
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start();
     Util.title(to.meta.title);
-    store.commit('ROUTER_NAME',to.name);
+    store.commit('ROUTER_NAME', to.meta.activeName || to.name);
     next();
 });
 
