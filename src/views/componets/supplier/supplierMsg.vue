@@ -14,7 +14,7 @@
                         <span><em>*</em>供应商名称</span>
                     </div>
                     <div class="right">
-                        <Input  v-model="supplierName" placeholder="请输入..." style="width: 260px"></Input>
+                        <Input v-model="supplierName" placeholder="请输入..." style="width: 260px"></Input>
                     </div>
                 </div>
                 <div class="sameStyle name">
@@ -26,11 +26,11 @@
                             <Option v-for="item in AccessType" :value="item.value" :key="item.value"></Option>
                         </Select>
                         <span><em>*</em>供应商名称</span>
-                        <Select v-model="selectPlatformName" style="width:260px;margin-right:20px;" placeholder="请选择">
+                        <Select :disabled="selectAccessType!='平台'" v-model="selectPlatformName" style="width:260px;margin-right:20px;" placeholder="请选择">
                             <Option v-for="item in platformName" :value="item.value" :key="item.value"></Option>
                         </Select>
                         <span>平台供应商识别码</span>
-                        <Input v-model="platformCode" placeholder="请输入..." style="width: 260px"></Input>
+                        <Input :disabled="selectAccessType!='平台'" v-model="platformCode" placeholder="请输入..." style="width: 260px"></Input>
                     </div>
                 </div>
                 <div class="sameStyle name">
@@ -59,16 +59,16 @@
                     </div>
                     <div class="right">
                         <span>请选择</span>
-                        <CheckboxGroup v-model="weekDates1" style="width: 470px; display: inline-block;">
-                            <Checkbox label="星期一"></Checkbox>
-                            <Checkbox label="星期二"></Checkbox>
-                            <Checkbox label="星期三"></Checkbox>
-                            <Checkbox label="星期四"></Checkbox>
-                            <Checkbox label="星期五"></Checkbox>
-                            <Checkbox label="星期六"></Checkbox>
-                            <Checkbox label="星期日"></Checkbox>
+                        <CheckboxGroup v-model="weekDates1" style="width: 440px; display: inline-block;">
+                            <Checkbox label="1">星期一</Checkbox>
+                            <Checkbox label="2">星期二</Checkbox>
+                            <Checkbox label="3">星期三</Checkbox>
+                            <Checkbox label="4">星期四</Checkbox>
+                            <Checkbox label="5">星期五</Checkbox>
+                            <Checkbox label="6">星期六</Checkbox>
+                            <Checkbox label="7">星期日</Checkbox>
                         </CheckboxGroup>
-                        <Icon type="ios-plus" size="20"></Icon>
+                        <Icon @click="addTime" v-if="weekDates1.length<7" style="cursor: pointer" type="ios-plus" size="20"></Icon>
                     </div>
                 </div>
                 <div class="sameStyle name">
@@ -87,13 +87,13 @@
                     <div class="right">
                         <span>请选择</span>
                         <CheckboxGroup v-model="weekDates2" style="width: 470px; display: inline-block;">
-                            <Checkbox label="星期一"></Checkbox>
-                            <Checkbox label="星期二"></Checkbox>
-                            <Checkbox label="星期三"></Checkbox>
-                            <Checkbox label="星期四"></Checkbox>
-                            <Checkbox label="星期五"></Checkbox>
-                            <Checkbox label="星期六"></Checkbox>
-                            <Checkbox label="星期日"></Checkbox>
+                            <Checkbox label="1">星期一</Checkbox>
+                            <Checkbox label="2">星期二</Checkbox>
+                            <Checkbox label="3">星期三</Checkbox>
+                            <Checkbox label="4">星期四</Checkbox>
+                            <Checkbox label="5">星期五</Checkbox>
+                            <Checkbox label="6">星期六</Checkbox>
+                            <Checkbox label="7">星期六</Checkbox>
                         </CheckboxGroup>
                         <Icon type="ios-plus" size="20" style="margin-right: 10px;"></Icon>
                         <Icon type="ios-close" size="20"></Icon>
@@ -167,6 +167,7 @@
                             <Radio label="90天"></Radio>
                             <Radio label="其它"></Radio>
                         </RadioGroup>
+                        <Input v-model="priceDaysValue" style="width: 200px"></Input>
                     </div>
                 </div>
             </div>
@@ -292,8 +293,8 @@ export default {
                 }
             ],
             // 多选框
-            weekDates1:['星期一','星期二','星期三','星期四','星期五'],
-            weekDates2:['星期六','星期日'],
+            weekDates1:['1','2','3','4','5','6','7'],
+            weekDates2:[],
             // 时间默认值
             selectedValue1:true,
             selectedValue2:true,
@@ -310,11 +311,12 @@ export default {
             // 物理房型
             physicalRoom:'是',
             // 报价天数
-            priceDays:'90天'
+            priceDays:'90天',
+            priceDaysValue:''
         }
     },
     methods:{
-        // 上架渠道全选
+        // 上架渠道全选(iView上的代码)
         channelCheckAll(){
             if (this.indeterminate) {
                 this.channelAll = false;
@@ -329,7 +331,7 @@ export default {
                 this.channelData = [];
             }
         },
-        // 上架渠道反选
+        // 上架渠道反选(iView上的代码)
         checkAllChannel(data){
             if (data.length === 6) {
                 this.indeterminate = false;
@@ -341,6 +343,10 @@ export default {
                 this.indeterminate = false;
                 this.channelAll = false;
             }
+        },
+        // 添加时间
+        addTime(){
+
         }
     }
 }
