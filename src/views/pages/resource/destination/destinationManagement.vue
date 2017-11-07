@@ -18,6 +18,9 @@
     .layout-content-main-base;
   }
 }
+.main {
+  margin-top: 10px;
+}
 </style>
 <template>
 	<div class="layout-row">
@@ -39,15 +42,15 @@
 					</Col> 
 				</Row>
 			</Row>
-			<Row>
+			<Row className="main"><!-- type="flex" justify="center" align="middle" -->
         <Col span="5">
-          <Table stripe border :columns="columns1" :data="provinceList"></Table>
+          <Table stripe border :columns="columnsProvince" :data="provinceList"></Table>
         </Col>
-        <Col span="10">
-          <Table stripe border :columns="columns2" :data="cityList"></Table>
+        <Col span="10" v-if="tableCityShow">
+          <Table stripe border :columns="columnsCity" :data="cityList"></Table>
         </Col>
-        <Col span="9">
-          <Table stripe border :columns="columns3" :data="areaList"></Table>
+        <Col span="9" v-if="tableAreaShow">
+          <Table stripe border :columns="columnsArea" :data="areaList"></Table>
         </Col>
 			</Row>		
 		</Row>
@@ -57,9 +60,14 @@
 export default {
   data() {
     return {
+      //搜索字段
       province: "",
       city: "",
-      columns1: [
+      //表格显示区
+      tableAreaShow:false,
+      tableCityShow:false,
+      //表格定义
+      columnsProvince: [
         {
             title: '省份id',
             key: 'provinceId',
@@ -72,12 +80,33 @@ export default {
             align:"center"          
         },
         {
-            title: '',
+            title: ' ',
             key: 'provinceNext',
-            align:"center"          
+            align:"center",
+            render: (h, params) => {
+              return h('div', [
+                  h('Button', {
+                      props: {
+                          type: 'primary',
+                          size: 'small'
+                      },
+                      style: {
+                          marginRight: '0px'
+                      },
+                      on: {
+                          click: () => {
+                            let provinceId = params.row.provinceId;
+                            console.log(this.city);
+                            this.tableCityShow = !this.tableCityShow;
+                            this.tableAreaShow = false;
+                          }
+                      }
+                  }, '展开')
+              ]);
+          }          
         }
       ],
-      columns2: [
+      columnsCity: [
         {
             title: '城市id',
             key: 'cityId',
@@ -97,7 +126,8 @@ export default {
                 return h('div', [
                     h('Select', {
                         props: {
-                            placeholder:'请选择'
+                            placeholder:'请选择',
+                            value: params.row.cityOpr
                         }
                     },[
                       h('Option',{
@@ -124,10 +154,30 @@ export default {
         {
             title: '',
             key: 'cityNext',
-            align:"center"
+            align:"center",
+            render: (h, params) => {
+              return h('div', [
+                  h('Button', {
+                      props: {
+                          type: 'primary',
+                          size: 'small'
+                      },
+                      style: {
+                          marginRight: '2px'
+                      },
+                      on: {
+                          click: () => {
+                            let cityId = params.row.cityId;
+                            console.log(this.city);
+                            this.tableAreaShow = !this.tableAreaShow
+                          }
+                      }
+                  }, '展开')
+              ]);
+          }
         }
       ],
-      columns3: [
+      columnsArea: [
         {
             title: '行政区id',
             key: 'areaId',
@@ -172,11 +222,12 @@ export default {
             align:"center"
         }
       ],
+      //表格数据
       provinceList: [
         {
            provinceId:'10001',
            provinceName:'北京',
-           provinceNext:'展开'
+           provinceNext:['展开','保存/收起']
         },{
            provinceId:'10002',
            provinceName:'北京',
@@ -193,15 +244,16 @@ export default {
            cityName:'北京',
            cityOpr:'fefefe',
            cityLog:'日志',
+           cityOpr:1,
            cityNext:'展开'
         },{
-           cityId:'100011',
+           cityId:'100013',
            cityName:'北京',
-           cityOpr:'',
+           cityOpr:1,
            cityLog:'日志',
            cityNext:'展开'
         },{
-           cityId:'100011',
+           cityId:'100012',
            cityName:'北京',
            cityOpr:'',
            cityLog:'日志',
@@ -210,11 +262,11 @@ export default {
       ],
       areaList: [
         {
-           areaId:'1000113',
+           areaId:'1000110',
            areaName:'西城区',
            areaLog:'日志'
         },{
-           areaId:'1000113',
+           areaId:'1000112',
            areaName:'西城区',
            areaLog:'日志'
         },{
