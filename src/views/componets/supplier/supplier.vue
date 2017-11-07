@@ -1,17 +1,21 @@
 <template>
     <section class="supplierWrap">
         <div class="conditions">
-            <div class="conditions-top">
+            <div class="conditions-top conditionsSame">
                 <span>供应商接入方式</span>
                 <Select v-model="selectAccessType" style="width:150px;margin-right:20px;" placeholder="全部">
                     <Option v-for="item in AccessType" :value="item.value" :key="item.value"></Option>
+                </Select>
+                <span v-if="selectAccessType=='平台'">平台名称</span>
+                <Select v-if="selectAccessType=='平台'" v-model="selectPlatform" style="width:150px;margin-right:20px;" placeholder="全部">
+                    <Option v-for="item in platformData" :value="item.value" :key="item.value"></Option>
                 </Select>
                 <span>供应商名称</span>
                 <Input v-model="supplierName" style="width:150px;margin-right:20px;"></Input>
                 <span>供应商ID</span>
                 <Input v-model="supplierId" style="width:150px;"></Input>
             </div>
-            <div class="conditions-bottom">
+            <div class="conditions-bottom conditionsSame">
                 <span>POP商家编号</span>
                 <Input v-model="supplierNumber" style="width:150px;margin-right:20px;"></Input>
                 <span>在线情况</span>
@@ -48,10 +52,12 @@
                             <tr v-for="(item,index) in supplierList" :key="index">
                                 <td><input type="checkbox" v-model="item.checked"/></td>
                                 <td>{{item.supplierId}}</td>
-                                <td><Tooltip :content="item.name" placement="right-start"><span class="wSpan">{{item.name}}</span></Tooltip></td>
+                                <td v-if="item.name.length>8"><Tooltip :content="item.name" placement="right-start"><span class="wSpan">{{item.name}}</span></Tooltip></td>
+                                <td v-else>{{item.name}}</td>
                                 <td>{{item.accessType}}</td>
                                 <td>{{item.popBusinessCode}}</td>
-                                <td><Tooltip :content="item.popStoreName" placement="right-start"><span class="wSpan">{{item.popStoreName}}</span></Tooltip></td>
+                                <td v-if="item.name.length>8"><Tooltip :content="item.popStoreName" placement="right-start"><span class="wSpan">{{item.popStoreName}}</span></Tooltip></td>
+                                <td v-else>{{item.popStoreName}}</td>
                                 <td>{{item.returnCommissionRatio}}</td>
                                 <td>{{item.channels}}</td>
                                 <td>{{item.payType}}</td>
@@ -111,6 +117,18 @@ export default {
             ],
             // 供应商名称
             supplierName:'',
+            // 平台选择
+            selectPlatform:'',
+            platformData:[
+                {
+                    value: '泰坦云',
+                    label: '0'
+                },
+                {
+                    value: '畅联',
+                    label: '1'
+                },
+            ],
             // 供应商Id
             supplierId:'',
             // 商家编号
@@ -213,7 +231,7 @@ export default {
             supplierList:[
                 {
                     supplierId:'3487854',
-                    name:'艺龙网现付艺龙网现付艺龙网现付',
+                    name:'艺龙网现付艺龙网支付',
                     accessType:'API直连',
                     popBusinessCode:'613411111',
                     popStoreName:'艺龙旅行网艺龙旅行网艺龙旅行网',
@@ -226,7 +244,7 @@ export default {
                 },
                 {
                     supplierId:'3487855',
-                    name:'艺龙网现付',
+                    name:'艺龙网现付艺龙网',
                     accessType:'API直连',
                     popBusinessCode:'613411111',
                     popStoreName:'艺龙旅行网',
@@ -492,26 +510,17 @@ table tr td:nth-last-of-type(1){
     height: 100%;
     .conditions{
         margin-bottom: 30px;
-        .conditions-top{
-            margin-bottom: 20px;
+        .conditionsSame{
             span{
                 display: inline-block;
-                margin-right: 5px;
-            }
-        }
-        .conditions-bottom{
-            span{
-                display: inline-block;
+                width: 70px;
             }
             span:nth-of-type(1){
-                margin-right: 16px;
+                width: 86px;
             }
-            span:nth-of-type(2){
-                margin-right: 16px;
-            }
-            span:nth-of-type(3){
-                margin-right: 6px;
-            }
+        }
+        .conditions-top{
+            margin-bottom: 20px;
         }
     }
     .tableSection{
@@ -552,6 +561,7 @@ table tr td:nth-last-of-type(1){
                 div:nth-of-type(2){
                     height: 91%;
                     overflow: auto;
+                    overflow-x: hidden;
                     table{
                         table-layout: fixed;
                         tr:nth-of-type(1) td{

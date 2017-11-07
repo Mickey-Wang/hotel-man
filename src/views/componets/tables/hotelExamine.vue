@@ -478,6 +478,7 @@
             isShrinkStatus:function (newValue, oldValue) {
                 if(!newValue){
                     this.divWidth1 = 1118;
+                    this.divWidth2 = 860;
                 }
             }
         },
