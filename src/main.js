@@ -22,7 +22,8 @@ Vue.prototype.$http = Util.ajax;
 // 路由配置
 const RouterConfig = {
     mode: 'history',
-    routes: Routers
+    routes: Routers,
+    base:'/hotelman'
 };
 const router = new VueRouter(RouterConfig);
 

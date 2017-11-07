@@ -12,7 +12,8 @@ util.title = function(title) {
 const ajaxUrl = env === 'development' ?
     'http://mock.jd.hk/mock/59e9b5bbf5448721d22c84de/hotelman' :
     env === 'production' ?
-    'https://man.hotel.jd.com' :
+    '//mock.jd.hk/mock/59e9b5bbf5448721d22c84de/hotelman' :
+    // 'https://man.hotel.jd.com' :
     'https://man.hotel.jd.com';
 
 util.ajax = axios.create({
