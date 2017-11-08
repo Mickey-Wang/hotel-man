@@ -28,7 +28,7 @@
 </style>
 
 <script>
-    import supplierMsg from '../../componets/supplier/supplierMsg.vue'
+    import supplierMsg from '../../componets/supplier/supplierMsgStep2.vue'
     export default {
         data() {
             return {
