@@ -467,10 +467,7 @@ export default {
         },
         toAdd(){
             this.$router.push({
-                name:'supplierMsg',
-                params:{
-                    'str':'add'
-                }
+                name:'step1'
             });
         }
     }

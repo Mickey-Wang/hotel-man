@@ -247,20 +247,27 @@
                             </Select>
                         </div>
                     </div>
-                    <div class="sameStyle name">
+                    <div class="sameStyle name serviceTime">
                         <div class="left">
                             <span>价格策略</span>
                         </div>
                         <div class="right">
-                            <CheckboxGroup v-model="weekDates1" style="width: 440px; display: inline-block;">
-                                <Checkbox label="1">星期一</Checkbox>
-                                <Checkbox label="2">星期二</Checkbox>
+                            <span>请选择</span>
+                            <CheckboxGroup v-model="priceStrategy" style="width: 440px; display: inline-block;">
+                                <Checkbox label="1">百分比</Checkbox>
+                                <Input v-model="pricePercent" placeholder="请输入百分比" style="width: 100px;margin-right: 10px;"></Input>
+                                <Checkbox label="2">固定金额</Checkbox>
+                                <Input v-model="fixedPrice" placeholder="请输入固定金额" style="width: 100px"></Input>
                             </CheckboxGroup>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="btn"></div>
+            <div class="btn">
+                <Button type="primary" style="margin-right: 10px;">完成</Button>
+                <Button type="warning" style="margin-right: 10px;">上一步</Button>
+                <Button type="warning">返回</Button>
+            </div>
         </div>
     </section>
 </template>
@@ -433,7 +440,11 @@ export default {
                 }
             ],
             // 价格策略
-            priceStrategy:[]
+            priceStrategy:[],
+            //价格比例
+            pricePercent:'',
+            //固定价格
+            fixedPrice:''
         }
     },
     methods:{
@@ -548,6 +559,13 @@ export default {
         .btn{
             width: 150px;
             margin: 25px auto 0;
+        }
+    }
+    .stepTwo{
+        height: 72%;
+        .btn{
+            width: 220px;
+            margin: 50px auto 0;
         }
     }
 }
