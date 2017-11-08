@@ -67,11 +67,11 @@
                                 <td>
                                     <span @click="changeText(item)" v-if="item.controlText" :class="{onlineText:item.controlText}">上线</span>
                                     <span v-if="!item.controlText">下线</span>
-                                    <span>查看</span>
+                                    <span @click="goToCheck">查看</span>
                                     <span>编辑</span>
                                 </td>
                                 <td>
-                                    <span>客服信息</span>
+                                    <span @click="goToCustomerInfo">客户信息</span>
                                 </td>
                             </tr>
                         </table>
@@ -465,9 +465,22 @@ export default {
                 }
             })
         },
+        // 新增按钮
         toAdd(){
             this.$router.push({
                 name:'step1'
+            });
+        },
+        // 客户信息按钮
+        goToCustomerInfo(){
+            this.$router.push({
+                name:'customerInfo'
+            });
+        },
+        //去查看
+        goToCheck(){
+            this.$router.push({
+                name:'check'
             });
         }
     }

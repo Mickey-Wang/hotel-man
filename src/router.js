@@ -54,6 +54,30 @@ const routers = [{
        activeName: 'supplier'
     },
     name:'step1',
-    component: (resolve) => require(['./views/pages/supplier/supplierMsg.vue'], resolve)
+    component: (resolve) => require(['./views/pages/Supplier/supplierMsgStep1.vue'], resolve)
+},{
+    path:'/supplierMsg/step2',
+    meta:{
+        title:'供应商信息',
+        activeName: 'supplier'
+    },
+    name:'step2',
+    component: (resolve) => require(['./views/pages/Supplier/supplierMsgStep2.vue'], resolve)
+},{
+    path:'/supplierMsg/customerInfo',
+    meta:{
+        title:'供应商信息',
+        activeName: 'supplier'
+    },
+    name:'customerInfo',
+    component: (resolve) => require(['./views/pages/Supplier/customerInfo.vue'], resolve)
+},{
+    path:'/supplierMsg/check',
+    meta:{
+        title:'供应商信息',
+        activeName: 'supplier'
+    },
+    name:'check',
+    component: (resolve) => require(['./views/pages/Supplier/checkSupplierMsg.vue'], resolve)
 }];
 export default routers;
