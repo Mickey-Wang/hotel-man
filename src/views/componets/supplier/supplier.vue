@@ -4,10 +4,10 @@
             <div class="conditions-top conditionsSame">
                 <span>供应商接入方式</span>
                 <Select v-model="selectAccessType" style="width:150px;margin-right:20px;" placeholder="全部">
-                    <Option v-for="item in AccessType" :value="item.value" :key="item.value"></Option>
+                    <Option v-for="item in AccessType" :value="item.value" :key="item.value">{{ item.label }}</Option>
                 </Select>
-                <span v-if="selectAccessType=='平台'">平台名称</span>
-                <Select v-if="selectAccessType=='平台'" v-model="selectPlatform" style="width:150px;margin-right:20px;" placeholder="全部">
+                <span v-if="selectAccessType==1">平台名称</span>
+                <Select v-if="selectAccessType==1" v-model="selectPlatform" style="width:150px;margin-right:20px;" placeholder="请选择">
                     <Option v-for="item in platformData" :value="item.value" :key="item.value"></Option>
                 </Select>
                 <span>供应商名称</span>
@@ -20,13 +20,13 @@
                 <Input v-model="supplierNumber" style="width:150px;margin-right:20px;"></Input>
                 <span>在线情况</span>
                 <Select v-model="selectOnlineStatus" style="width:150px;margin-right:20px;" placeholder="全部">
-                    <Option v-for="item in onlineStatus" :value="item.value" :key="item.value"></Option>
+                    <Option v-for="item in onlineStatus" :value="item.value" :key="item.value">{{item.label}}</Option>
                 </Select>
                 <span>上架渠道</span>
                 <Select v-model="selectChannel" style="width:150px;" placeholder="全部">
-                    <Option v-for="item in channel" :value="item.value" :key="item.value"></Option>
+                    <Option v-for="item in channel" :value="item.value" :key="item.value">{{item.label}}</Option>
                 </Select>
-                <Button type="primary" style="margin-right: 10px; margin-left: 20px;">查询</Button>
+                <Button type="primary" @click="toSearchList" style="margin-right: 10px; margin-left: 20px;">查询</Button>
                 <Button type="warning">重置</Button>
             </div>
         </div>
@@ -96,23 +96,23 @@ export default {
     data(){
         return{
             //供应商接入方式的数据
-            selectAccessType:'',
+            selectAccessType:0,
             AccessType:[
                 {
-                    value: '全部',
-                    label: '0'
+                    value: 0,
+                    label: '全部'
                 },
                 {
-                    value: 'Ebooking',
-                    label: '1'
+                    value: 1,
+                    label: '平台'
                 },
                 {
-                    value: 'API直连',
-                    label: '2'
+                    value: 2,
+                    label: 'API平台'
                 },
                 {
-                    value: '平台',
-                    label: '3'
+                    value: 3,
+                    label: 'Ebooking'
                 }
             ],
             // 供应商名称
@@ -122,11 +122,11 @@ export default {
             platformData:[
                 {
                     value: '泰坦云',
-                    label: '0'
+                    label: '泰坦云'
                 },
                 {
                     value: '畅联',
-                    label: '1'
+                    label: '畅联'
                 },
             ],
             // 供应商Id
@@ -136,51 +136,51 @@ export default {
             // 在线情况
             onlineStatus:[
                 {
-                    value: '全部',
-                    label: '0'
+                    value: 0,
+                    label: '全部'
                 },
                 {
-                    value: '已上线',
-                    label: '1'
+                    value: 1,
+                    label: '已上线'
                 },
                 {
-                    value: '已下线',
-                    label: '2'
+                    value: 2,
+                    label: '已下线'
                 }
             ],
-            selectOnlineStatus:'',
+            selectOnlineStatus:0,
             // 商家渠道channel
             channel:[
                 {
-                    value: '全部',
-                    label: '0'
+                    value: 0,
+                    label: '全部'
                 },
                 {
-                    value: '网站前台',
-                    label: '1'
+                    value: 1,
+                    label: '网站前台'
                 },
                 {
-                    value: '酒店APP',
-                    label: '2'
+                    value: 1,
+                    label: '酒店APP'
                 },
                 {
-                    value: '网站差旅',
-                    label: '3'
+                    value: 3,
+                    label: '网站差旅'
                 },
                 {
-                    value: '薪福卡(大客户)',
-                    label: '4'
+                    value: 4,
+                    label: '薪福卡(大客户)'
                 },
                 {
-                    value: '齐采网(大客户)',
-                    label: '5'
+                    value: 5,
+                    label: '齐采网(大客户)'
                 },
                 {
-                    value: '大连航空',
-                    label: '6'
+                    value: 6,
+                    label: '大连航空'
                 }
             ],
-            selectChannel:'',
+            selectChannel:0,
             // 供应商列表
             supplierHeader:[
                 {
@@ -482,6 +482,11 @@ export default {
             this.$router.push({
                 name:'check'
             });
+        },
+        // 点击查询按钮获取列表
+        toSearchList(){
+            console.log('查询列表。。。');
+
         }
     }
 }
