@@ -394,7 +394,7 @@
                 console.log('点击获取名字:',item.cityName);
                 this.cityValue = item.cityName;
                 // 按关键词查询京东城市列表接口
-                this.$http.get('resource/geoCommon/JDCityList?cityName='+this.cityValue).then(res=>{
+                this.$http.get('resource/geoCommon/jdCityList?cityName='+this.cityValue).then(res=>{
                     this.similarCityData = res.data.body;
                     this.spinShow = false;
                 }).catch(error=>{
@@ -542,7 +542,7 @@
                     this.instance('warning');
                 }else {
                     this.spinShow = true;
-                    this.$http.get('resource/geoCommon/JDCityList?cityName='+this.cityValue).then(res=>{
+                    this.$http.get('resource/geoCommon/jdCityList?cityName='+this.cityValue).then(res=>{
                         console.log('get',res);
                         this.spinShow = false;
                         this.similarCityData = res.data.body;

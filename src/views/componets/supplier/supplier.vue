@@ -4,7 +4,7 @@
             <div class="conditions-top conditionsSame">
                 <span>供应商接入方式</span>
                 <Select v-model="selectAccessType" style="width:150px;margin-right:20px;" placeholder="全部">
-                    <Option v-for="item in AccessType" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    <Option v-for="item in accessType" :value="item.value" :key="item.value">{{ item.label }}</Option>
                 </Select>
                 <span v-if="selectAccessType==1">平台名称</span>
                 <Select v-if="selectAccessType==1" v-model="selectPlatform" style="width:150px;margin-right:20px;" placeholder="请选择">
@@ -83,9 +83,9 @@
             </div>
             <div class="page">
                 <div class="floatWrap">
-                    <span>共738748条</span>
+                    <span>共210条</span>
                     <span>20条/页</span>
-                    <Page :total="100" style="float: right; margin-left:10px;"></Page>
+                    <Page :current="1" :page-size="20" :total="210" on-change="changePage()" style="float: right; margin-left:10px;"></Page>
                 </div>
             </div>
         </div>
@@ -96,10 +96,10 @@ export default {
     data(){
         return{
             //供应商接入方式的数据
-            selectAccessType:0,
-            AccessType:[
+            selectAccessType:'',
+            accessType:[
                 {
-                    value: 0,
+                    value: '',
                     label: '全部'
                 },
                 {
@@ -136,7 +136,7 @@ export default {
             // 在线情况
             onlineStatus:[
                 {
-                    value: 0,
+                    value: '',
                     label: '全部'
                 },
                 {
@@ -148,11 +148,11 @@ export default {
                     label: '已下线'
                 }
             ],
-            selectOnlineStatus:0,
+            selectOnlineStatus:'',
             // 商家渠道channel
             channel:[
                 {
-                    value: 0,
+                    value: '',
                     label: '全部'
                 },
                 {
@@ -160,7 +160,7 @@ export default {
                     label: '网站前台'
                 },
                 {
-                    value: 1,
+                    value: 2,
                     label: '酒店APP'
                 },
                 {
@@ -180,7 +180,7 @@ export default {
                     label: '大连航空'
                 }
             ],
-            selectChannel:0,
+            selectChannel:'',
             // 供应商列表
             supplierHeader:[
                 {
@@ -426,7 +426,9 @@ export default {
                 }
             ],
             // 全选状态
-            checkAll: false
+            checkAll: false,
+            // 供应商列表数据
+            supplierData:{}
         }
     },
     created(){
@@ -434,6 +436,8 @@ export default {
             this.$set(item,'checked',false);// 控制全选
             this.$set(item,'controlText',true); // 控制上线和下线文字
         });
+        // 调取供应商列表接口
+
     },
     watch:{
         supplierList:{
@@ -485,8 +489,26 @@ export default {
         },
         // 点击查询按钮获取列表
         toSearchList(){
-            console.log('查询列表。。。');
-
+            console.log('供应商接入方式:', this.selectAccessType);
+            console.log('平台名称:',this.selectPlatform);
+            console.log('供应商名称:',this.supplierName);
+            console.log('供应商ID:',this.supplierId);
+            console.log('商家编号:',this.supplierNumber);
+            console.log('在线情况:',this.selectOnlineStatus);
+            console.log('上架渠道:',this.selectChannel);
+            this.supplierData = {
+                selectAccessType:this.selectAccessType,
+                selectPlatform:this.selectPlatform,
+                supplierName:this.supplierName,
+                supplierId:this.supplierId,
+                supplierNumber:this.supplierNumber,
+                selectOnlineStatus:this.selectOnlineStatus,
+                selectChannel:this.selectChannel
+            };
+        },
+        // 点击切换获取当前页数
+        changePage(current){
+            console.log('当前页数:',current);
         }
     }
 }

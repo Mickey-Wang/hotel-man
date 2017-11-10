@@ -528,7 +528,7 @@
                 console.log('点击获取名字:',item.hotelName);
                 this.hotelValue = item.hotelName;
                 // 按照关键词模糊查询京东城市列表
-                this.$http.get('resource/hotel/JDHotellist?hotelName='+item.hotelName).then(res=>{
+                this.$http.get('resource/hotel/jdHotelList?hotelName='+item.hotelName).then(res=>{
                     this.similarCityData = res.data.body;
                     this.spinShow = false;
                 }).catch(error=>{
@@ -698,7 +698,7 @@
                     this.instance('warning');
                 }else {
                     this.spinShow = true;
-                    this.$http.get('resource/hotel/JDHotellist?hotelName='+this.hotelValue).then(res=>{
+                    this.$http.get('resource/hotel/jdHotelList?hotelName='+this.hotelValue).then(res=>{
                         this.similarCityData = res.data.body;
                         this.spinShow = false;
                     }).catch(error=>{
