@@ -1,4 +1,11 @@
 const routers = [{
+    path: '*',
+    meta: {
+        title: '404EORROR'
+    },
+    name: '404',
+    component: (resolve) => require(['./views/pages/error/404'], resolve)
+},{
     path: '/',
     meta: {
         title: ''
@@ -79,5 +86,12 @@ const routers = [{
     },
     name:'check',
     component: (resolve) => require(['./views/pages/Supplier/checkSupplierMsg.vue'], resolve)
+}, {
+    path: '/account/leadinbill',
+    meta: {
+        title: '导入现付到账单',
+    },
+    name: 'leadInBill',
+    component: (resolve) => require(['./views/pages/account/leadInBill'], resolve)
 }];
 export default routers;

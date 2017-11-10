@@ -294,7 +294,7 @@ export default {
   mounted: function() {
     this.$http
       .post("/mapping/hotelmapping/navtabsearch", {
-        souceType: 20,
+        sourceType: 20,
         dimensionType: 10,
         times: 7
       })
@@ -303,7 +303,7 @@ export default {
       });
     this.$http
       .post("/mapping/hotelmapping/navtabsearch", {
-        souceType: 10,
+        sourceType: 10,
         dimensionType: 20,
         times: 1
       })
@@ -370,7 +370,7 @@ export default {
       this.currentSupplierId = id;
       this.$http
         .post("/mapping/hotelMapping/navtabsearch", {
-          souceType: 20,
+          sourceType: 20,
           dimensionType: 20,
           supplierCode: id,
           times: 1
@@ -383,7 +383,7 @@ export default {
       this.chooseTabBySuppliers = "province";
       this.$http
         .post("/mapping/hotelMapping/navtabsearch", {
-          souceType: 20,
+          sourceType: 20,
           dimensionType: 30,
           countryCode: id
         })
@@ -395,7 +395,7 @@ export default {
       this.chooseTabBySuppliers = "city";
       this.$http
         .post("/mapping/hotelMapping/navtabsearch", {
-          souceType: 20,
+          sourceType: 20,
           dimensionType: 40,
           provinceCode: id
         })
@@ -408,16 +408,16 @@ export default {
       this.currentCityIdBySuppliers = id;
       return this.$http
         .post("/mapping/hotelMapping/navtabsearch", {
-          souceType: 20,
+          sourceType: 20,
           dimensionType: 50,
           cityCode: id,
           mapStatus: map,
-          page:page,
+          pageNum:page,
           pageSize:pageSize
         })
         .then(rs => {
           this.hotelListChooseBySuppliers = rs.data.body.statisticList;
-          this.hotelTotalSuppliers = rs.data.body.count;
+          this.hotelTotalSuppliers = rs.data.body.total;
         });
     },
     //选择供应商侧城市列表审核状态
@@ -448,7 +448,7 @@ export default {
       this.chooseTabByRegions = "province";
       this.$http
         .post("/mapping/hotelMapping/navtabsearch", {
-          souceType: 10,
+          sourceType: 10,
           dimensionType: 30,
           countryCode: id
         })
@@ -460,7 +460,7 @@ export default {
       this.chooseTabByRegions = "city";
       this.$http
         .post("/mapping/hotelMapping/navtabsearch", {
-          souceType: 10,
+          sourceType: 10,
           dimensionType: 40,
           provinceCode: id
         })
@@ -469,19 +469,21 @@ export default {
         });
     },
 
-    chooseCityCopy(id, map = 20) {
+    chooseCityCopy(id, map = 20,page = 1 ,pageSize = 30) {
       this.chooseTabByRegions = "hotel";
       this.currentCityIdByRegions = id;
       return this.$http
         .post("/mapping/hotelMapping/navtabsearch", {
-          souceType: 10,
+          sourceType: 10,
           dimensionType: 50,
           cityCode: id,
-          mapStatus: map
+          mapStatus: map,
+          pageNum:page,
+          pageSize:pageSize
         })
         .then(rs => {
           this.hotelListChooseByRegions = rs.data.body.statisticList;
-          this.hotelTotalRegions = rs.data.body.count;
+          this.hotelTotalRegions = rs.data.body.total;
         });
       this.isCheckStateByRegionsShow = true;
     },
@@ -537,7 +539,7 @@ export default {
           return;
         }
         this.$http
-          .get(`/mapping/hotelMapping/navSearch?hotelId=${this.searchInput}`)
+          .get(`/mapping/hotelMapping/navSearch?keyword=${this.searchInput}&type=1`)
           .then(rs => {
             this.hotelListChooseByRegions = rs.data.body;
           })
@@ -557,7 +559,7 @@ export default {
           return;
         }
         this.$http
-          .get(`/mapping/hotelMapping/navSearch?hotelName=${this.searchInput}`)
+          .get(`/mapping/hotelMapping/navSearch?keyword=${this.searchInput}&type=2`)
           .then(rs => {
             this.hotelListChooseByRegions = rs.data.body;
           })

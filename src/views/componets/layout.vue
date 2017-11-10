@@ -136,8 +136,17 @@
             <Icon type="ios-cart" :size="iconSize"></Icon>
             <span class="layout-text">订单管理</span>
           </template>
-          <MenuItem name="3-1" class="layout-text">订单1</MenuItem>
-          <MenuItem name="3-2" class="layout-text">订单2</MenuItem>
+          <MenuItem name="orderList" class="layout-text">订单列表</MenuItem>
+          <MenuItem name="refund" class="layout-text">部分退款</MenuItem>
+        </Submenu>
+        <Submenu name="account">
+          <template slot="title">
+            <Icon type="social-yen" :size="iconSize"></Icon>
+            <span class="layout-text">结算管理</span>
+          </template>
+          <MenuItem name="leadInBill" class="layout-text">导入现付对账表</MenuItem>
+          <MenuItem name="billMan" class="layout-text">账单管理</MenuItem>
+          <MenuItem name="accountBill" class="layout-text">结算单管理</MenuItem>
         </Submenu>
         <MenuItem name="supplier">
         <Icon type="ios-people" :size="iconSize"></Icon>
@@ -263,6 +272,10 @@ export default {
           this.selected[0] = '供应商管理';
           this.selected[1] = '';
           break;
+        case 'leadInBill':
+          this.selected[0] = '结算管理';
+          this.selected[1] = '导入现付到账单';
+          break;
       }
     },
     select(name) {
@@ -287,6 +300,9 @@ export default {
           break;
         case 'supplier':
           this.$router.push('/supplier');
+          break;
+        case 'leadInBill':
+          this.$router.push('/account/leadinbill');
           break;
       }
     },

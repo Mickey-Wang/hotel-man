@@ -96,7 +96,7 @@ export default {
                       on: {
                           click: () => {
                             let provinceId = params.row.provinceId;
-                            console.log(this.city);
+                            // console.log(this.city);
                             this.tableCityShow = !this.tableCityShow;
                             this.tableAreaShow = false;
                           }

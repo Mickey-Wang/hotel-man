@@ -271,7 +271,7 @@ export default {
   mounted: function() {
     this.$http
       .post("/mapping/cityMapping/navtabsearch", {
-        souceType: 10,
+        sourceType: 10,
         dimensionType: 10,
         times: 7
       })
@@ -283,7 +283,7 @@ export default {
       });
     this.$http
       .post("/mapping/cityMapping/navtabsearch", {
-        souceType: 20,
+        sourceType: 20,
         dimensionType: 20,
         times: 1
       })
@@ -369,7 +369,7 @@ export default {
       this.currentSupplierId = id;
       this.$http
         .post("/mapping/cityMapping/navtabsearch", {
-          souceType: 20,
+          sourceType: 20,
           dimensionType: 20,
           supplierCode: id,
           times: 1
@@ -382,7 +382,7 @@ export default {
       this.chooseTabBySuppliers = "province";
       this.$http
         .post("/mapping/cityMapping/navtabsearch", {
-          souceType: 20,
+          sourceType: 20,
           dimensionType: 30,
           countryCode: id
         })
@@ -395,7 +395,7 @@ export default {
       this.chooseTabBySuppliers = "city";
       const promise = this.$http
         .post("/mapping/cityMapping/navtabsearch", {
-          souceType: 20,
+          sourceType: 20,
           dimensionType: 40,
           provinceCode: id,
           mapStatus: map
@@ -429,7 +429,7 @@ export default {
       this.chooseTabByRegions = "province";
       this.$http
         .post("/mapping/cityMapping/navtabsearch", {
-          souceType: 10,
+          sourceType: 10,
           dimensionType: 30,
           countryCode: id
         })
@@ -442,7 +442,7 @@ export default {
       this.currentProvinceIdByRegions = id;
       const promise = this.$http
         .post("/mapping/cityMapping/navtabsearch", {
-          souceType: 10,
+          sourceType: 10,
           dimensionType: 40,
           provinceCode: id,
           mapStatus: map
