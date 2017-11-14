@@ -24,14 +24,14 @@
                         </div>
                         <div class="right">
                             <Select v-model="selectAccessType" style="width:260px;margin-right:20px;" placeholder="请选择">
-                                <Option v-for="item in AccessType" :value="item.value" :key="item.value"></Option>
+                                <Option v-for="item in AccessType" :value="item.value" :key="item.value">{{ item.label }}</Option>
                             </Select>
-                            <span><em>*</em>供应商名称</span>
-                            <Select :disabled="selectAccessType!='平台'" v-model="selectPlatformName" style="width:260px;margin-right:20px;" placeholder="请选择">
+                            <span><em>*</em>平台名称</span>
+                            <Select :disabled="selectAccessType!=1" v-model="selectPlatformName" style="width:260px;margin-right:20px;" placeholder="请选择">
                                 <Option v-for="item in platformName" :value="item.value" :key="item.value"></Option>
                             </Select>
                             <span>平台供应商识别码</span>
-                            <Input :disabled="selectAccessType!='平台'" v-model="platformCode" placeholder="请输入..." style="width: 260px"></Input>
+                            <Input :disabled="selectAccessType!=1" v-model="platformCode" placeholder="请输入..." style="width: 260px"></Input>
                         </div>
                     </div>
                     <div class="sameStyle name">
@@ -39,8 +39,8 @@
                             <span><em>*</em>报价币种</span>
                         </div>
                         <div class="right">
-                            <Select v-model="selectQuotedCurrency" style="width:260px;margin-right:20px;" placeholder="CNY人民币">
-                                <Option v-for="item in quotedCurrency" :value="item.value" :key="item.value"></Option>
+                            <Select v-model="selectQuotedCurrency" style="width:260px;margin-right:20px;">
+                                <Option v-for="item in quotedCurrency" :value="item.value" :key="item.value">{{ item.label }}</Option>
                             </Select>
                         </div>
                     </div>
@@ -49,8 +49,8 @@
                             <span><em>*</em>结算币种</span>
                         </div>
                         <div class="right">
-                            <Select v-model="selectSettlementCurrency" style="width:260px;margin-right:20px;" placeholder="CNY人民币">
-                                <Option v-for="item in settlementCurrency" :value="item.value" :key="item.value"></Option>
+                            <Select v-model="selectSettlementCurrency" style="width:260px;margin-right:20px;">
+                                <Option v-for="item in settlementCurrency" :value="item.value" :key="item.value">{{ item.label }}</Option>
                             </Select>
                         </div>
                     </div>
@@ -192,110 +192,110 @@ export default {
             selectAccessType:'',
             AccessType:[
                 {
-                    value: 'Ebooking',
-                    label: '1'
+                    value: 1,
+                    label: '平台'
                 },
                 {
-                    value: 'API直连',
-                    label: '2'
+                    value: 2,
+                    label: 'API平台'
                 },
                 {
-                    value: '平台',
-                    label: '3'
+                    value: 3,
+                    label: 'Ebooking'
                 }
             ],
-            // 供应商接入方式
+            // 平台选择
             selectPlatformName:'',
             platformName:[
                 {
                     value: '泰坦云',
-                    label: '1'
+                    label: '泰坦云'
                 },
                 {
                     value: '畅联',
-                    label: '2'
+                    label: '畅联'
                 },
             ],
             // 平台供应商识别码
             platformCode:'',
             // 报价币种
-            selectQuotedCurrency:'',
+            selectQuotedCurrency:1,
             quotedCurrency:[
                 {
-                    value: 'CNY人民币',
-                    label: '1'
+                    value: 1,
+                    label: 'CNY人民币'
                 },
                 {
-                    value: 'USD美元',
-                    label: '2'
+                    value: 2,
+                    label: 'USD美元'
                 },
                 {
-                    value: 'EUR欧元',
-                    label: '3'
+                    value: 3,
+                    label: 'EUR欧元'
                 },
                 {
-                    value: 'JPY日元',
-                    label: '4'
+                    value: 4,
+                    label: 'JPY日元'
                 },
                 {
-                    value: 'HKD港币',
-                    label: '5'
+                    value: 5,
+                    label: 'HKD港币'
                 },
                 {
-                    value: 'KER韩元',
-                    label: '6'
+                    value: 6,
+                    label: 'KER韩元'
                 },
                 {
-                    value: 'SGD新元',
-                    label: '7'
+                    value: 7,
+                    label: 'SGD新元'
                 },
                 {
-                    value: 'THB泰铢',
-                    label: '8'
+                    value: 8,
+                    label: 'THB泰铢'
                 },
                 {
-                    value: 'CAD加元',
-                    label: '9'
+                    value: 9,
+                    label: 'CAD加元'
                 }
             ],
             // 结算币种
-            selectSettlementCurrency:'',
+            selectSettlementCurrency: 1,
             settlementCurrency:[
                 {
-                    value: 'CNY人民币',
-                    label: '1'
+                    value: 1,
+                    label: 'CNY人民币'
                 },
                 {
-                    value: 'USD美元',
-                    label: '2'
+                    value: 2,
+                    label: 'USD美元'
                 },
                 {
-                    value: 'EUR欧元',
-                    label: '3'
+                    value: 3,
+                    label: 'EUR欧元'
                 },
                 {
-                    value: 'JPY日元',
-                    label: '4'
+                    value: 4,
+                    label: 'JPY日元'
                 },
                 {
-                    value: 'HKD港币',
-                    label: '5'
+                    value: 5,
+                    label: 'HKD港币'
                 },
                 {
-                    value: 'KER韩元',
-                    label: '6'
+                    value: 6,
+                    label: 'KER韩元'
                 },
                 {
-                    value: 'SGD新元',
-                    label: '7'
+                    value: 7,
+                    label: 'SGD新元'
                 },
                 {
-                    value: 'THB泰铢',
-                    label: '8'
+                    value: 8,
+                    label: 'THB泰铢'
                 },
                 {
-                    value: 'CAD加元',
-                    label: '9'
+                    value: 9,
+                    label: 'CAD加元'
                 }
             ],
             // 多选框
@@ -356,9 +356,11 @@ export default {
         },
         // 下一步
         goToNext(){
-            this.$router.push({
+            // 判断一下必填部分，平台供应商识别码和是否含有物理房型不是必须
+
+            /*this.$router.push({
                 name:'step2'
-            });
+            });*/
         }
     }
 }
@@ -444,6 +446,9 @@ export default {
             width: 220px;
             margin: 50px auto 0;
         }
+    }
+    .errBorder{
+        border: 1px solid red;
     }
 }
 </style>

@@ -421,18 +421,29 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
+                this.cityValue = item.cityName;
+                this.toSearch();
+            },
+            // 点击Go，获取京东相似数据
+            getSimilar(){
+                if(this.cityValue==''){
+                    this.instance('warning');
+                    return;
+                }
+                this.toSearch();
+            },
+            // 点击城市的时候和Go搜索的时候相同代码提取
+            toSearch(){
                 this.pageNum = 1;
                 // 点击的时候 scrollTop 设置为0，防止下次滚动条直接到最下面
                 this.divH.scrollTop = 0;
                 this.divWidth2 = this.$refs.w2.offsetWidth;
                 this.spinShow = true;
-                console.log('点击获取名字:',item.cityName);
-                this.cityValue = item.cityName;
-                // 按关键词查询京东城市列表接口
                 this.$http.get('resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum=1').then(res=>{
+                    console.log('get',res);
                     this.pages = 3;// 第一次拿到总页数
-                    this.similarCityData = res.data.body;
                     this.spinShow = false;
+                    this.similarCityData = res.data.body;
                 }).catch(error=>{
                     console.log('get',error);
                 });
@@ -569,26 +580,6 @@
                             content: content2
                         });
                         break;
-                }
-            },
-            // 点击Go，获取京东相似数据
-            getSimilar(){
-                this.pageNum = 1;
-                // 点击的时候 scrollTop 设置为0，防止下次滚动条直接到最下面
-                this.divH.scrollTop = 0;
-                this.divWidth2 = this.$refs.w2.offsetWidth;
-                if(this.cityValue==''){
-                    this.instance('warning');
-                }else {
-                    this.spinShow = true;
-                    this.$http.get('resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum=1').then(res=>{
-                        console.log('get',res);
-                        this.pages = 3;// 第一次拿到总页数
-                        this.spinShow = false;
-                        this.similarCityData = res.data.body;
-                    }).catch(error=>{
-                        console.log('get',error);
-                    });
                 }
             },
             // 10:未聚待审;20:已聚待审;30:已聚已审

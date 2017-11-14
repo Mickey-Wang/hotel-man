@@ -555,20 +555,29 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
+                this.hotelValue = item.hotelName;
+                this.toSearch();
+            },
+            // 点击Go，获取京东相似数据
+            getSimilar(){
+                if(this.hotelValue==''){
+                    this.instance('warning');
+                    return;
+                }
+                this.toSearch();
+            },
+            toSearch(){
                 this.pageNum = 1;
                 // 点击的时候 scrollTop 设置为0，防止下次滚动条直接到最下面
                 this.divH.scrollTop = 0;
                 this.divWidth2 = this.$refs.w2.offsetWidth;
                 this.spinShow = true;
-                console.log('点击获取名字:',item.hotelName);
-                this.hotelValue = item.hotelName;
-                // 按照关键词模糊查询京东城市列表
-                this.$http.get('resource/hotel/jdHotelList?hotelName='+item.hotelName+'&pageNum=1').then(res=>{
+                this.$http.get('resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1').then(res=>{
                     this.pages = 3;// 第一次拿到总页数
                     this.similarCityData = res.data.body;
                     this.spinShow = false;
                 }).catch(error=>{
-
+                    console.log('get',error);
                 });
             },
             // highlight函数
@@ -725,25 +734,6 @@
                             content: content2
                         });
                         break;
-                }
-            },
-            // 点击Go，获取京东相似数据
-            getSimilar(){
-                this.pageNum = 1;
-                // 点击的时候 scrollTop 设置为0，防止下次滚动条直接到最下面
-                this.divH.scrollTop = 0;
-                this.divWidth2 = this.$refs.w2.offsetWidth;
-                if(this.hotelValue==''){
-                    this.instance('warning');
-                }else {
-                    this.spinShow = true;
-                    this.$http.get('resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1').then(res=>{
-                        this.pages = 3;// 第一次拿到总页数
-                        this.similarCityData = res.data.body;
-                        this.spinShow = false;
-                    }).catch(error=>{
-                        console.log('get',error);
-                    });
                 }
             },
             // 10:未聚待审;20:已聚待审;30:已聚已审

@@ -27,7 +27,7 @@
                     <Option v-for="item in channel" :value="item.value" :key="item.value">{{item.label}}</Option>
                 </Select>
                 <Button type="primary" @click="toSearchList" style="margin-right: 10px; margin-left: 20px;">查询</Button>
-                <Button type="warning">重置</Button>
+                <Button type="warning" @click="toReset">重置</Button>
             </div>
         </div>
         <div class="tableSection">
@@ -509,6 +509,16 @@ export default {
         // 点击切换获取当前页数
         changePage(current){
             console.log('当前页数:',current);
+        },
+        // 重置
+        toReset(){
+            this.selectAccessType='';
+            this.supplierName = '';
+            this.selectPlatform = '';
+            this.supplierId = '';
+            this.supplierNumber = '';
+            this.selectOnlineStatus = '';
+            this.selectChannel = '';
         }
     }
 }
