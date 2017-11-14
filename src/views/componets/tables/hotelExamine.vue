@@ -507,7 +507,7 @@
                         if(this.pageNum > this.pages){
                             return;
                         }
-                        this.$http.get('resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum='+this.pageNum).then(res=>{
+                        this.$http.get('resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum='+this.pageNum+'&pageSize=20').then(res=>{
                             this.similarCityData = this.similarCityData.concat(res.data.body);
                         }).catch(error=>{
                             console.log('get',error);
@@ -572,7 +572,7 @@
                 this.divH.scrollTop = 0;
                 this.divWidth2 = this.$refs.w2.offsetWidth;
                 this.spinShow = true;
-                this.$http.get('resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1').then(res=>{
+                this.$http.get('resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1&pageSize=20').then(res=>{
                     this.pages = 3;// 第一次拿到总页数
                     this.similarCityData = res.data.body;
                     this.spinShow = false;
