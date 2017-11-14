@@ -85,7 +85,7 @@
                 <div class="floatWrap">
                     <span>共210条</span>
                     <span>20条/页</span>
-                    <Page :current="1" :page-size="20" :total="210" on-change="changePage()" style="float: right; margin-left:10px;"></Page>
+                    <Page :current="1" :page-size="20" :total="210" @on-change="changePage" style="float: right; margin-left:10px;"></Page>
                 </div>
             </div>
         </div>

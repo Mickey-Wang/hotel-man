@@ -78,8 +78,8 @@
                             </tr>
                         </table>
                     </div>
-                    <div style="height: 78%;">
-                        <table ref="h4" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
+                    <div ref="divH" style="height: 78%;">
+                        <table ref="tableH" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
                             <tr v-for="(item,index) in similarCityData" :key="index">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <!--<td>{{item.cityName}}</td>-->
@@ -262,7 +262,14 @@
                 // 控制loading
                 spinShow:false,
                 // 已聚已审数据的长度
-                arrListLen:0
+                arrListLen:0,
+                // 带滚动条的div
+                divH:null,
+                tableScrollH:null,
+                // 默认第一页
+                pageNum:1,
+                // 总页数
+                pages:null
             }
         },
         created(){
@@ -278,6 +285,9 @@
             // 计算一下初始化第一个表格的宽度
             this.divWidth1 = this.$refs.w1.offsetWidth;
             this.divWidth2 = this.$refs.w2.offsetWidth;
+            // 相似城市列表添加 scroll 事件
+            this.divH = this.$refs.divH;
+            this.divH.addEventListener('scroll',this.addMore);
         },
         computed:{
             // 城市审核列表中的京东城市审核对象
@@ -349,6 +359,28 @@
             }
         },
         methods:{
+            // 下拉加载
+            addMore(){
+                //console.log('当前页数--1:',this.pageNum);
+                let divHeight = this.divH.offsetHeight;
+                let divScrollTop = this.divH.scrollTop;
+                if(this.$refs.tableH){
+                    this.tableScrollH = this.$refs.tableH.scrollHeight;
+                    if(divHeight+divScrollTop+0.41 >= this.tableScrollH){
+                        console.log('拉到底了...');
+                        this.pageNum ++;
+                        // 小于等于总页数才请求接口
+                        if(this.pageNum > this.pages){
+                            return;
+                        }
+                        this.$http.get('resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum='+this.pageNum).then(res=>{
+                            this.similarCityData = this.similarCityData.concat(res.data.body);
+                        }).catch(error=>{
+                            console.log('get',error);
+                        });
+                    }
+                }
+            },
             // 获取城市审核列表
             getCityApprovalList () {
                 if (this.$store.getters.cityCheckList.cityApprovalList) {
@@ -389,12 +421,16 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
+                this.pageNum = 1;
+                // 点击的时候 scrollTop 设置为0，防止下次滚动条直接到最下面
+                this.divH.scrollTop = 0;
                 this.divWidth2 = this.$refs.w2.offsetWidth;
                 this.spinShow = true;
                 console.log('点击获取名字:',item.cityName);
                 this.cityValue = item.cityName;
                 // 按关键词查询京东城市列表接口
-                this.$http.get('resource/geoCommon/jdCityList?cityName='+this.cityValue).then(res=>{
+                this.$http.get('resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum=1').then(res=>{
+                    this.pages = 3;// 第一次拿到总页数
                     this.similarCityData = res.data.body;
                     this.spinShow = false;
                 }).catch(error=>{
@@ -537,13 +573,17 @@
             },
             // 点击Go，获取京东相似数据
             getSimilar(){
+                this.pageNum = 1;
+                // 点击的时候 scrollTop 设置为0，防止下次滚动条直接到最下面
+                this.divH.scrollTop = 0;
                 this.divWidth2 = this.$refs.w2.offsetWidth;
                 if(this.cityValue==''){
                     this.instance('warning');
                 }else {
                     this.spinShow = true;
-                    this.$http.get('resource/geoCommon/jdCityList?cityName='+this.cityValue).then(res=>{
+                    this.$http.get('resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum=1').then(res=>{
                         console.log('get',res);
+                        this.pages = 3;// 第一次拿到总页数
                         this.spinShow = false;
                         this.similarCityData = res.data.body;
                     }).catch(error=>{
