@@ -35,7 +35,7 @@
                     </div>
                     <div :style="{'height':cityTableType==10?'85%':'71%'}">
                         <table v-if="cityApprovalList && cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
-                            <tr v-for="(item,index) in cityApprovalList" :key="item.cityId" :class="[{trClass: item.mapStatus==20}]">
+                            <tr v-for="(item,index) in cityApprovalList" :key="index" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
                                 <td @click="getInputValue(item)">{{item.cityName}}</td>
                                 <td>{{item.cityId}}</td>
@@ -78,7 +78,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div ref="divH" style="height: 78%;">
+                    <div ref="divH" style="height: 80%;">
                         <table ref="tableH" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
                             <tr v-for="(item,index) in similarCityData" :key="index">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
@@ -143,6 +143,7 @@
     </section>
 </template>
 <script>
+    import axios from 'axios';// 删掉
     export default {
         data(){
             return {
@@ -269,7 +270,9 @@
                 // 默认第一页
                 pageNum:1,
                 // 总页数
-                pages:null
+                pages:null,
+                // 相似数据的条数
+                similarTotalNum:null
             }
         },
         created(){
@@ -319,9 +322,9 @@
             cityTotalNum(){
                 return this.cityApprovalList.length;
             },
-            similarTotalNum(){
+            /*similarTotalNum(){
                 return this.similarCityData.length;
-            },
+            },*/
             citySyncMappingDataState(){
                 return this.$store.getters.citySyncMappingDataState;
             },
@@ -366,15 +369,15 @@
                 let divScrollTop = this.divH.scrollTop;
                 if(this.$refs.tableH){
                     this.tableScrollH = this.$refs.tableH.scrollHeight;
-                    if(divHeight+divScrollTop+0.41 >= this.tableScrollH){
+                    if(this.tableScrollH-divHeight-divScrollTop<=1){
                         console.log('拉到底了...');
                         this.pageNum ++;
                         // 小于等于总页数才请求接口
                         if(this.pageNum > this.pages){
                             return;
                         }
-                        this.$http.get('resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum='+this.pageNum+'&pageSize=20').then(res=>{
-                            this.similarCityData = this.similarCityData.concat(res.data.body);
+                        axios.get('//trip.hotel.man.net/resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum='+this.pageNum+'&pageSize=20').then(res=>{
+                            this.similarCityData = this.similarCityData.concat(res.data.body.cityList);
                         }).catch(error=>{
                             console.log('get',error);
                         });
@@ -399,6 +402,7 @@
                     this.similarCityData = [];
                     this.submitData.radioData = [];
                     this.similar = '';
+                    this.cityValue = '';
                 }
                 this.cityApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);
@@ -421,7 +425,8 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
-                this.cityValue = item.cityName;
+                //this.cityValue = item.cityName; 恢复
+                this.cityValue = '州'; // 删掉
                 this.toSearch();
             },
             // 点击Go，获取京东相似数据
@@ -430,6 +435,7 @@
                     this.instance('warning');
                     return;
                 }
+                this.cityValue = '州';// 删掉
                 this.toSearch();
             },
             // 点击城市的时候和Go搜索的时候相同代码提取
@@ -439,11 +445,12 @@
                 this.divH.scrollTop = 0;
                 this.divWidth2 = this.$refs.w2.offsetWidth;
                 this.spinShow = true;
-                this.$http.get('resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum=1&pageSize=20').then(res=>{
+                axios.get('//trip.hotel.man.net/resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum=1&pageSize=20').then(res=>{
                     console.log('get',res);
-                    this.pages = 3;// 第一次拿到总页数
                     this.spinShow = false;
-                    this.similarCityData = res.data.body;
+                    this.pages = res.data.body.pages;// 第一次拿到总页数
+                    this.similarTotalNum = res.data.body.total;
+                    this.similarCityData = res.data.body.cityList;
                 }).catch(error=>{
                     console.log('get',error);
                 });

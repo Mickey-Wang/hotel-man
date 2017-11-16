@@ -38,7 +38,7 @@
                     </div>
                     <div :style="{'height':hotelTableType==10?'85%':'71%'}">
                         <table v-if="hotelApprovalList && hotelApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
-                            <tr v-for="(item,index) in hotelApprovalList" :key="item.hotelId" :class="[{trClass: item.mapStatus==20}]">
+                            <tr v-for="(item,index) in hotelApprovalList" :key="index" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
                                 <td @click="getInputValue(item)">{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
@@ -84,9 +84,9 @@
                             </tr>
                         </table>
                     </div>
-                    <div ref="divH" style="height: 78%;">
+                    <div ref="divH" style="height: 80%;">
                         <table ref="tableH" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
-                            <tr v-for="(item,index) in similarCityData" :key="item.id">
+                            <tr v-for="(item,index) in similarCityData" :key="index">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <td>{{item.hotelId}}</td>
                                 <td v-html="highlight(item.hotelName, hotelValue)"></td>
@@ -175,7 +175,7 @@
                     </div>
                     <div style="overflow-x: hidden">
                         <table style="width: 1266px;">
-                            <tr v-for="(item,index) in treeData" v-if="index>0" :key="item.id">
+                            <tr v-for="(item,index) in treeData" v-if="index>0" :key="index">
                                 <td><input type="checkbox" v-model="item.checked"/></td>
                                 <td>{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
@@ -209,6 +209,7 @@
     </section>
 </template>
 <script>
+    import axios from 'axios';// 删掉
     export default {
         data(){
             return {
@@ -405,7 +406,8 @@
                 // 默认第一页
                 pageNum:1,
                 // 总页数
-                pages:null
+                pages:null,
+                similarTotalNum:null
             }
         },
         created(){
@@ -453,9 +455,9 @@
             hotelTotalNum(){
                 return this.hotelApprovalList.length;
             },
-            similarTotalNum(){
+            /*similarTotalNum(){
                 return this.similarCityData.length;
-            },
+            },*/
             hotelSyncMappingDataState(){
                 return this.$store.getters.hotelSyncMappingDataState;
             },
@@ -500,15 +502,15 @@
                 let divScrollTop = this.divH.scrollTop;
                 if(this.$refs.tableH){
                     this.tableScrollH = this.$refs.tableH.scrollHeight;
-                    if(divHeight+divScrollTop+0.41 >= this.tableScrollH){
+                    if(this.tableScrollH-divHeight-divScrollTop<=1){
                         console.log('拉到底了...');
                         this.pageNum ++;
                         // 小于等于总页数才请求接口
                         if(this.pageNum > this.pages){
                             return;
                         }
-                        this.$http.get('resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum='+this.pageNum+'&pageSize=20').then(res=>{
-                            this.similarCityData = this.similarCityData.concat(res.data.body);
+                        axios.get('//trip.hotel.man.net/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum='+this.pageNum+'&pageSize=20').then(res=>{
+                            this.similarCityData = this.similarCityData.concat(res.data.body.hotelList);
                         }).catch(error=>{
                             console.log('get',error);
                         });
@@ -532,6 +534,7 @@
                     this.similarCityData = [];
                     this.submitData.radioData = [];
                     this.similar = '';
+                    this.hotelValue = '';
                 }
                 this.hotelApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);
@@ -555,7 +558,8 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
-                this.hotelValue = item.hotelName;
+                //this.hotelValue = item.hotelName; // 恢复
+                this.hotelValue = '酒店'; // 删掉
                 this.toSearch();
             },
             // 点击Go，获取京东相似数据
@@ -564,6 +568,7 @@
                     this.instance('warning');
                     return;
                 }
+                this.hotelValue = '酒店';// 删掉
                 this.toSearch();
             },
             toSearch(){
@@ -572,10 +577,11 @@
                 this.divH.scrollTop = 0;
                 this.divWidth2 = this.$refs.w2.offsetWidth;
                 this.spinShow = true;
-                this.$http.get('resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1&pageSize=20').then(res=>{
-                    this.pages = 3;// 第一次拿到总页数
-                    this.similarCityData = res.data.body;
+                axios.get('//trip.hotel.man.net/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1&pageSize=20').then(res=>{
                     this.spinShow = false;
+                    this.similarTotalNum = res.data.body.total;
+                    this.pages = res.data.body.pages;// 第一次拿到总页数
+                    this.similarCityData = res.data.body.hotelList;
                 }).catch(error=>{
                     console.log('get',error);
                 });
