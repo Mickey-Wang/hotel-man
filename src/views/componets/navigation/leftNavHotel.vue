@@ -549,7 +549,7 @@ export default {
           });
       } else {
         if (
-          !/^[\u4E00-\u9FA5]$/.test(this.searchInput) ||
+          // !(/^[\u4E00-\u9FA5]+$/.test(this.searchInput)) ||
           this.searchInput === "酒店"
         ) {
           this.$Notice.warning({

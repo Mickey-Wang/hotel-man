@@ -10,7 +10,8 @@ util.title = function(title) {
 };
 
 const ajaxUrl = env === 'development' ?
-    'http://mock.jd.hk/mock/59e9b5bbf5448721d22c84de/hotelman' :
+    'http://trip.hotel.man.net' :
+    // 'http://mock.jd.hk/mock/59e9b5bbf5448721d22c84de/hotelman' :
     env === 'production' ?
     '//mock.jd.hk/mock/59e9b5bbf5448721d22c84de/hotelman' :
     // 'https://man.hotel.jd.com' :
