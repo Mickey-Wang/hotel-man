@@ -93,5 +93,19 @@ const routers = [{
     },
     name: 'leadInBill',
     component: (resolve) => require(['./views/pages/account/leadInBill'], resolve)
+}, {
+    path: '/account/billMan',
+    meta: {
+        title: '账单管理',
+    },
+    name: 'billMan',
+    component: (resolve) => require(['./views/pages/account/billMan'], resolve)
+}, {
+    path: '/account/accountBill',
+    meta: {
+        title: '结算单管理',
+    },
+    name: 'accountBill',
+    component: (resolve) => require(['./views/pages/account/accountBill'], resolve)
 }];
 export default routers;

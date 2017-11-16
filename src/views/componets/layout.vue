@@ -276,6 +276,14 @@ export default {
           this.selected[0] = '结算管理';
           this.selected[1] = '导入现付到账单';
           break;
+        case 'billMan':
+          this.selected[0] = '结算管理';
+          this.selected[1] = '账单管理';
+          break;
+        case 'accountBill':
+          this.selected[0] = '结算管理';
+          this.selected[1] = '结算单管理';
+          break;
       }
     },
     select(name) {
@@ -303,6 +311,12 @@ export default {
           break;
         case 'leadInBill':
           this.$router.push('/account/leadinbill');
+          break;
+        case 'billMan':
+          this.$router.push('/account/billMan');
+          break;
+        case 'accountBill':
+          this.$router.push('/account/accountBill');
           break;
       }
     },
