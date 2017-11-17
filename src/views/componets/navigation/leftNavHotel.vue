@@ -293,20 +293,20 @@ export default {
   },
   mounted: function() {
     this.$http
-      .post("/mapping/hotelmapping/navtabsearch", {
+      .get("/mapping/hotelMapping/navTabSearch", {params:{
         sourceType: 20,
         dimensionType: 10,
         times: 7
-      })
+      }})
       .then(rs => {
         this.supplierList = rs.data.body.statisticList;
       });
     this.$http
-      .post("/mapping/hotelmapping/navtabsearch", {
+      .get("/mapping/hotelMapping/navTabSearch", {params:{
         sourceType: 10,
         dimensionType: 20,
         times: 1
-      })
+      }})
       .then(rs => {
         this.nationListChooseByRegions = rs.data.body.statisticList;
       });
@@ -369,7 +369,7 @@ export default {
       this.chooseTabBySuppliers = "nation";
       this.currentSupplierId = id;
       this.$http
-        .post("/mapping/hotelMapping/navtabsearch", {
+        .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 20,
           supplierCode: id,
@@ -382,7 +382,7 @@ export default {
     chooseNation(id) {
       this.chooseTabBySuppliers = "province";
       this.$http
-        .post("/mapping/hotelMapping/navtabsearch", {
+        .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 30,
           countryCode: id
@@ -394,7 +394,7 @@ export default {
     chooseProvince(id) {
       this.chooseTabBySuppliers = "city";
       this.$http
-        .post("/mapping/hotelMapping/navtabsearch", {
+        .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 40,
           provinceCode: id
@@ -407,7 +407,7 @@ export default {
       this.chooseTabBySuppliers = "hotel";
       this.currentCityIdBySuppliers = id;
       return this.$http
-        .post("/mapping/hotelMapping/navtabsearch", {
+        .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 50,
           cityCode: id,
@@ -447,11 +447,11 @@ export default {
     chooseNationCopy(id) {
       this.chooseTabByRegions = "province";
       this.$http
-        .post("/mapping/hotelMapping/navtabsearch", {
+        .get("/mapping/hotelMapping/navTabSearch", {params:{
           sourceType: 10,
           dimensionType: 30,
-          countryCode: id
-        })
+          countryCode: this.nationListChooseByRegions[id].id
+        }})
         .then(rs => {
           this.provinceListChooseByRegions = rs.data.body.statisticList;
         });
@@ -459,11 +459,11 @@ export default {
     chooseProvinceCopy(id, map = 20) {
       this.chooseTabByRegions = "city";
       this.$http
-        .post("/mapping/hotelMapping/navtabsearch", {
+        .get("/mapping/hotelMapping/navTabSearch", {params:{
           sourceType: 10,
           dimensionType: 40,
-          provinceCode: id
-        })
+          provinceCode: this.provinceListChooseByRegions[id].id
+        }})
         .then(rs => {
           this.cityListChooseByRegions = rs.data.body.statisticList;
         });
@@ -473,14 +473,14 @@ export default {
       this.chooseTabByRegions = "hotel";
       this.currentCityIdByRegions = id;
       return this.$http
-        .post("/mapping/hotelMapping/navtabsearch", {
+        .get("/mapping/hotelMapping/navTabSearch", {params:{
           sourceType: 10,
           dimensionType: 50,
-          cityCode: id,
+          cityCode: this.cityListChooseByRegions[id].id,
           mapStatus: map,
           pageNum:page,
           pageSize:pageSize
-        })
+        }})
         .then(rs => {
           this.hotelListChooseByRegions = rs.data.body.statisticList;
           this.hotelTotalRegions = rs.data.body.total;
@@ -503,7 +503,7 @@ export default {
           .get(
             `/mapping/hotelMapping/list?cityId=${this
               .currentCityIdByRegions}&hotelName=${name}&mapStatus=${this
-              .checkStateByRegions}`
+              .checkStateByRegions}&sourceType=10`
           )
           .then(rs => {
             this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
@@ -512,7 +512,7 @@ export default {
         return this.$http
           .get(
             `/mapping/hotelMapping/list?hotelId=${id}&mapStatus=${this
-              .checkStateByRegions}`
+              .checkStateByRegions}&sourceType=10`
           )
           .then(rs => {
             this.$store.commit("HOTEL_CHECK_LIST", rs.data.body)
