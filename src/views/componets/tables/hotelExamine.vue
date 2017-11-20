@@ -3,9 +3,9 @@
         <div class="topTable">
             <div class="title">酒店审核列表</div>
             <div class="button">
-                <Button type="primary" @click="toSubmit1" v-if="hotelApprovalList.length!=0">提交</Button>
+                <Button type="primary" @click="toSubmit1" v-if="hotelApprovalList.length!=0" :disabled="isNot20Check">提交</Button>
                 <Button type="primary" disabled v-else>提交</Button>
-                <Button type="primary" @click="toSubmit2" v-if="hotelTableType!=10 && hotelApprovalList.length!=0">设为待审</Button>
+                <Button type="primary" @click="toSubmit2" v-if="hotelTableType!=10 && hotelApprovalList.length!=0" :disabled="is20Check">设为待审</Button>
                 <Button type="primary" disabled v-if="hotelApprovalList.length==0">设为待审</Button>
                 <Button type="primary" v-if="hotelApprovalList.length!=0">新增</Button>
                 <Button type="primary" disabled v-else>新增</Button>
@@ -36,7 +36,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div :style="{'height':hotelTableType==10?'85%':'71%'}">
+                    <div :style="{'height':hotelTableType==10?'86%':'71%'}">
                         <table v-if="hotelApprovalList && hotelApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in hotelApprovalList" :key="index" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
@@ -368,11 +368,6 @@
                 treeData:[],
                 // 全选状态
                 checkAll: false,
-                // 点击全选时，只有未聚待审可以选中
-                // 控制未聚待审的disable的状态
-                disableStatus1: false,
-                // 控制非未聚待审的disable的状态
-                disableStatus2: false,
                 // 点击提交给接口的入参
                 submitData: {
                     checkBoxData:[],
@@ -510,9 +505,17 @@
                             return;
                         }
                         axios.get('//trip.hotel.man.net/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum='+this.pageNum+'&pageSize=20').then(res=>{
-                            this.similarCityData = this.similarCityData.concat(res.data.body.hotelList);
+                            if(res.data.head.code == 200){
+                                this.similarCityData = this.similarCityData.concat(res.data.body.hotelList);
+                            }else {
+                                this.$router.push({
+                                    name: '404',
+                                });
+                            }
                         }).catch(error=>{
-                            console.log('get',error);
+                            this.$router.push({
+                                name: '404',
+                            });
                         });
                     }
                 }
@@ -558,8 +561,7 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
-                //this.hotelValue = item.hotelName; // 恢复
-                this.hotelValue = '酒店'; // 删掉
+                this.hotelValue = item.hotelName;
                 this.toSearch();
             },
             // 点击Go，获取京东相似数据
@@ -568,7 +570,6 @@
                     this.instance('warning');
                     return;
                 }
-                this.hotelValue = '酒店';// 删掉
                 this.toSearch();
             },
             toSearch(){
@@ -579,11 +580,19 @@
                 this.spinShow = true;
                 axios.get('//trip.hotel.man.net/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1&pageSize=20').then(res=>{
                     this.spinShow = false;
-                    this.similarTotalNum = res.data.body.total;
-                    this.pages = res.data.body.pages;// 第一次拿到总页数
-                    this.similarCityData = res.data.body.hotelList;
+                    if(res.data.head.code == 200){
+                        this.similarTotalNum = res.data.body.total;
+                        this.pages = res.data.body.pages;// 第一次拿到总页数
+                        this.similarCityData = res.data.body.hotelList;
+                    }else {
+                        this.$router.push({
+                            name: '404',
+                        });
+                    }
                 }).catch(error=>{
-                    console.log('get',error);
+                    this.$router.push({
+                        name: '404',
+                    });
                 });
             },
             // highlight函数
@@ -762,6 +771,7 @@
                 this.checkShow = true;
                 this.$http.get('mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=2').then(res=>{
                     console.log('日志接口res:',res.data.body);
+
                     this.spinShow = false;
                     this.checkData = res.data.body;
                 }).catch(err=>{
@@ -874,6 +884,7 @@
     }
     .table1{
         height: 85%;
+        overflow-y: hidden;
     }
     .table2{
         height: 60%;

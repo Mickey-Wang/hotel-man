@@ -54,61 +54,29 @@
                             </Select>
                         </div>
                     </div>
-                    <div class="sameStyle name serviceTime">
-                        <div class="left">
-                            <span><em>*</em>服务时间</span>
+                    <div v-for="(dateLine, index) in dateLines">
+                        <div class="sameStyle name serviceTime">
+                            <div class="left" style="border-bottom: 1px solid #e9eaec">
+                                <span><em>*</em>服务时间</span>
+                            </div>
+                            <div class="right" style="border-bottom: 1px solid #e9eaec">
+                                <span>请选择</span>
+                                <template v-for="(showDay,index) in showDays(dateLine)">
+                                    <input type="checkbox" v-model="showDay.select" :disabled="showDay.disable" @click="changeSelect(dateLine, showDay)" />{{dayText[index]}}
+                                </template>
+                                <div style="display: inline-block" v-if="selectedDays.length<7&&index==0" @click="addTime"><Icon type="ios-plus" size="20"></Icon></div>
+                            </div>
                         </div>
-                        <div class="right">
-                            <span>请选择</span>
-                            <CheckboxGroup v-model="weekDates1" style="width: 440px; display: inline-block;">
-                                <Checkbox label="1">星期一</Checkbox>
-                                <Checkbox label="2">星期二</Checkbox>
-                                <Checkbox label="3">星期三</Checkbox>
-                                <Checkbox label="4">星期四</Checkbox>
-                                <Checkbox label="5">星期五</Checkbox>
-                                <Checkbox label="6">星期六</Checkbox>
-                                <Checkbox label="7">星期日</Checkbox>
-                            </CheckboxGroup>
-                            <Icon @click="addTime" v-if="weekDates1.length<7" style="cursor: pointer" type="ios-plus" size="20"></Icon>
-                        </div>
-                    </div>
-                    <div class="sameStyle name">
-                        <div class="left"></div>
-                        <div class="right">
-                            <Checkbox v-model="selectedValue1"></Checkbox>
-                            <span>每天的</span>
-                            <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue1" placeholder="选择时间" style="width: 112px"></TimePicker>
-                            <span>到</span>
-                            <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue2" placeholder="选择时间" style="width: 112px"></TimePicker>
-                            <span>处理</span>
-                        </div>
-                    </div>
-                    <div class="sameStyle name serviceTime" v-if="false">
-                        <div class="left"></div>
-                        <div class="right">
-                            <span>请选择</span>
-                            <CheckboxGroup v-model="weekDates2" style="width: 470px; display: inline-block;">
-                                <Checkbox label="1">星期一</Checkbox>
-                                <Checkbox label="2">星期二</Checkbox>
-                                <Checkbox label="3">星期三</Checkbox>
-                                <Checkbox label="4">星期四</Checkbox>
-                                <Checkbox label="5">星期五</Checkbox>
-                                <Checkbox label="6">星期六</Checkbox>
-                                <Checkbox label="7">星期六</Checkbox>
-                            </CheckboxGroup>
-                            <Icon type="ios-plus" size="20" style="margin-right: 10px;"></Icon>
-                            <Icon type="ios-close" size="20"></Icon>
-                        </div>
-                    </div>
-                    <div class="sameStyle name" v-if="false">
-                        <div class="left"></div>
-                        <div class="right">
-                            <Checkbox v-model="selectedValue2"></Checkbox>
-                            <span>每天的</span>
-                            <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue1" placeholder="选择时间" style="width: 112px"></TimePicker>
-                            <span>到</span>
-                            <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue2" placeholder="选择时间" style="width: 112px"></TimePicker>
-                            <span>处理</span>
+                        <div class="sameStyle name" style="border-bottom: 1px solid #e9eaec">
+                            <div class="left"></div>
+                            <div class="right">
+                                <Checkbox v-model="selectedValue1"></Checkbox>
+                                <span>每天的</span>
+                                <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue1" placeholder="选择时间" style="width: 112px"></TimePicker>
+                                <span>到</span>
+                                <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue2" placeholder="选择时间" style="width: 112px"></TimePicker>
+                                <span>处理</span>
+                            </div>
                         </div>
                     </div>
                     <div class="sameStyle name serviceTime">
@@ -298,12 +266,15 @@ export default {
                     label: 'CAD加元'
                 }
             ],
-            // 多选框
-            weekDates1:['1','2','3','4','5','6','7'],
-            weekDates2:[],
+            // 时间选择
+            // 周一到周日默认全部选择
+            allDays: [1, 2, 3, 4, 5, 6,7],
+            // 循环展示的时间
+            dateLines: [{selectedDays: [1, 2, 3, 4, 5, 6, 7]}],
+            // 日期展示的文字
+            dayText:['星期一','星期二','星期三','星期四','星期五','星期六','星期日'],
             // 时间默认值
             selectedValue1:true,
-            selectedValue2:true,
             timeValue1:'00:00',
             timeValue2:'23:00',
             // 发票
@@ -319,6 +290,22 @@ export default {
             // 报价天数
             priceDays:'90天',
             priceDaysValue:'',
+        }
+    },
+    computed:{
+        selectedDays: function () {
+            var selectedDays = [];
+            for (var i = 0; i < this.dateLines.length; i++) {
+                var dateLine = this.dateLines[i];
+                for (var j = 0; j < dateLine.selectedDays.length; j++) {
+                    selectedDays.push(dateLine.selectedDays[j]);
+                }
+            }
+            console.log('selectedDays:', selectedDays);
+            return selectedDays;
+        },
+        isAllSelect: function () {
+            return this.selectedDays.length === 7;
         }
     },
     methods:{
@@ -352,7 +339,59 @@ export default {
         },
         // 添加时间
         addTime(){
-
+            if (this.isAllSelect) {
+                alert("加满了");
+                return;
+            }
+            this.dateLines.push({selectedDays: []});
+        },
+        showDays: function (dateLine) {
+            console.log('showDays. dateLine:', dateLine);
+            var showDays = [];
+            for (var i = 0; i < this.allDays.length; i++) {
+                var day = this.allDays[i];
+                var flag = false;
+                for (var j = 0; j < dateLine.selectedDays.length; j++) {
+                    var selectedDay = dateLine.selectedDays[j];
+                    if (day === selectedDay) {
+                        flag = true;
+                        break;
+                    }
+                }
+                showDays.push({
+                    day: day,
+                    select: flag,
+                    disable: false
+                });
+            }
+            for (var i = 0; i < showDays.length; i++) {
+                var showDay = showDays[i];
+                var flag = false;
+                for (var j = 0; j < this.selectedDays.length; j++) {
+                    var selectedDay = this.selectedDays[j];
+                    if (!showDay.select && showDay.day === selectedDay) {
+                        flag = true;
+                        break;
+                    }
+                }
+                showDay['disable'] = flag;
+            }
+            console.log('showDays', showDays);
+            return showDays;
+        },
+        changeSelect: function (dateLine, showDay) {
+            console.log('changeSelect. dateLine:', dateLine, ", showDay:", showDay);
+            if (!showDay.select) {
+                var selectedDays = [];
+                for (var i = 0; i < dateLine.selectedDays.length; i++) {
+                    if (dateLine.selectedDays[i] != showDay.day) {
+                        selectedDays.push(dateLine.selectedDays[i]);
+                    }
+                }
+                dateLine.selectedDays = selectedDays;
+            } else {
+                dateLine.selectedDays.push(showDay.day);
+            }
         },
         // 下一步
         goToNext(){

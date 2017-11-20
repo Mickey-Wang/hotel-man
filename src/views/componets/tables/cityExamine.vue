@@ -3,9 +3,9 @@
         <div class="topTable">
             <div class="title">城市审核列表</div>
             <div class="button">
-                <Button type="primary" @click="toSubmit1" v-if="cityApprovalList.length!=0">提交</Button>
+                <Button type="primary" @click="toSubmit1" v-if="cityApprovalList.length!=0" :disabled="isNot20Check">提交</Button>
                 <Button type="primary" disabled v-else>提交</Button>
-                <Button type="primary" @click="toSubmit2" v-if="cityTableType!=10 && cityApprovalList.length!=0">设为待审</Button>
+                <Button type="primary" @click="toSubmit2" v-if="cityTableType!=10 && cityApprovalList.length!=0" :disabled="is20Check">设为待审</Button>
                 <Button type="primary" disabled v-if="cityApprovalList.length==0">设为待审</Button>
                 <Button type="primary" v-if="cityApprovalList.length!=0">新增</Button>
                 <Button type="primary" disabled v-else>新增</Button>
@@ -118,12 +118,12 @@
                         </table>
                     </div>
                     <div style="overflow-x: hidden">
-                        <table style="width: 767px;">
+                        <table style="width: 767px;" v-if="checkData.length!=0">
                             <tr v-for="(item,index) in checkData" :key="index">
-                                <td>{{getStatusValue(item.originalValue)}}</td>
-                                <td>{{getStatusValue(item.modifedValue)}}</td>
+                                <td>{{item.oldString}}</td>
+                                <td>{{item.newString}}</td>
+                                <td>{{item.operatorName}}</td>
                                 <td>{{item.operateTime}}</td>
-                                <td>{{item.operator}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="checkData.length==0">
@@ -238,10 +238,6 @@
                 // 全选状态
                 checkAll: false,
                 // 点击全选时，只有未聚待审可以选中
-                // 控制未聚待审的disable的状态
-                disableStatus1: false,
-                // 控制非未聚待审的disable的状态
-                disableStatus2: false,
                 // 点击提交给接口的入参
                 submitData: {
                     checkBoxData:[],
@@ -376,10 +372,24 @@
                         if(this.pageNum > this.pages){
                             return;
                         }
-                        axios.get('//trip.hotel.man.net/resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum='+this.pageNum+'&pageSize=20').then(res=>{
-                            this.similarCityData = this.similarCityData.concat(res.data.body.cityList);
+                        axios.get('//trip.hotel.man.net/resource/geoCommon/jdCityList',{
+                            params: {
+                                cityName: this.cityValue,
+                                pageNum: this.pageNum,
+                                pageSize: 20
+                            }
+                        }).then(res=>{
+                            if(res.data.head.code == 200){
+                                this.similarCityData = this.similarCityData.concat(res.data.body.cityList);
+                            }else {
+                                this.$router.push({
+                                    name: '404',
+                                });
+                            }
                         }).catch(error=>{
-                            console.log('get',error);
+                            this.$router.push({
+                                name: '404',
+                            });
                         });
                     }
                 }
@@ -425,8 +435,7 @@
             },
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
-                //this.cityValue = item.cityName; 恢复
-                this.cityValue = '州'; // 删掉
+                this.cityValue = item.cityName;
                 this.toSearch();
             },
             // 点击Go，获取京东相似数据
@@ -435,7 +444,6 @@
                     this.instance('warning');
                     return;
                 }
-                this.cityValue = '州';// 删掉
                 this.toSearch();
             },
             // 点击城市的时候和Go搜索的时候相同代码提取
@@ -448,11 +456,21 @@
                 axios.get('//trip.hotel.man.net/resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum=1&pageSize=20').then(res=>{
                     console.log('get',res);
                     this.spinShow = false;
-                    this.pages = res.data.body.pages;// 第一次拿到总页数
-                    this.similarTotalNum = res.data.body.total;
-                    this.similarCityData = res.data.body.cityList;
+                    if(res.data.head.code == 200){
+                        this.pages = res.data.body.pages;// 第一次拿到总页数
+                        this.similarTotalNum = res.data.body.total;
+                        this.similarCityData = res.data.body.cityList;
+                    }else {
+                        console.log('city:',"非200");
+                        this.$router.push({
+                            name: '404',
+                        });
+                    }
                 }).catch(error=>{
-                    console.log('get',error);
+                    console.log('city:',error);
+                    this.$router.push({
+                        name: '404',
+                    });
                 });
             },
             // highlight函数
@@ -607,10 +625,14 @@
             getCheckData(dataId){
                 this.checkShow = true;
                 this.spinShow = true;
-                this.$http.get('mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=1').then(res=>{
-                    console.log('日志接口res:',res.data.body);
+                this.$http.get('resource/resourceLogService/getLogListByDataId?dataId='+ dataId +'&dataType=10').then(res=>{
                     this.spinShow = false;
-                    this.checkData = res.data.body;
+                    this.checkData = res.data.body[0].logDetailList;
+                    for(let i=0; i<this.checkData.length; i++){
+                        this.checkData[i].operateTime = res.data.body[0].operateTime;
+                        this.checkData[i].operatorName = res.data.body[0].operatorName;
+                    }
+                    console.log('日志:',this.checkData);
                 }).catch(err=>{
 
                 })
@@ -707,6 +729,7 @@
     }
     .table1{
         height: 85%;
+        overflow-y: hidden;
     }
     .table2{
         height: 60%;
