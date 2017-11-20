@@ -23,7 +23,7 @@ Vue.prototype.$http = Util.ajax;
 const RouterConfig = {
     mode: 'history',
     routes: Routers,
-    base:'/hotelman'
+    // base:'/hotelman'
 };
 const router = new VueRouter(RouterConfig);
 

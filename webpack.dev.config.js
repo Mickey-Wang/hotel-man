@@ -52,6 +52,17 @@ module.exports = merge(webpackBaseConfig, {
                     Origin: 'http://trip.hotel.man.net'
                 }
 
+            },
+            '/resource/*': {
+                target: 'http://trip.hotel.man.net',
+                // changeOrigin: true,
+                // autoRewrite: true,
+                // pathRewrite: { '/flight': '' },
+                headers: {
+                    Host: 'trip.hotel.man.net',
+                    Origin: 'http://trip.hotel.man.net'
+                }
+
             }
         }
     }

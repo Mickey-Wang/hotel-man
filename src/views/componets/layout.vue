@@ -204,13 +204,13 @@ export default {
         name: '聚合系统',
         items: [{
           name: '城市聚合',
-          url: '/mapping/city'
+          url: '/Mapping/city'
         }, {
           name: '酒店聚合',
-          url: '/mapping/hotel'
+          url: '/Mapping/hotel'
         }, {
           name: '房型聚合',
-          URL: '/mapping/room'
+          URL: '/Mapping/room'
         }]
       }, {
         name: '供应商管理',
@@ -292,13 +292,13 @@ export default {
           this.$router.push('/');
           break;
         case 'city':
-          this.$router.push('/mapping/city');
+          this.$router.push('/Mapping/city');
           break;
         case 'hotel':
-          this.$router.push('/mapping/hotel');
+          this.$router.push('/Mapping/hotel');
           break;
         case 'room':
-          this.$router.push('/mapping/room');
+          this.$router.push('/Mapping/room');
           break;
         case 'destinationMan':
           this.$router.push('/resource/destination');

@@ -426,7 +426,7 @@
         },
         computed:{
             JDHotelApproval(){
-                return this.$store.getters.hotelCheckList.JDHotelApproval;
+                return this.$store.getters.hotelCheckList.jdHotelApproval;
             },
             is20Check(){
                 for (let i = 0; i < this.hotelApprovalList.length; i++) {
@@ -572,7 +572,7 @@
                 this.divH.scrollTop = 0;
                 this.divWidth2 = this.$refs.w2.offsetWidth;
                 this.spinShow = true;
-                this.$http.get('resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1&pageSize=20').then(res=>{
+                this.$http.get('/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1&pageSize=20').then(res=>{
                     this.pages = 3;// 第一次拿到总页数
                     this.similarCityData = res.data.body;
                     this.spinShow = false;
