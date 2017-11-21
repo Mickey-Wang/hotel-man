@@ -19,7 +19,7 @@
                                 <th style="border-top: none;"><input type="checkbox" v-if="hotelTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="isNot20Check"></th>
                                 <th style="border-top: none;" v-for="(item,index) in cityHeaderData" :key="index">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-if="hotelTableType!=10 && JDHotelApproval && hotelApprovalList.length!=0">
+                            <tr class="fontColor" v-if="hotelCheckList!=null && hotelTableType!=10 && JDHotelApproval && hotelApprovalList.length!=0">
                                 <td></td>
                                 <td @click="getInputValue(JDHotelApproval)">{{JDHotelApproval.hotelName}}</td>
                                 <td>{{JDHotelApproval.address}}</td>
@@ -37,7 +37,7 @@
                         </table>
                     </div>
                     <div :style="{'height':hotelTableType==10?'86%':'71%'}">
-                        <table v-if="hotelApprovalList && hotelApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
+                        <table v-if="hotelCheckList!=null && hotelApprovalList && hotelApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in hotelApprovalList" :key="index" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
                                 <td @click="getInputValue(item)">{{item.hotelName}}</td>
@@ -55,7 +55,7 @@
                                 <td @click="getCheckData(item.geoMapId)">查看</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="hotelApprovalList.length==0">
+                        <div class="noData" v-if="hotelCheckList==null || hotelApprovalList.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -189,7 +189,7 @@
                                 <td>{{getStatusValue(item.mapStatus)}}</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="treeData.length==0">
+                        <div class="noData" v-if="treeData.length==0&&treeJDHotelApproval.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -421,6 +421,11 @@
             this.divH.addEventListener('scroll',this.addMore);
         },
         computed:{
+            // 后端接口状态一共有3种: code、body为null、进入catch
+            // 判断一下后端返回来的接口是为null
+            hotelCheckList(){
+                return this.$store.getters.hotelCheckList;
+            },
             JDHotelApproval(){
                 return this.$store.getters.hotelCheckList.jdHotelApproval;
             },
@@ -507,13 +512,15 @@
                             if(res.data.head.code == 200){
                                 this.similarCityData = this.similarCityData.concat(res.data.body.hotelList);
                             }else {
-                                this.$router.push({
-                                    name: '404',
+                                this.$Notice.warning({
+                                    title: '接口异常',
+                                    desc:'请稍后再试'
                                 });
                             }
                         }).catch(error=>{
-                            this.$router.push({
-                                name: '404',
+                            this.$Notice.warning({
+                                title: '接口异常',
+                                desc:'请稍后再试'
                             });
                         });
                     }
@@ -586,13 +593,15 @@
                         this.pages = res.data.body.pages;// 第一次拿到总页数
                         this.similarCityData = res.data.body.hotelList;
                     }else {
-                        this.$router.push({
-                            name: '404',
+                        this.$Notice.warning({
+                            title: '接口异常',
+                            desc:'请稍后再试'
                         });
                     }
                 }).catch(error=>{
-                    this.$router.push({
-                        name: '404',
+                    this.$Notice.warning({
+                        title: '接口异常',
+                        desc:'请稍后再试'
                     });
                 });
             },
@@ -622,6 +631,10 @@
                 // 确定是提交按钮
                 this.buttonType = 1;
                 this.submitData.checkBoxData = [];
+                let radioStr = this.submitData.radioData[0];
+                if(radioStr==undefined){
+                    this.submitData.radioData.push(this.JDHotelApproval.hotelId);
+                }
                 if(this.hotelTableType==20 || this.hotelTableType==30){
                     this.getForData(20);
                     // 获取酒店审核列表中选中的城市ID
@@ -663,7 +676,6 @@
             // tree表格上面的按钮
             treeSubmit(){
                 this.buttonType = 3;
-                //this.submitTreeData = [];
                 this.submitData.checkBoxData = [];
                 for(let i=0; i<this.treeData.length; i++){
                     if(this.treeData[i].mapStatus == 30&&this.treeData[i].checked){
@@ -688,9 +700,6 @@
             ok () {
                 let checkStr = this.submitData.checkBoxData.join(',');
                 let radioStr = this.submitData.radioData[0];
-                if(radioStr == undefined){
-                    radioStr = null;
-                }
                 // 提交，设为已审按钮(当不是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType!=10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res => {
@@ -699,13 +708,15 @@
                             this.modelShow = false;
                             this.hotelValue = '';
                         }else {
-                            this.$router.push({
-                                name:'404'
+                            this.$Notice.warning({
+                                title: '接口异常',
+                                desc:'请稍后再试'
                             });
                         }
                     }).catch((err)=>{
-                        this.$router.push({
-                            name:'404'
+                        this.$Notice.warning({
+                            title: '接口异常',
+                            desc:'请稍后再试'
                         });
                     })
                 }
@@ -717,49 +728,55 @@
                             this.modelShow = false;
                             this.hotelValue = '';
                         }else {
-                            this.$router.push({
-                                name:'404'
+                            this.$Notice.warning({
+                                title: '接口异常',
+                                desc:'请稍后再试'
                             });
                         }
                     }).catch((err)=>{
-                        this.$router.push({
-                            name:'404'
+                        this.$Notice.warning({
+                            title: '接口异常',
+                            desc:'请稍后再试'
                         });
                     })
                 }
                 // 设为待审按钮
                 if(this.buttonType == 2){
-                    this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res=>{
+                    this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr}).then(res=>{
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                             this.modelShow = false;
                             this.hotelValue = '';
                         }else {
-                            this.$router.push({
-                                name:'404'
+                            this.$Notice.warning({
+                                title: '接口异常',
+                                desc:'请稍后再试'
                             });
                         }
                     }).catch(err=>{
-                        this.$router.push({
-                            name:'404'
+                        this.$Notice.warning({
+                            title: '接口异常',
+                            desc:'请稍后再试'
                         });
                     })
                 }
                 // tree中的设为已聚待审的按钮
                 if(this.buttonType == 3){
-                    this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res=>{
+                    this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr}).then(res=>{
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                             this.treeShow = false;
                             this.hotelValue = '';
                         }else {
-                            this.$router.push({
-                                name:'404'
+                            this.$Notice.warning({
+                                title: '接口异常',
+                                desc:'请稍后再试'
                             });
                         }
                     }).catch(err=>{
-                        this.$router.push({
-                            name:'404'
+                        this.$Notice.warning({
+                            title: '接口异常',
+                            desc:'请稍后再试'
                         });
                     })
                 }
@@ -811,13 +828,15 @@
                             this.checkData[i].operatorName = res.data.body[0].operatorName;
                         }
                     }else {
-                        this.$router.push({
-                            name:'404'
+                        this.$Notice.warning({
+                            title: '接口异常',
+                            desc:'请稍后再试'
                         });
                     }
                 }).catch(err=>{
-                    this.$router.push({
-                        name:'404'
+                    this.$Notice.warning({
+                        title: '接口异常',
+                        desc:'请稍后再试'
                     });
                 })
             },
@@ -834,13 +853,15 @@
                         this.treeJDHotelApproval.push(res.data.body.jdHotelApproval);
                         this.treeData = res.data.body.hotelApprovalList;
                     }else {
-                        this.$router.push({
-                            name:'404'
+                        this.$Notice.warning({
+                            title: '接口异常',
+                            desc:'请稍后再试'
                         });
                     }
                 }).catch(err=>{
-                    this.$router.push({
-                        name:'404'
+                    this.$Notice.warning({
+                        title: '接口异常',
+                        desc:'请稍后再试'
                     });
                 })
             },

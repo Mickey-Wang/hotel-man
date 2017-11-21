@@ -277,7 +277,7 @@ export default {
             // 时间默认值
             selectedValue1:true,
             timeValue1:'00:00',
-            timeValue2:'23:00',
+            timeValue2:'23:59',
             // 发票
             invoiceData:[],
             invoiceValue:'',
@@ -285,7 +285,7 @@ export default {
             channelData:['2','3','4','5','6','7'],
             indeterminate: true,// iView自带样式
             channelAll:false,
-            // 物理房型
+            // 物理房型,0代表是
             physicalRoom:0,
             // 报价天数
             priceDays:90,
@@ -295,7 +295,7 @@ export default {
     watch: {
         dateLines: {
             handler () {
-                console.log('watch dateLines', this.dateLines);
+                //console.log('watch dateLines', this.dateLines);
                 for (var i = 0; i < this.dateLines.length; i++) {
                     var dateLine = this.dateLines[i];
                     if (typeof(dateLine.start) !== 'string') {
@@ -319,7 +319,7 @@ export default {
                     selectedDays.push(dateLine.selectedDays[j]);
                 }
             }
-            console.log('selectedDays:', selectedDays);
+            //console.log('selectedDays:', selectedDays);
             return selectedDays;
         },
         isAllSelect () {
@@ -374,13 +374,12 @@ export default {
         // 以下为添加时间的逻辑
         addTime(){
             if (this.isAllSelect) {
-                alert("加满了");
                 return;
             }
             this.dateLines.push({selectedDays: [], start: '00:00', end: '23:00'});
         },
         showDays: function (dateLine) {
-            console.log('showDays. dateLine:', dateLine);
+            //console.log('showDays. dateLine:', dateLine);
             var showDays = [];
             for (var i = 0; i < this.allDays.length; i++) {
                 var day = this.allDays[i];
@@ -410,11 +409,11 @@ export default {
                 }
                 showDay['disable'] = flag;
             }
-            console.log('showDays', showDays);
+            //console.log('showDays', showDays);
             return showDays;
         },
         changeSelect: function (dateLine, showDay) {
-            console.log('changeSelect. dateLine:', dateLine, ", showDay:", showDay);
+            //console.log('changeSelect. dateLine:', dateLine, ", showDay:", showDay);
             if (!showDay.select) {
                 var selectedDays = [];
                 for (var i = 0; i < dateLine.selectedDays.length; i++) {
@@ -428,7 +427,7 @@ export default {
             }
         },
         removeDateLine(index){
-            console.log('删除的index:',index);
+            //console.log('删除的index:',index);
             this.dateLines.splice(index, 1);
         },
         //以上添加的时间的逻辑
@@ -442,13 +441,18 @@ export default {
                 platformCode:this.platformCode,
                 selectQuotedCurrency:this.selectQuotedCurrency,
                 selectSettlementCurrency:this.selectSettlementCurrency,
+                dateLines:this.dateLines,
                 invoiceData:this.invoiceData,
-                channelData:this.channelData
+                channelData:this.channelData,
+                physicalRoom:this.physicalRoom,
+                priceDays:this.priceDays
             };
+            console.log('点击下一步的时候保存信息:',firstStepMsg);
             /*this.$router.push({
                 name:'step2'
             });*/
         },
+        // 时间格式化
         dateToTimeStr(date) {
             var timeStr = '';
             var hour = date.getHours();
