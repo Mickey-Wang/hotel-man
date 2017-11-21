@@ -107,7 +107,7 @@
         <TabPane label="城市" name="city" :disabled="supplierTabDisable[3]">
           <Row class-name="menu-box-large">
             <Menu theme="light" width="auto" @on-select="chooseCity">
-              <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
+              <MenuItem :name="item.id" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
@@ -124,12 +124,15 @@
             </Select>
           </Row>
           <Row class-name="menu-box">
-            <Menu theme="light" width="auto" @on-select="chooseHotel">
+            <Menu theme="light" width="auto" @on-select="chooseHotel" v-if="hotelListChooseBySuppliers.length>0">
               <MenuItem :name="index" v-for="(item,index) in hotelListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount||""}/${item.matchedUncheckCount||""}/${item.unmatchedCount||""}`}}</span>
               </MenuItem>
             </Menu>
+            <Row v-else style="font-size:18px;text-align:center;">
+              暂无数据
+            </Row>
           </Row>
           <Row type="flex" justify="center">
             <Page :current.sync="curPageSuppliers" :total="hotelTotalSuppliers" :page-size="hotelPageSizeSuppliers" @on-change="choosePageSuppliers" size="small" show-total></Page>
@@ -167,7 +170,7 @@
         <TabPane label="城市" name="city" :disabled="regionTabDisable[2]">
           <Row class-name="menu-box-large">
             <Menu theme="light" width="auto" @on-select="chooseCityCopy">
-              <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions" :key="index">
+              <MenuItem :name="item.id" v-for="(item,index) in cityListChooseByRegions" :key="index">
               <span>{{item.name||item.hotelName}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
@@ -184,12 +187,15 @@
             </Select>
           </Row>
           <Row class-name="menu-box">
-            <Menu theme="light" width="auto" @on-select="chooseHotelCopy">
+            <Menu theme="light" width="auto" @on-select="chooseHotelCopy" v-if="hotelListChooseByRegions.length>0">
               <MenuItem :name="index" v-for="(item,index) in hotelListChooseByRegions" :key="index">
               <span>{{item.name||item.hotelName}}</span>
               <span>{{`${item.matchedCount||""}/${item.matchedUncheckCount||""}/${item.unmatchedCount||""}`}}</span>
               </MenuItem>
             </Menu>
+            <Row v-else style="font-size:18px;text-align:center;">
+              暂无数据
+            </Row>
           </Row>
           <Row type="flex" justify="center">
             <Page :current.sync="curPageRegions" :total="hotelTotalRegions" :page-size="hotelPageSizeRegions" @on-change="choosePageRegions" size="small" show-total></Page>
@@ -384,40 +390,40 @@ export default {
       this.btnType = "region";
     },
     //选择供应商tab
-    chooseSupplier(id) {
+    chooseSupplier(index) {
       this.chooseTabBySuppliers = "nation";
-      this.currentSupplierId = this.supplierList[id].id;
+      this.currentSupplierId = this.supplierList[index].id;
       this.$http
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 20,
-          supplierCode: this.supplierList[id].id,
+          supplierCode: this.supplierList[index].id,
           times: 1
         })
         .then(rs => {
           this.nationListChooseBySuppliers = rs.data.body.statisticList;
         });
     },
-    chooseNation(id) {
+    chooseNation(index) {
       this.chooseTabBySuppliers = "province";
       this.$http
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 30,
-          countryCode: this.nationListChooseBySuppliers[id].id,
+          countryCode: this.nationListChooseBySuppliers[index].id,
           supplierCode: this.currentSupplierId
         })
         .then(rs => {
           this.provinceListChooseBySuppliers = rs.data.body.statisticList;
         });
     },
-    chooseProvince(id) {
+    chooseProvince(index) {
       this.chooseTabBySuppliers = "city";
       this.$http
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 40,
-          provinceCode: this.provinceListChooseBySuppliers[id].id,
+          provinceCode: this.provinceListChooseBySuppliers[index].id,
           supplierCode: this.currentSupplierId
         })
         .then(rs => {
@@ -426,12 +432,13 @@ export default {
     },
     chooseCity(id, map = 20, page = 1, pageSize = 30) {
       this.chooseTabBySuppliers = "hotel";
-      this.currentCityIdBySuppliers = this.cityListChooseBySuppliers[id].id;
+      this.currentCityIdBySuppliers = id;
+      // this.currentCityIdBySuppliers = this.cityListChooseBySuppliers[id].id;
       return this.$http
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 50,
-          cityCode: this.cityListChooseBySuppliers[id].id,
+          cityCode: this.currentCityIdBySuppliers,
           mapStatus: map,
           pageNum: page,
           pageSize: pageSize,
@@ -445,11 +452,12 @@ export default {
     //选择供应商侧城市列表审核状态
     chooseStatebySupplier(val) {
       this.$store.commit("HOTEL_TABLETYPE", val);
-      (this.curPageSuppliers = 1),
-        this.chooseCity(this.currentCityIdBySuppliers, val);
+      this.curPageSuppliers = 1;
+      // console.log(this.currentCityIdBySuppliers)
+      this.chooseCity(this.currentCityIdBySuppliers, val);
     },
     chooseHotel(index) {
-      console.log(index);
+      // console.log(index);
       this.currentHotelIndexBySuppliers = index;
       var id = this.hotelListChooseBySuppliers[index].id;
       if (this.checkStateByRegions == 10) {
@@ -463,7 +471,7 @@ export default {
             sourceType: 20
           })
           .then(rs => {
-            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
+            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body||null);
           });
       } else {     
         return this.$http
@@ -475,26 +483,26 @@ export default {
             sourceType: 20            
           })
           .then(rs => {
-            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
+            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body||null);
             this.getDataType = "supplier";
           });
       }
     },
 
     //选择jd侧tab
-    chooseNationCopy(id) {
+    chooseNationCopy(index) {
       this.chooseTabByRegions = "province";
       this.$http
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 10,
           dimensionType: 30,
-          countryCode: this.nationListChooseByRegions[id].id
+          countryCode: this.nationListChooseByRegions[index].id
         })
         .then(rs => {
           this.provinceListChooseByRegions = rs.data.body.statisticList;
         });
     },
-    chooseProvinceCopy(id, map = 20) {
+    chooseProvinceCopy(index, map = 20) {
       this.chooseTabByRegions = "city";
       this.$http
         /* .get("/mapping/hotelMapping/navTabSearch", {params:{
@@ -505,7 +513,7 @@ export default {
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 10,
           dimensionType: 40,
-          provinceCode: this.provinceListChooseByRegions[id].id
+          provinceCode: this.provinceListChooseByRegions[index].id
         })
         .then(rs => {
           this.cityListChooseByRegions = rs.data.body.statisticList;
@@ -514,12 +522,12 @@ export default {
 
     chooseCityCopy(id, map = 20, page = 1, pageSize = 30) {
       this.chooseTabByRegions = "hotel";
-      this.currentCityIdByRegions = this.cityListChooseByRegions[id].id;
+      this.currentCityIdByRegions = id;
       return this.$http
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 10,
           dimensionType: 50,
-          cityCode: this.cityListChooseByRegions[id].id,
+          cityCode: this.currentCityIdByRegions,
           mapStatus: map,
           pageNum: page,
           pageSize: pageSize
@@ -533,8 +541,8 @@ export default {
     //选择区域酒店列表审核状态
     chooseStatebyRegion(val) {
       this.$store.commit("HOTEL_TABLETYPE", val);
-      (this.curPageSuppliers = 1),
-        this.chooseCityCopy(this.currentProvinceIdByRegions, val);
+      this.curPageSuppliers = 1;
+      this.chooseCityCopy(this.currentCityIdByRegions, val);
     },
     chooseHotelCopy(index) {
       this.currentHotelIndexByRegions = index;
@@ -552,7 +560,13 @@ export default {
             sourceType: 10
           })
           .then(rs => {
-            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
+            if(rs.data.head.code !== "200"){
+              var msg = rs.data.head.message;
+              return this.$Notice.warning({
+                title: msg,
+              });
+            }
+            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body||null);
           });
       } else {
         return this.$http
@@ -562,7 +576,7 @@ export default {
             sourceType: 10
           })
           .then(rs => {
-            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
+            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body||null);
             this.getDataType = "region";
           });
       }

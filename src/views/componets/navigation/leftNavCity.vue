@@ -114,12 +114,15 @@
             </Select>
           </Row>
           <Row class-name="menu-box">
-            <Menu theme="light" width="auto" @on-select="chooseCity">
+            <Menu theme="light" width="auto" @on-select="chooseCity" v-if="cityListChooseBySuppliers.length>0">
               <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
+            <Row v-else style="font-size:18px;text-align:center;">
+              暂无数据
+            </Row>
           </Row>
           <Row type="flex" justify="center">
             <!-- <Page :total="cityTotalSuppliers" size="small" show-total></Page> -->
@@ -162,12 +165,15 @@
             </Select>
           </Row>
           <Row class-name="menu-box">
-            <Menu theme="light" width="auto" @on-select="chooseCityCopy" >
+            <Menu theme="light" width="auto" @on-select="chooseCityCopy" v-if="cityListChooseByRegions.length>0">
               <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
+            <Row v-else style="font-size:18px;text-align:center;">
+              暂无数据
+            </Row>
           </Row>
           <Row type="flex" justify="center">
             <!-- <Page :total="cityTotalRegions" size="small" show-total></Page> -->
@@ -495,7 +501,7 @@ export default {
             sourceType:10
           })
           .then(rs => {
-            this.$store.commit("CITY_CHECK_LIST", rs.data.body);
+            this.$store.commit("CITY_CHECK_LIST", rs.data.body||null);
             this.getDataType = "region";
           });
       } else {
@@ -506,7 +512,7 @@ export default {
             sourceType:10
           })
           .then(rs => {
-            this.$store.commit("CITY_CHECK_LIST", rs.data.body);
+            this.$store.commit("CITY_CHECK_LIST", rs.data.body||null);
             this.getDataType = "region";
           });
       }
