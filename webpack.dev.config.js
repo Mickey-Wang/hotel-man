@@ -31,5 +31,39 @@ module.exports = merge(webpackBaseConfig, {
             template: './src/template/index.ejs',
             inject: false
         })
-    ]
+    ],
+    devServer: {
+        //contentBase: __dirname,
+        //host: '192.168.101.238',
+        //port: 8083,
+        //https: true,
+        //hot: true,
+        //inline: true,
+        //noInfo: true,
+        //historyApiFallback: true,
+        proxy: {    
+            '/mapping/*': {
+                target: 'http://trip.hotel.man.net',
+                // changeOrigin: true,
+                // autoRewrite: true,
+                // pathRewrite: { '/flight': '' },
+                headers: {
+                    Host: 'trip.hotel.man.net',
+                    Origin: 'http://trip.hotel.man.net'
+                }
+
+            },
+            '/resource/*': {
+                target: 'http://trip.hotel.man.net',
+                // changeOrigin: true,
+                // autoRewrite: true,
+                // pathRewrite: { '/flight': '' },
+                headers: {
+                    Host: 'trip.hotel.man.net',
+                    Origin: 'http://trip.hotel.man.net'
+                }
+
+            }
+        }
+    }
 });

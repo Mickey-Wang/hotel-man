@@ -209,7 +209,6 @@
     </section>
 </template>
 <script>
-    import axios from 'axios';// 删掉
     export default {
         data(){
             return {
@@ -423,7 +422,7 @@
         },
         computed:{
             JDHotelApproval(){
-                return this.$store.getters.hotelCheckList.JDHotelApproval;
+                return this.$store.getters.hotelCheckList.jdHotelApproval;
             },
             is20Check(){
                 for (let i = 0; i < this.hotelApprovalList.length; i++) {
@@ -504,7 +503,7 @@
                         if(this.pageNum > this.pages){
                             return;
                         }
-                        axios.get('//trip.hotel.man.net/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum='+this.pageNum+'&pageSize=20').then(res=>{
+                        this.$http.get('/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum='+this.pageNum+'&pageSize=20').then(res=>{
                             if(res.data.head.code == 200){
                                 this.similarCityData = this.similarCityData.concat(res.data.body.hotelList);
                             }else {
@@ -578,7 +577,7 @@
                 this.divH.scrollTop = 0;
                 this.divWidth2 = this.$refs.w2.offsetWidth;
                 this.spinShow = true;
-                axios.get('//trip.hotel.man.net/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1&pageSize=20').then(res=>{
+                this.$http.get('/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1&pageSize=20').then(res=>{
                     this.spinShow = false;
                     if(res.data.head.code == 200){
                         this.similarTotalNum = res.data.body.total;
@@ -692,7 +691,7 @@
                 }
                 // 提交，设为已审按钮(当不是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType!=10){
-                    this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
+                    this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res => {
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                             this.modelShow = false;
@@ -710,7 +709,7 @@
                 }
                 // 提交，设为已审按钮(当是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType==10){
-                    this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
+                    this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res => {
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                             this.modelShow = false;
@@ -728,7 +727,7 @@
                 }
                 // 设为待审按钮
                 if(this.buttonType == 2){
-                    this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
+                    this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res=>{
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                             this.modelShow = false;
@@ -746,7 +745,7 @@
                 }
                 // tree中的设为已聚待审的按钮
                 if(this.buttonType == 3){
-                    this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
+                    this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res=>{
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                             this.treeShow = false;
@@ -801,7 +800,7 @@
             getCheckData(dataId){
                 this.spinShow = true;
                 this.checkShow = true;
-                this.$http.get('mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=2').then(res=>{
+                this.$http.get('/mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=2').then(res=>{
                     if(res.data.head.code == 200){
                         this.spinShow = false;
                         this.checkData = res.data.body[0].logDetailList;
@@ -824,7 +823,7 @@
             getTreeData(JDHotelId){
                 this.treeShow = true;
                 this.spinShow = true;
-                this.$http.get('mapping/hotelMapping/getHotelTreeByJDHotelId?JDHotelId=' + JDHotelId).then(res=>{
+                this.$http.get('/mapping/hotelMapping/getHotelTreeByJDHotelId?JDHotelId=' + JDHotelId).then(res=>{
                     if(res.data.head.code == 200){
                         console.log('tree信息JDHotelApproval:',res.data.body.JDHotelApproval);
                         console.log('tree信息hotelApprovalList:',res.data.body.hotelApprovalList);

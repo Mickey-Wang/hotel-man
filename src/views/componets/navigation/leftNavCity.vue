@@ -80,7 +80,7 @@
             </MenuItem>
           </Menu>
           <Row class-name="bottom-total">
-            <span>共计{{supplierList.length}}条</span>
+            <!-- <span>共计{{supplierList.length}}条</span> -->
           </Row>
         </TabPane>
         <TabPane label="国家" name="nation" :disabled="supplierTabDisable[1]">
@@ -91,7 +91,7 @@
             </MenuItem>
           </Menu>
           <Row class-name="bottom-total">
-            <span>共计{{nationListChooseByRegions.length}}条</span>
+            <span>共计{{nationListChooseBySuppliers.length}}条</span>
           </Row>
         </TabPane>
         <TabPane label="省份" name="province" :disabled="supplierTabDisable[2]">
@@ -104,7 +104,7 @@
             </Menu>
           </Row>
           <Row class-name="bottom-total">
-            <span>共计{{provinceListChooseByRegions.length}}条</span>
+            <span>共计{{provinceListChooseBySuppliers.length}}条</span>
           </Row>
         </TabPane>
         <TabPane label="城市" style="height:100%" name="city" :disabled="supplierTabDisable[3]">
@@ -204,7 +204,7 @@ export default {
       //供应商和区域选择按钮是supplier/region
       btnType: "supplier",
       //最后一次数据获取是supplier/region
-      getDataType:"supplier",
+      getDataType: "supplier",
       //当前供应商选项卡选中项目
       chooseTabBySuppliers: "",
       //当前区域选项卡选中项目
@@ -216,7 +216,7 @@ export default {
 
       //供应商选项卡选中项目
       supplierMenuSelect: 0,
-      listShow:false,
+      listShow: false,
       //城市三种状态id
       checkStateBySuppliers: 20,
       checkStateByRegions: 20,
@@ -265,27 +265,35 @@ export default {
   watch: {
     citySyncMappingDataState: function(val, old) {
       // console.log(val,old)
-      if(val)this.refreshData();
+      if (val) this.refreshData();
     }
   },
   mounted: function() {
     this.$http
-      .post("/mapping/cityMapping/navtabsearch", {
-        sourceType: 10,
+      /* .get("/mapping/cityMapping/navTabSearch", {params:{
+        sourceType: 20,
         dimensionType: 10,
-        times: 7
-      })
+        //times: 7
+      }}) */
+      .post("/mapping/cityMapping/navTabSearch", {
+        sourceType: 20,
+        dimensionType: 10
+        //times: 7
+      }) //{headers:{'content-type':'application/x-www-form-urlencoded'}}
       .then(rs => {
         this.supplierList = rs.data.body;
       })
       .then(rs => {
         this.doSupplierListFilter();
+      })
+      .catch(err => {
+        this.supplierList = [];
       });
     this.$http
-      .post("/mapping/cityMapping/navtabsearch", {
-        sourceType: 20,
-        dimensionType: 20,
-        times: 1
+      .post("/mapping/cityMapping/navTabSearch", {
+        sourceType: 10,
+        dimensionType: 20
+        //times: 1
       })
       .then(rs => {
         this.nationListChooseByRegions = rs.data.body;
@@ -304,37 +312,48 @@ export default {
     cityTotalRegions() {
       return this.cityListChooseByRegions.length;
     },
-    citySyncMappingDataState(){
+    citySyncMappingDataState() {
       return this.$store.getters.citySyncMappingDataState;
     }
   },
   methods: {
-    changeState(){
-      this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE');      
+    changeState() {
+      this.$store.commit("CITY_SYNC_MAPPING_DATA_STATE");
     },
     //列表和表格同步更新数据
-    refreshData(){
-      this.btnType = this.getDataType
-      this.listShow = true
-      if(this.getDataType == 'supplier'){
-        this.chooseTabBySuppliers = 'city'
-        this.chooseProvince(this.currentProvinceIdBySuppliers,this.checkStateBySuppliers).then(rs=>{
-          this.listShow = false
-          return this.chooseCity(this.currentCityIndexBySuppliers)
-        }).then(rs=>{
-          this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE');
-        })
-      }else{
-        this.chooseTabByRegions = 'city'
-        this.chooseProvinceCopy(this.currentProvinceIdByRegions, this.checkStateByRegions).then(rs=>{
-          this.listShow = false
-          return this.chooseCityCopy(this.currentCityIndexByRegions)
-        }).then(rs=>{
-          this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE');
-        })
+    refreshData() {
+      this.btnType = this.getDataType;
+      this.listShow = true;
+      if (this.getDataType == "supplier") {
+        this.chooseTabBySuppliers = "city";
+        this.chooseProvince(
+          this.currentProvinceIdBySuppliers,
+          this.checkStateBySuppliers
+        )
+          .then(rs => {
+            this.listShow = false;
+            return this.chooseCity(this.currentCityIndexBySuppliers);
+          })
+          .then(rs => {
+            this.$store.commit("CITY_SYNC_MAPPING_DATA_STATE");
+          });
+      } else {
+        this.chooseTabByRegions = "city";
+        this.chooseProvinceCopy(
+          this.currentProvinceIdByRegions,
+          this.checkStateByRegions
+        )
+          .then(rs => {
+            this.listShow = false;
+            return this.chooseCityCopy(this.currentCityIndexByRegions);
+          })
+          .then(rs => {
+            this.$store.commit("CITY_SYNC_MAPPING_DATA_STATE");
+          });
       }
     },
     doSupplierListFilter() {
+      console.log(1);
       let arr = [];
       if (this.searchSupplier == "")
         return (this.supplierListFilter = this.supplierList);
@@ -358,7 +377,7 @@ export default {
     //选择供应商tab
     doClickSupplierTab(name) {
       // console.log(name)
-      if(name == 'suppliers')this.supplierMenuSelect = 1;
+      if (name == "suppliers") this.supplierMenuSelect = 1;
     },
     //选择供应商tab下的列表内容
     chooseSupplier(id) {
@@ -366,12 +385,12 @@ export default {
       // console.log(this.$refs.supplierMenu.updateActiveName)
       // this.$refs.supplierMenu.updateActiveName();
       // console.log(id,this.supplierMenuSelect)
-      this.currentSupplierId = id;
+      this.currentSupplierId = this.supplierList[id].id;
       this.$http
-        .post("/mapping/cityMapping/navtabsearch", {
+        .post("/mapping/cityMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 20,
-          supplierCode: id,
+          supplierCode: this.supplierList[id].id,
           times: 1
         })
         .then(rs => {
@@ -381,10 +400,11 @@ export default {
     chooseNation(id) {
       this.chooseTabBySuppliers = "province";
       this.$http
-        .post("/mapping/cityMapping/navtabsearch", {
+        .post("/mapping/cityMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 30,
-          countryCode: id
+          countryCode: id,
+          supplierCode: this.currentSupplierId
         })
         .then(rs => {
           this.provinceListChooseBySuppliers = rs.data.body;
@@ -394,16 +414,17 @@ export default {
       this.currentProvinceIdBySuppliers = id;
       this.chooseTabBySuppliers = "city";
       const promise = this.$http
-        .post("/mapping/cityMapping/navtabsearch", {
+        .post("/mapping/cityMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 40,
           provinceCode: id,
-          mapStatus: map
+          mapStatus: map,
+          supplierCode: this.currentSupplierId
         })
         .then(rs => {
-          this.cityListChooseBySuppliers = rs.data.body;
+          this.cityListChooseBySuppliers = rs.data.body || [];
         });
-        return promise;
+      return promise;
     },
     //选择供应商侧城市列表审核状态
     chooseStatebySupplier(val) {
@@ -414,13 +435,15 @@ export default {
       this.currentCityIndexBySuppliers = index;
       let id = this.cityListChooseBySuppliers[index].id;
       return this.$http
-        .get(
-          `/mapping/cityMapping/list?cityCode=${id}&supplierCode=${this
-            .currentSupplierId}&mapStatus=${this.checkStateBySuppliers}`
-        )
+        .post(`/mapping/cityMapping/list`, {
+          cityCode: id,
+          supplierCode: this.currentSupplierId,
+          mapStatus: this.checkStateBySuppliers,
+          sourceType:20
+        })
         .then(rs => {
           this.$store.commit("CITY_CHECK_LIST", rs.data.body);
-          this.getDataType = 'supplier'
+          this.getDataType = "supplier";
         });
     },
 
@@ -428,7 +451,7 @@ export default {
     chooseNationCopy(id) {
       this.chooseTabByRegions = "province";
       this.$http
-        .post("/mapping/cityMapping/navtabsearch", {
+        .post("/mapping/cityMapping/navTabSearch", {
           sourceType: 10,
           dimensionType: 30,
           countryCode: id
@@ -439,16 +462,16 @@ export default {
     },
     chooseProvinceCopy(id, map = 20) {
       this.chooseTabByRegions = "city";
-      this.currentProvinceIdByRegions = id;
+      this.currentProvinceIdByRegions = parseInt(id);
       const promise = this.$http
-        .post("/mapping/cityMapping/navtabsearch", {
+        .post("/mapping/cityMapping/navTabSearch", {
           sourceType: 10,
           dimensionType: 40,
           provinceCode: id,
           mapStatus: map
         })
         .then(rs => {
-          this.cityListChooseByRegions = rs.data.body;
+          this.cityListChooseByRegions = rs.data.body || [];
         });
       this.isCheckStateByRegionsShow = true;
       return promise;
@@ -461,28 +484,30 @@ export default {
     chooseCityCopy(index) {
       this.currentCityIndexByRegions = index;
       var id = this.cityListChooseByRegions[index].id,
-          name = this.cityListChooseByRegions[index].name;
+        name = this.cityListChooseByRegions[index].name;
       if (this.checkStateByRegions == 10) {
         //未聚待审
-      var  promise = this.$http
-          .get(
-            `/mapping/cityMapping/list?provinceId=${this
-              .currentProvinceIdByRegions}&cityName=${name}&mapStatus=${this
-              .checkStateByRegions}`
-          )
+        var promise = this.$http
+          .post(`/mapping/cityMapping/list`, {
+            provinceId: this.currentProvinceIdByRegions,
+            cityName: name,
+            mapStatus: this.checkStateByRegions,
+            sourceType:10
+          })
           .then(rs => {
             this.$store.commit("CITY_CHECK_LIST", rs.data.body);
-            this.getDataType = 'region'
+            this.getDataType = "region";
           });
       } else {
         promise = this.$http
-          .get(
-            `/mapping/cityMapping/list?cityId=${id}&mapStatus=${this
-              .checkStateByRegions}`
-          )
+          .post(`/mapping/cityMapping/list`, {
+            cityId: id,
+            mapStatus: this.checkStateByRegions,
+            sourceType:10
+          })
           .then(rs => {
             this.$store.commit("CITY_CHECK_LIST", rs.data.body);
-            this.getDataType = 'region'            
+            this.getDataType = "region";
           });
       }
       return promise;
@@ -508,7 +533,7 @@ export default {
         this.$http
           .get(`/mapping/cityMapping/navSearch?cityId=${this.searchInput}`)
           .then(rs => {
-            this.cityListChooseByRegions = rs.data.body;
+            this.cityListChooseByRegions = rs.data.body || [];
           })
           .then(rs => {
             this.btnType = "region";

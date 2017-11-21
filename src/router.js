@@ -13,21 +13,21 @@ const routers = [{
     name:'index',
     component: (resolve) => require(['./views/pages/index.vue'], resolve)
 },{
-    path: '/mapping/hotel',
+    path: '/Mapping/hotel',
     meta: {
         title: '酒店聚合'
     },
     name:'hotel',
     component: (resolve) => require(['./views/pages/Mapping/hotelMapping.vue'], resolve)
 },{
-    path: '/mapping/city',
+    path: '/Mapping/city',
     meta: {
         title: '城市聚合'
     },
     name:'city',
     component: (resolve) => require(['./views/pages/Mapping/cityMapping.vue'], resolve)
 },{
-    path: '/mapping/room',
+    path: '/Mapping/room',
     meta: {
         title: '房型聚合'
     },

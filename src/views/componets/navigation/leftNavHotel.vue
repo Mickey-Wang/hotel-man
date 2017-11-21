@@ -127,7 +127,7 @@
             <Menu theme="light" width="auto" @on-select="chooseHotel">
               <MenuItem :name="index" v-for="(item,index) in hotelListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
-              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
+              <span>{{`${item.matchedCount||""}/${item.matchedUncheckCount||""}/${item.unmatchedCount||""}`}}</span>
               </MenuItem>
             </Menu>
           </Row>
@@ -168,7 +168,7 @@
           <Row class-name="menu-box-large">
             <Menu theme="light" width="auto" @on-select="chooseCityCopy">
               <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions" :key="index">
-              <span>{{item.name}}</span>
+              <span>{{item.name||item.hotelName}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
@@ -186,8 +186,8 @@
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseHotelCopy">
               <MenuItem :name="index" v-for="(item,index) in hotelListChooseByRegions" :key="index">
-              <span>{{item.name}}</span>
-              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
+              <span>{{item.name||item.hotelName}}</span>
+              <span>{{`${item.matchedCount||""}/${item.matchedUncheckCount||""}/${item.unmatchedCount||""}`}}</span>
               </MenuItem>
             </Menu>
           </Row>
@@ -224,7 +224,7 @@ export default {
       //供应商区域按钮
       btnType: "supplier",
       //最后一次数据获取是supplier/region
-      getDataType:"",
+      getDataType: "",
       //当前供应商选项卡
       chooseTabBySuppliers: "",
       //当前区域选项卡
@@ -235,7 +235,7 @@ export default {
       regionTabDisable: [false, true, true, true],
 
       //loading
-      listShow:false,
+      listShow: false,
       //酒店三种状态id
       checkStateBySuppliers: 20,
       checkStateByRegions: 20,
@@ -276,37 +276,36 @@ export default {
       hotelListChooseBySuppliers: [],
       hotelListChooseByRegions: [],
       //分页信息
-      curPageSuppliers:1,
-      curPageRegions:1,
-      hotelTotalSuppliers:0,
-      hotelTotalRegions:0,
-      hotelPageSizeSuppliers:20,
-      hotelPageSizeRegions:20,
-      
+      curPageSuppliers: 1,
+      curPageRegions: 1,
+      hotelTotalSuppliers: 0,
+      hotelTotalRegions: 0,
+      hotelPageSizeSuppliers: 20,
+      hotelPageSizeRegions: 20
     };
   },
   watch: {
     hotelSyncMappingDataState: function(val, old) {
       // console.log(val,old)
-      if(val)this.refreshData();
+      if (val) this.refreshData();
     }
   },
   mounted: function() {
     this.$http
-      .get("/mapping/hotelMapping/navTabSearch", {params:{
+      .post("/mapping/hotelMapping/navTabSearch", {
         sourceType: 20,
         dimensionType: 10,
         times: 7
-      }})
+      })
       .then(rs => {
         this.supplierList = rs.data.body.statisticList;
       });
     this.$http
-      .get("/mapping/hotelMapping/navTabSearch", {params:{
+      .post("/mapping/hotelMapping/navTabSearch", {
         sourceType: 10,
         dimensionType: 20,
         times: 1
-      }})
+      })
       .then(rs => {
         this.nationListChooseByRegions = rs.data.body.statisticList;
       });
@@ -318,42 +317,62 @@ export default {
     btnTypeRegion() {
       return this.btnType == "region" ? "primary" : "ghost";
     },
-    hotelSyncMappingDataState(){
+    hotelSyncMappingDataState() {
       return this.$store.getters.hotelSyncMappingDataState;
     }
   },
   methods: {
-    changeState(){
-      this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE');      
+    changeState() {
+      this.$store.commit("HOTEL_SYNC_MAPPING_DATA_STATE");
     },
     //列表和表格同步更新数据
-    refreshData(){
-      this.btnType = this.getDataType
+    refreshData() {
+      this.btnType = this.getDataType;
       this.listShow = true;
-      if(this.getDataType == 'supplier'){
-        this.chooseTabBySuppliers = 'hotel'
-        this.chooseCity(this.currentCityIdBySuppliers,this.checkStateBySuppliers,this.curPageSuppliers).then(rs=>{
-          this.listShow = false;
-          return this.chooseHotel(this.currentHotelIndexBySuppliers)
-        }).then(rs=>{
-          this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE');
-        })
-      }else{
-        this.chooseTabByRegions = 'hotel'
-        this.chooseCityCopy(this.currentCityIdByRegions, this.checkStateByRegions,this.curPageRegions).then(rs=>{
-          this.listShow = false;
-          return this.chooseHotelCopy(this.currentHotelIndexByRegions)
-        }).then(rs=>{
-          this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE');
-        })
+      if (this.getDataType == "supplier") {
+        this.chooseTabBySuppliers = "hotel";
+        this.chooseCity(
+          this.currentCityIdBySuppliers,
+          this.checkStateBySuppliers,
+          this.curPageSuppliers
+        )
+          .then(rs => {
+            this.listShow = false;
+            return this.chooseHotel(this.currentHotelIndexBySuppliers);
+          })
+          .then(rs => {
+            this.$store.commit("HOTEL_SYNC_MAPPING_DATA_STATE");
+          });
+      } else {
+        this.chooseTabByRegions = "hotel";
+        this.chooseCityCopy(
+          this.currentCityIdByRegions,
+          this.checkStateByRegions,
+          this.curPageRegions
+        )
+          .then(rs => {
+            this.listShow = false;
+            return this.chooseHotelCopy(this.currentHotelIndexByRegions);
+          })
+          .then(rs => {
+            this.$store.commit("HOTEL_SYNC_MAPPING_DATA_STATE");
+          });
       }
     },
     //分页按钮选择
-    choosePageSuppliers(page){
-      this.chooseCity(this.currentCityIdBySuppliers, this.checkStateBySuppliers, page);
+    choosePageSuppliers(page) {
+      this.chooseCity(
+        this.currentCityIdBySuppliers,
+        this.checkStateBySuppliers,
+        page
+      );
     },
-    choosePageRegions(page){
-      this.chooseCityCopy(this.currentCityIdByRegions, this.checkStateByRegions, page);      
+    choosePageRegions(page) {
+      this.chooseCityCopy(
+        this.currentCityIdByRegions,
+        this.checkStateByRegions,
+        page
+      );
     },
     //按钮选择
     btnSupplier() {
@@ -367,12 +386,12 @@ export default {
     //选择供应商tab
     chooseSupplier(id) {
       this.chooseTabBySuppliers = "nation";
-      this.currentSupplierId = id;
+      this.currentSupplierId = this.supplierList[id].id;
       this.$http
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 20,
-          supplierCode: id,
+          supplierCode: this.supplierList[id].id,
           times: 1
         })
         .then(rs => {
@@ -385,7 +404,8 @@ export default {
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 30,
-          countryCode: id
+          countryCode: this.nationListChooseBySuppliers[id].id,
+          supplierCode: this.currentSupplierId
         })
         .then(rs => {
           this.provinceListChooseBySuppliers = rs.data.body.statisticList;
@@ -397,23 +417,25 @@ export default {
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 40,
-          provinceCode: id
+          provinceCode: this.provinceListChooseBySuppliers[id].id,
+          supplierCode: this.currentSupplierId
         })
         .then(rs => {
           this.cityListChooseBySuppliers = rs.data.body.statisticList;
         });
     },
-    chooseCity(id, map = 20 ,page = 1 ,pageSize = 30) {
+    chooseCity(id, map = 20, page = 1, pageSize = 30) {
       this.chooseTabBySuppliers = "hotel";
-      this.currentCityIdBySuppliers = id;
+      this.currentCityIdBySuppliers = this.cityListChooseBySuppliers[id].id;
       return this.$http
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 50,
-          cityCode: id,
+          cityCode: this.cityListChooseBySuppliers[id].id,
           mapStatus: map,
-          pageNum:page,
-          pageSize:pageSize
+          pageNum: page,
+          pageSize: pageSize,
+          supplierCode: this.currentSupplierId
         })
         .then(rs => {
           this.hotelListChooseBySuppliers = rs.data.body.statisticList;
@@ -423,35 +445,51 @@ export default {
     //选择供应商侧城市列表审核状态
     chooseStatebySupplier(val) {
       this.$store.commit("HOTEL_TABLETYPE", val);
-      this.curPageSuppliers = 1,
-      this.chooseCity(this.currentCityIdBySuppliers, val);
+      (this.curPageSuppliers = 1),
+        this.chooseCity(this.currentCityIdBySuppliers, val);
     },
     chooseHotel(index) {
-      console.log(index)
+      console.log(index);
       this.currentHotelIndexBySuppliers = index;
       var id = this.hotelListChooseBySuppliers[index].id;
-      return this.$http
-        .get(
-          `/mapping/hotelMapping/list?cityCode=${this
-            .currentCityIdBySuppliers}&supplierCode=${this
-            .currentSupplierId}&hotelCode=${id}&mapStatus=${this
-            .checkStateBySuppliers}`
-        )
-        .then(rs => {
-          this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
-          this.getDataType = 'supplier' 
-        });
+      if (this.checkStateByRegions == 10) {
+        //未聚待审
+        return this.$http
+          .post(`/mapping/hotelMapping/list`, {
+            cityCode: this.currentCityIdBySuppliers,
+            supplierCode: this.currentSupplierId,
+            hotelName: name,
+            mapStatus: this.checkStateByRegions,
+            sourceType: 20
+          })
+          .then(rs => {
+            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
+          });
+      } else {     
+        return this.$http
+          .post(`/mapping/hotelMapping/list`, {
+            cityCode: this.currentCityIdBySuppliers,
+            supplierCode: this.currentSupplierId,
+            hotelCode: id,
+            mapStatus: this.checkStateBySuppliers,
+            sourceType: 20            
+          })
+          .then(rs => {
+            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
+            this.getDataType = "supplier";
+          });
+      }
     },
 
     //选择jd侧tab
     chooseNationCopy(id) {
       this.chooseTabByRegions = "province";
       this.$http
-        .get("/mapping/hotelMapping/navTabSearch", {params:{
+        .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 10,
           dimensionType: 30,
           countryCode: this.nationListChooseByRegions[id].id
-        }})
+        })
         .then(rs => {
           this.provinceListChooseByRegions = rs.data.body.statisticList;
         });
@@ -459,28 +497,33 @@ export default {
     chooseProvinceCopy(id, map = 20) {
       this.chooseTabByRegions = "city";
       this.$http
-        .get("/mapping/hotelMapping/navTabSearch", {params:{
+        /* .get("/mapping/hotelMapping/navTabSearch", {params:{
           sourceType: 10,
           dimensionType: 40,
           provinceCode: this.provinceListChooseByRegions[id].id
-        }})
+        }}) */
+        .post("/mapping/hotelMapping/navTabSearch", {
+          sourceType: 10,
+          dimensionType: 40,
+          provinceCode: this.provinceListChooseByRegions[id].id
+        })
         .then(rs => {
           this.cityListChooseByRegions = rs.data.body.statisticList;
         });
     },
 
-    chooseCityCopy(id, map = 20,page = 1 ,pageSize = 30) {
+    chooseCityCopy(id, map = 20, page = 1, pageSize = 30) {
       this.chooseTabByRegions = "hotel";
-      this.currentCityIdByRegions = id;
+      this.currentCityIdByRegions = this.cityListChooseByRegions[id].id;
       return this.$http
-        .get("/mapping/hotelMapping/navTabSearch", {params:{
+        .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 10,
           dimensionType: 50,
           cityCode: this.cityListChooseByRegions[id].id,
           mapStatus: map,
-          pageNum:page,
-          pageSize:pageSize
-        }})
+          pageNum: page,
+          pageSize: pageSize
+        })
         .then(rs => {
           this.hotelListChooseByRegions = rs.data.body.statisticList;
           this.hotelTotalRegions = rs.data.body.total;
@@ -490,33 +533,37 @@ export default {
     //选择区域酒店列表审核状态
     chooseStatebyRegion(val) {
       this.$store.commit("HOTEL_TABLETYPE", val);
-      this.curPageSuppliers = 1,
-      this.chooseCityCopy(this.currentProvinceIdByRegions, val);
+      (this.curPageSuppliers = 1),
+        this.chooseCityCopy(this.currentProvinceIdByRegions, val);
     },
     chooseHotelCopy(index) {
       this.currentHotelIndexByRegions = index;
-      var id = this.hotelListChooseByRegions[index].id,
-          name = this.hotelListChooseByRegions[index].name;
+      var id =
+          this.hotelListChooseByRegions[index].id ||
+          this.hotelListChooseByRegions[index].hotelId, //兼容搜索
+        name = this.hotelListChooseByRegions[index].name;
       if (this.checkStateByRegions == 10) {
         //未聚待审
         return this.$http
-          .get(
-            `/mapping/hotelMapping/list?cityId=${this
-              .currentCityIdByRegions}&hotelName=${name}&mapStatus=${this
-              .checkStateByRegions}&sourceType=10`
-          )
+          .post(`/mapping/hotelMapping/list`, {
+            cityId: this.currentCityIdByRegions,
+            hotelName: name,
+            mapStatus: this.checkStateByRegions,
+            sourceType: 10
+          })
           .then(rs => {
             this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
           });
       } else {
         return this.$http
-          .get(
-            `/mapping/hotelMapping/list?hotelId=${id}&mapStatus=${this
-              .checkStateByRegions}&sourceType=10`
-          )
+          .post(`/mapping/hotelMapping/list`, {
+            hotelId: id,
+            mapStatus: this.checkStateByRegions,
+            sourceType: 10
+          })
           .then(rs => {
-            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body)
-            this.getDataType = 'region'
+            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body);
+            this.getDataType = "region";
           });
       }
     },
@@ -539,7 +586,9 @@ export default {
           return;
         }
         this.$http
-          .get(`/mapping/hotelMapping/navSearch?keyword=${this.searchInput}&type=1`)
+          .get(
+            `/mapping/hotelMapping/navSearch?keyword=${this.searchInput}&type=1`
+          )
           .then(rs => {
             this.hotelListChooseByRegions = rs.data.body;
           })
@@ -559,7 +608,9 @@ export default {
           return;
         }
         this.$http
-          .get(`/mapping/hotelMapping/navSearch?keyword=${this.searchInput}&type=2`)
+          .get(
+            `/mapping/hotelMapping/navSearch?keyword=${this.searchInput}&type=2`
+          )
           .then(rs => {
             this.hotelListChooseByRegions = rs.data.body;
           })

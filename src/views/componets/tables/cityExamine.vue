@@ -143,7 +143,6 @@
     </section>
 </template>
 <script>
-    import axios from 'axios';// 删掉
     export default {
         data(){
             return {
@@ -291,7 +290,7 @@
         computed:{
             // 城市审核列表中的京东城市审核对象
             JDCityApproval(){
-                return this.$store.getters.cityCheckList.JDCityApproval;
+                return this.$store.getters.cityCheckList.jdCityApproval;
             },
             is20Check(){
                 for (let i = 0; i < this.cityApprovalList.length; i++) {
@@ -372,7 +371,7 @@
                         if(this.pageNum > this.pages){
                             return;
                         }
-                        axios.get('//trip.hotel.man.net/resource/geoCommon/jdCityList',{
+                        this.$http.get('/resource/geoCommon/jdCityList',{
                             params: {
                                 cityName: this.cityValue,
                                 pageNum: this.pageNum,
@@ -453,7 +452,7 @@
                 this.divH.scrollTop = 0;
                 this.divWidth2 = this.$refs.w2.offsetWidth;
                 this.spinShow = true;
-                axios.get('//trip.hotel.man.net/resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum=1&pageSize=20').then(res=>{
+                this.$http.get('/resource/geoCommon/jdCityList?cityName='+this.cityValue+'&pageNum=1&pageSize=20').then(res=>{
                     console.log('get',res);
                     this.spinShow = false;
                     if(res.data.head.code == 200){
@@ -647,7 +646,7 @@
             getCheckData(dataId){
                 this.checkShow = true;
                 this.spinShow = true;
-                this.$http.get('mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=1').then(res=>{
+                this.$http.get('/mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=1').then(res=>{
                     if(res.data.head.code == 200){
                         this.spinShow = false;
                         this.checkData = res.data.body[0].logDetailList;
