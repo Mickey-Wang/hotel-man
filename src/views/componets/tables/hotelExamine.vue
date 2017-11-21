@@ -572,6 +572,8 @@
                 this.toSearch();
             },
             toSearch(){
+                this.similar = '';
+                this.submitData.radioData = [];
                 this.pageNum = 1;
                 // 点击的时候 scrollTop 设置为0，防止下次滚动条直接到最下面
                 this.divH.scrollTop = 0;
