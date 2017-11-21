@@ -353,7 +353,7 @@ export default {
       }
     },
     doSupplierListFilter() {
-      console.log(1);
+      // console.log(1);
       let arr = [];
       if (this.searchSupplier == "")
         return (this.supplierListFilter = this.supplierList);
@@ -435,7 +435,7 @@ export default {
       this.currentCityIndexBySuppliers = index;
       let id = this.cityListChooseBySuppliers[index].id;
       return this.$http
-        .post(`/mapping/cityMapping/list`, {
+        .post(`/mapping/cityMapping/queryCityApprovalList`, {
           cityCode: id,
           supplierCode: this.currentSupplierId,
           mapStatus: this.checkStateBySuppliers,
@@ -488,7 +488,7 @@ export default {
       if (this.checkStateByRegions == 10) {
         //未聚待审
         var promise = this.$http
-          .post(`/mapping/cityMapping/list`, {
+          .post(`/mapping/cityMapping/queryCityApprovalList`, {
             provinceId: this.currentProvinceIdByRegions,
             cityName: name,
             mapStatus: this.checkStateByRegions,
@@ -500,7 +500,7 @@ export default {
           });
       } else {
         promise = this.$http
-          .post(`/mapping/cityMapping/list`, {
+          .post(`/mapping/cityMapping/queryCityApprovalList`, {
             cityId: id,
             mapStatus: this.checkStateByRegions,
             sourceType:10
