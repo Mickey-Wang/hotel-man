@@ -825,13 +825,13 @@
             getTreeData(JDHotelId){
                 this.treeShow = true;
                 this.spinShow = true;
-                this.$http.get('/mapping/hotelMapping/getHotelTreeByJDHotelId?JDHotelId=' + JDHotelId).then(res=>{
+                this.$http.get('/mapping/hotelMapping/getHotelTreeByJDHotelId?jdHotelId=' + JDHotelId).then(res=>{
                     if(res.data.head.code == 200){
-                        console.log('tree信息JDHotelApproval:',res.data.body.JDHotelApproval);
+                        console.log('tree信息JDHotelApproval:',res.data.body.jdHotelApproval);
                         console.log('tree信息hotelApprovalList:',res.data.body.hotelApprovalList);
                         this.spinShow = false;
                         this.treeJDHotelApproval = [];
-                        this.treeJDHotelApproval.push(res.data.body.JDHotelApproval);
+                        this.treeJDHotelApproval.push(res.data.body.jdHotelApproval);
                         this.treeData = res.data.body.hotelApprovalList;
                     }else {
                         this.$router.push({
