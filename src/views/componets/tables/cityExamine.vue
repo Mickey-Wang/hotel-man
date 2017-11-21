@@ -447,6 +447,8 @@
             },
             // 点击城市的时候和Go搜索的时候相同代码提取
             toSearch(){
+                this.similar = '';
+                this.submitData.radioData = [];
                 this.pageNum = 1;
                 // 点击的时候 scrollTop 设置为0，防止下次滚动条直接到最下面
                 this.divH.scrollTop = 0;
