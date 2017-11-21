@@ -693,41 +693,73 @@
                 // 提交，设为已审按钮(当不是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType!=10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
-                        this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
-                        this.modelShow = false;
-                        this.hotelValue = '';
+                        if(res.data.head.code==200){
+                            this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
+                            this.modelShow = false;
+                            this.hotelValue = '';
+                        }else {
+                            this.$router.push({
+                                name:'404'
+                            });
+                        }
                     }).catch((err)=>{
-
+                        this.$router.push({
+                            name:'404'
+                        });
                     })
                 }
                 // 提交，设为已审按钮(当是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType==10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res => {
-                        this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
-                        this.modelShow = false;
-                        this.hotelValue = '';
+                        if(res.data.head.code==200){
+                            this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
+                            this.modelShow = false;
+                            this.hotelValue = '';
+                        }else {
+                            this.$router.push({
+                                name:'404'
+                            });
+                        }
                     }).catch((err)=>{
-
+                        this.$router.push({
+                            name:'404'
+                        });
                     })
                 }
                 // 设为待审按钮
                 if(this.buttonType == 2){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
-                        this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
-                        this.modelShow = false;
-                        this.hotelValue = '';
+                        if(res.data.head.code==200){
+                            this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
+                            this.modelShow = false;
+                            this.hotelValue = '';
+                        }else {
+                            this.$router.push({
+                                name:'404'
+                            });
+                        }
                     }).catch(err=>{
-
+                        this.$router.push({
+                            name:'404'
+                        });
                     })
                 }
                 // tree中的设为已聚待审的按钮
                 if(this.buttonType == 3){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr,"JDHotelId":radioStr}).then(res=>{
-                        this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
-                        this.treeShow = false;
-                        this.hotelValue = '';
+                        if(res.data.head.code==200){
+                            this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
+                            this.treeShow = false;
+                            this.hotelValue = '';
+                        }else {
+                            this.$router.push({
+                                name:'404'
+                            });
+                        }
                     }).catch(err=>{
-
+                        this.$router.push({
+                            name:'404'
+                        });
                     })
                 }
             },
@@ -770,12 +802,22 @@
                 this.spinShow = true;
                 this.checkShow = true;
                 this.$http.get('mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=2').then(res=>{
-                    console.log('日志接口res:',res.data.body);
-
-                    this.spinShow = false;
-                    this.checkData = res.data.body;
+                    if(res.data.head.code == 200){
+                        this.spinShow = false;
+                        this.checkData = res.data.body[0].logDetailList;
+                        for(let i=0; i<this.checkData.length; i++){
+                            this.checkData[i].operateTime = res.data.body[0].operateTime;
+                            this.checkData[i].operatorName = res.data.body[0].operatorName;
+                        }
+                    }else {
+                        this.$router.push({
+                            name:'404'
+                        });
+                    }
                 }).catch(err=>{
-
+                    this.$router.push({
+                        name:'404'
+                    });
                 })
             },
             // 点击查看Tree信息
@@ -783,14 +825,22 @@
                 this.treeShow = true;
                 this.spinShow = true;
                 this.$http.get('mapping/hotelMapping/getHotelTreeByJDHotelId?JDHotelId=' + JDHotelId).then(res=>{
-                    console.log('tree信息JDHotelApproval:',res.data.body.JDHotelApproval);
-                    console.log('tree信息hotelApprovalList:',res.data.body.hotelApprovalList);
-                    this.spinShow = false;
-                    this.treeJDHotelApproval = [];
-                    this.treeJDHotelApproval.push(res.data.body.JDHotelApproval);
-                    this.treeData = res.data.body.hotelApprovalList;
+                    if(res.data.head.code == 200){
+                        console.log('tree信息JDHotelApproval:',res.data.body.JDHotelApproval);
+                        console.log('tree信息hotelApprovalList:',res.data.body.hotelApprovalList);
+                        this.spinShow = false;
+                        this.treeJDHotelApproval = [];
+                        this.treeJDHotelApproval.push(res.data.body.JDHotelApproval);
+                        this.treeData = res.data.body.hotelApprovalList;
+                    }else {
+                        this.$router.push({
+                            name:'404'
+                        });
+                    }
                 }).catch(err=>{
-
+                    this.$router.push({
+                        name:'404'
+                    });
                 })
             },
             // 当勾选复选框的时候,重置一下radio的value值

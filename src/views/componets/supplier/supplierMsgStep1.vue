@@ -61,10 +61,11 @@
                             </div>
                             <div class="right" style="border-bottom: 1px solid #e9eaec">
                                 <span>请选择</span>
-                                <template v-for="(showDay,index) in showDays(dateLine)">
+                                <template v-for="(showDay, index) in showDays(dateLine)">
                                     <input type="checkbox" v-model="showDay.select" :disabled="showDay.disable" @click="changeSelect(dateLine, showDay)" />{{dayText[index]}}
                                 </template>
                                 <div style="display: inline-block" v-if="selectedDays.length<7&&index==0" @click="addTime"><Icon type="ios-plus" size="20"></Icon></div>
+                                <div style="display: inline-block" v-if="index!=0"  @click="removeDateLine(index)"><Icon type="ios-close" size="20"></Icon></div>
                             </div>
                         </div>
                         <div class="sameStyle name" style="border-bottom: 1px solid #e9eaec">
@@ -72,9 +73,9 @@
                             <div class="right">
                                 <Checkbox v-model="selectedValue1"></Checkbox>
                                 <span>每天的</span>
-                                <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue1" placeholder="选择时间" style="width: 112px"></TimePicker>
+                                <TimePicker format="HH:mm" :steps="[1, 60]" v-model="dateLine.start" placeholder="选择时间" style="width: 112px"></TimePicker>
                                 <span>到</span>
-                                <TimePicker format="HH:mm" :steps="[1, 60]"  :value="timeValue2" placeholder="选择时间" style="width: 112px"></TimePicker>
+                                <TimePicker format="HH:mm" :steps="[1, 60]" v-model="dateLine.end" placeholder="选择时间" style="width: 112px"></TimePicker>
                                 <span>处理</span>
                             </div>
                         </div>
@@ -86,15 +87,15 @@
                         <div class="right">
                             <span>请选择</span>
                             <CheckboxGroup v-model="invoiceData" style="width: 540px; display: inline-block;">
-                                <Checkbox label="代订房费"></Checkbox>
-                                <Checkbox label="代订住宿费"></Checkbox>
-                                <Checkbox label="旅游服务费"></Checkbox>
-                                <Checkbox label="会议服务费"></Checkbox>
-                                <Checkbox label="住宿费"></Checkbox>
-                                <Checkbox label="旅游费"></Checkbox>
-                                <Checkbox label="其他"></Checkbox>
+                                <Checkbox label=1>代订房费</Checkbox>
+                                <Checkbox label=2>代订住宿费</Checkbox>
+                                <Checkbox label=3>旅游服务费</Checkbox>
+                                <Checkbox label=4>会议服务费</Checkbox>
+                                <Checkbox label=5>住宿费</Checkbox>
+                                <Checkbox label=6>旅游费</Checkbox>
+                                <Checkbox label=7>其他</Checkbox>
                             </CheckboxGroup>
-                            <Input v-model="invoiceValue" style="width: 200px"></Input>
+                            <Input v-if="showInvioceInput" v-model="invoiceValue" style="width: 200px"></Input>
                         </div>
                     </div>
                     <div class="sameStyle name serviceTime">
@@ -105,12 +106,12 @@
                             <span>请选择</span>
                             <Checkbox :indeterminate="indeterminate" :value="channelAll" @click.prevent.native="channelCheckAll">全选</Checkbox>
                             <CheckboxGroup v-model="channelData" style="display: inline-block;" @on-change="checkAllChannel">
-                                <Checkbox label="网站前台"></Checkbox>
-                                <Checkbox label="酒店APP"></Checkbox>
-                                <Checkbox label="网站差旅"></Checkbox>
-                                <Checkbox label="薪福卡（大客户）"></Checkbox>
-                                <Checkbox label="齐采网（大客户）"></Checkbox>
-                                <Checkbox label="大连航空（大客户）"></Checkbox>
+                                <Checkbox label="2">网站前台</Checkbox>
+                                <Checkbox label="3">酒店APP</Checkbox>
+                                <Checkbox label="4">网站差旅</Checkbox>
+                                <Checkbox label="5">薪福卡（大客户）</Checkbox>
+                                <Checkbox label="6">齐采网（大客户）</Checkbox>
+                                <Checkbox label="7">大连航空（大客户）</Checkbox>
                             </CheckboxGroup>
                         </div>
                     </div>
@@ -121,8 +122,8 @@
                         <div class="right">
                             <span>请选择</span>
                             <RadioGroup v-model="physicalRoom">
-                                <Radio label="是"></Radio>
-                                <Radio label="否"></Radio>
+                                <Radio label='0'>是</Radio>
+                                <Radio label='1'>否</Radio>
                             </RadioGroup>
                         </div>
                     </div>
@@ -133,10 +134,10 @@
                         <div class="right">
                             <span>请选择</span>
                             <RadioGroup v-model="priceDays">
-                                <Radio label="90天"></Radio>
+                                <Radio label=90>90天</Radio>
                                 <Radio label="其它"></Radio>
                             </RadioGroup>
-                            <Input v-model="priceDaysValue" style="width: 200px"></Input>
+                            <Input v-if="showDaysInput" v-model="priceDaysValue" style="width: 200px"></Input>
                         </div>
                     </div>
                 </div>
@@ -270,7 +271,7 @@ export default {
             // 周一到周日默认全部选择
             allDays: [1, 2, 3, 4, 5, 6,7],
             // 循环展示的时间
-            dateLines: [{selectedDays: [1, 2, 3, 4, 5, 6, 7]}],
+            dateLines: [{selectedDays: [1, 2, 3, 4, 5, 6, 7], start: '00:00', end: '23:00'}],
             // 日期展示的文字
             dayText:['星期一','星期二','星期三','星期四','星期五','星期六','星期日'],
             // 时间默认值
@@ -281,19 +282,36 @@ export default {
             invoiceData:[],
             invoiceValue:'',
             // 上架渠道
-            selectChannel:'',
-            channelData:['网站前台','酒店APP','网站差旅','薪福卡（大客户）','齐采网（大客户）','大连航空（大客户）'],
+            channelData:['2','3','4','5','6','7'],
             indeterminate: true,// iView自带样式
             channelAll:false,
             // 物理房型
-            physicalRoom:'是',
+            physicalRoom:0,
             // 报价天数
-            priceDays:'90天',
+            priceDays:90,
             priceDaysValue:'',
         }
     },
+    watch: {
+        dateLines: {
+            handler () {
+                console.log('watch dateLines', this.dateLines);
+                for (var i = 0; i < this.dateLines.length; i++) {
+                    var dateLine = this.dateLines[i];
+                    if (typeof(dateLine.start) !== 'string') {
+                        dateLine.start = this.dateToTimeStr(dateLine.start);
+                    }
+                    if (typeof(dateLine.end) !== 'string') {
+                        dateLine.end = this.dateToTimeStr(dateLine.end);
+                    }
+                }
+            },
+            deep: true
+        }
+    },
     computed:{
-        selectedDays: function () {
+        // 服务时间的逻辑
+        selectedDays(){
             var selectedDays = [];
             for (var i = 0; i < this.dateLines.length; i++) {
                 var dateLine = this.dateLines[i];
@@ -304,8 +322,24 @@ export default {
             console.log('selectedDays:', selectedDays);
             return selectedDays;
         },
-        isAllSelect: function () {
+        isAllSelect () {
             return this.selectedDays.length === 7;
+        },
+        // 显示发票input的条件
+        showInvioceInput(){
+            if(this.invoiceData.indexOf('7')!=-1){
+                return true;
+            }else {
+                return false;
+            }
+        },
+        // 显示报价天数的输入框是否显示
+        showDaysInput(){
+            if(this.priceDays!=90){
+                return true;
+            }else {
+                return false;
+            }
         }
     },
     methods:{
@@ -337,13 +371,13 @@ export default {
                 this.channelAll = false;
             }
         },
-        // 添加时间
+        // 以下为添加时间的逻辑
         addTime(){
             if (this.isAllSelect) {
                 alert("加满了");
                 return;
             }
-            this.dateLines.push({selectedDays: []});
+            this.dateLines.push({selectedDays: [], start: '00:00', end: '23:00'});
         },
         showDays: function (dateLine) {
             console.log('showDays. dateLine:', dateLine);
@@ -393,13 +427,41 @@ export default {
                 dateLine.selectedDays.push(showDay.day);
             }
         },
+        removeDateLine(index){
+            console.log('删除的index:',index);
+            this.dateLines.splice(index, 1);
+        },
+        //以上添加的时间的逻辑
         // 下一步
         goToNext(){
             // 判断一下必填部分，平台供应商识别码和是否含有物理房型不是必须
-
+            let firstStepMsg = {
+                supplierName:this.supplierName,
+                selectAccessType:this.selectAccessType,
+                selectPlatformName:this.selectPlatformName,
+                platformCode:this.platformCode,
+                selectQuotedCurrency:this.selectQuotedCurrency,
+                selectSettlementCurrency:this.selectSettlementCurrency,
+                invoiceData:this.invoiceData,
+                channelData:this.channelData
+            };
             /*this.$router.push({
                 name:'step2'
             });*/
+        },
+        dateToTimeStr(date) {
+            var timeStr = '';
+            var hour = date.getHours();
+            if (hour < 10) {
+                timeStr += '0';
+            }
+            timeStr += hour + ':';
+            var minute = date.getMinutes();
+            if (minute < 10) {
+                timeStr += '0';
+            }
+            timeStr += minute;
+            return timeStr;
         }
     }
 }

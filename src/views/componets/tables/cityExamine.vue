@@ -555,9 +555,15 @@
                 if(this.buttonType==1 && this.cityTableType!=10){
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
                         console.log('20 or 30 设为已审的接口');
-                        this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
-                        this.modelShow = false;
-                        this.cityValue = '';
+                        if(res.data.head.code == 200){
+                            this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
+                            this.modelShow = false;
+                            this.cityValue = '';
+                        }else {
+                            this.$router.push({
+                                name:'404'
+                            });
+                        }
                     }).catch((err)=>{
 
                     })
@@ -566,24 +572,40 @@
                 if(this.buttonType==1 && this.cityTableType==10){
                     console.log('未聚未审的数据，设为已审');
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
-                        console.log('10 设为已审的接口');
-                        this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
-                        this.modelShow = false;
-                        this.cityValue = '';
+                        if(res.data.head.code == 200){
+                            console.log('10 设为已审的接口');
+                            this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
+                            this.modelShow = false;
+                            this.cityValue = '';
+                        }else {
+                            this.$router.push({
+                                name:'404'
+                            });
+                        }
                     }).catch((err)=>{
-
+                        this.$router.push({
+                            name:'404'
+                        });
                     })
                 }
                 // 设为待审按钮
                 if(this.buttonType == 2){
                     console.log('设为待审');
                     this.$http.post('/mapping/cityMapping/matchedUncheck',{"geoMapIds":checkStr,"geoId":radioStr}).then(res=>{
-                        console.log('20 or 30 设为待审的接口');
-                        this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
-                        this.modelShow = false;
-                        this.cityValue = '';
+                        if(res.data.head.code==200){
+                            console.log('20 or 30 设为待审的接口');
+                            this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
+                            this.modelShow = false;
+                            this.cityValue = '';
+                        }else {
+                            this.$router.push({
+                                name:'404'
+                            });
+                        }
                     }).catch(err=>{
-
+                        this.$router.push({
+                            name:'404'
+                        });
                     })
                 }
             },
@@ -625,16 +647,23 @@
             getCheckData(dataId){
                 this.checkShow = true;
                 this.spinShow = true;
-                this.$http.get('resource/resourceLogService/getLogListByDataId?dataId='+ dataId +'&dataType=10').then(res=>{
-                    this.spinShow = false;
-                    this.checkData = res.data.body[0].logDetailList;
-                    for(let i=0; i<this.checkData.length; i++){
-                        this.checkData[i].operateTime = res.data.body[0].operateTime;
-                        this.checkData[i].operatorName = res.data.body[0].operatorName;
+                this.$http.get('mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=1').then(res=>{
+                    if(res.data.head.code == 200){
+                        this.spinShow = false;
+                        this.checkData = res.data.body[0].logDetailList;
+                        for(let i=0; i<this.checkData.length; i++){
+                            this.checkData[i].operateTime = res.data.body[0].operateTime;
+                            this.checkData[i].operatorName = res.data.body[0].operatorName;
+                        }
+                    }else {
+                        this.$router.push({
+                            name:'404'
+                        });
                     }
-                    console.log('日志:',this.checkData);
                 }).catch(err=>{
-
+                    this.$router.push({
+                        name:'404'
+                    });
                 })
             },
             // 当勾选复选框的时候,重置一下radio的value值
