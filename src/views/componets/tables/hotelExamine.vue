@@ -19,7 +19,7 @@
                                 <th style="border-top: none;"><input type="checkbox" v-if="hotelTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="isNot20Check"></th>
                                 <th style="border-top: none;" v-for="(item,index) in cityHeaderData" :key="index">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-if="hotelCheckList!=null && hotelTableType!=10 && JDHotelApproval && hotelApprovalList.length!=0">
+                            <tr class="fontColor" v-if="hotelCheckList && hotelTableType!=10 && JDHotelApproval && hotelApprovalList.length!=0">
                                 <td></td>
                                 <td @click="getInputValue(JDHotelApproval)">{{JDHotelApproval.hotelName}}</td>
                                 <td>{{JDHotelApproval.address}}</td>
@@ -37,7 +37,7 @@
                         </table>
                     </div>
                     <div :style="{'height':hotelTableType==10?'86%':'71%'}">
-                        <table v-if="hotelCheckList!=null && hotelApprovalList && hotelApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
+                        <table v-if="hotelCheckList && hotelApprovalList && hotelApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in hotelApprovalList" :key="index" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
                                 <td @click="getInputValue(item)">{{item.hotelName}}</td>
@@ -52,10 +52,10 @@
                                 <td>{{item.lastOperator}}</td>
                                 <td>{{item.lastModifyTime}}</td>
                                 <!--<td @click="checkShow = true">查看</td>-->
-                                <td @click="getCheckData(item.geoMapId)">查看</td>
+                                <td @click="getCheckData(item.hotelMapId)">查看</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="hotelCheckList==null || hotelApprovalList.length==0">
+                        <div class="noData" v-if="!hotelCheckList || hotelApprovalList.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                         </table>
                     </div>
                     <div ref="divH" style="height: 80%;">
-                        <table ref="tableH" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
+                        <table ref="tableH" v-if="similarCityData && similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
                             <tr v-for="(item,index) in similarCityData" :key="index">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <td>{{item.hotelId}}</td>
@@ -98,7 +98,7 @@
                                 <td @click="getTreeData(item.hotelId)">Tree信息</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="similarCityData==0">
+                        <div class="noData" v-if="!similarCityData || similarCityData==0">
                             暂无数据
                         </div>
                     </div>
@@ -123,7 +123,7 @@
                         </table>
                     </div>
                     <div style="overflow-x: hidden">
-                        <table style="width: 767px;">
+                        <table style="width: 767px;" v-if="checkData && checkData.length>0">
                             <tr v-for="(item,index) in checkData" :key="index">
                                 <td>{{getStatusValue(item.originalValue)}}</td>
                                 <td>{{getStatusValue(item.modifedValue)}}</td>
@@ -131,7 +131,7 @@
                                 <td>{{item.operator}}</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="checkData.length==0">
+                        <div class="noData" v-if="!checkData && checkData.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -158,7 +158,7 @@
                                 <th></th>
                                 <th v-for="(item,index) in treeTitle" :key="index">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-for="(item,index) in treeJDHotelApproval" :key="index">
+                            <tr class="fontColor" v-if="treeJDHotelApproval" v-for="(item,index) in treeJDHotelApproval" :key="index">
                                 <td></td>
                                 <td>{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
@@ -174,7 +174,7 @@
                         </table>
                     </div>
                     <div style="overflow-x: hidden">
-                        <table style="width: 1266px;">
+                        <table style="width: 1266px;" v-if="treeData && treeData.length>0">
                             <tr v-for="(item,index) in treeData" v-if="index>0" :key="index">
                                 <td><input type="checkbox" v-model="item.checked"/></td>
                                 <td>{{item.hotelName}}</td>
@@ -189,7 +189,7 @@
                                 <td>{{getStatusValue(item.mapStatus)}}</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="treeData.length==0&&treeJDHotelApproval.length==0">
+                        <div class="noData" v-if="!treeData || !treeJDHotelApproval || (treeData.length==0&&treeJDHotelApproval.length==0)">
                             暂无数据
                         </div>
                     </div>
@@ -512,22 +512,16 @@
                             if(res.data.head.code == 200){
                                 this.similarCityData = this.similarCityData.concat(res.data.body.hotelList);
                             }else {
-                                this.$Notice.warning({
-                                    title: '接口异常',
-                                    desc:'请稍后再试'
-                                });
+
                             }
                         }).catch(error=>{
-                            this.$Notice.warning({
-                                title: '接口异常',
-                                desc:'请稍后再试'
-                            });
+
                         });
                     }
                 }
             },
             getHotelApprovalList(){
-                if (this.$store.getters.hotelCheckList.hotelApprovalList) {
+                if (this.hotelCheckList && this.$store.getters.hotelCheckList.hotelApprovalList) {
                     this.hotelApprovalList = this.$store.getters.hotelCheckList.hotelApprovalList;
                     // 把已聚已审的数据提取到一个数组里面，计算一下数据里面已聚已审的长度
                     let arrList = [];
@@ -593,16 +587,10 @@
                         this.pages = res.data.body.pages;// 第一次拿到总页数
                         this.similarCityData = res.data.body.hotelList;
                     }else {
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     }
                 }).catch(error=>{
-                    this.$Notice.warning({
-                        title: '接口异常',
-                        desc:'请稍后再试'
-                    });
+
                 });
             },
             // highlight函数
@@ -708,16 +696,10 @@
                             this.modelShow = false;
                             this.hotelValue = '';
                         }else {
-                            this.$Notice.warning({
-                                title: '接口异常',
-                                desc:'请稍后再试'
-                            });
+
                         }
                     }).catch((err)=>{
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     })
                 }
                 // 提交，设为已审按钮(当是未聚未审的时候)
@@ -728,16 +710,10 @@
                             this.modelShow = false;
                             this.hotelValue = '';
                         }else {
-                            this.$Notice.warning({
-                                title: '接口异常',
-                                desc:'请稍后再试'
-                            });
+
                         }
                     }).catch((err)=>{
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     })
                 }
                 // 设为待审按钮
@@ -748,16 +724,10 @@
                             this.modelShow = false;
                             this.hotelValue = '';
                         }else {
-                            this.$Notice.warning({
-                                title: '接口异常',
-                                desc:'请稍后再试'
-                            });
+
                         }
                     }).catch(err=>{
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     })
                 }
                 // tree中的设为已聚待审的按钮
@@ -768,16 +738,10 @@
                             this.treeShow = false;
                             this.hotelValue = '';
                         }else {
-                            this.$Notice.warning({
-                                title: '接口异常',
-                                desc:'请稍后再试'
-                            });
+
                         }
                     }).catch(err=>{
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     })
                 }
             },
@@ -819,25 +783,19 @@
             getCheckData(dataId){
                 this.spinShow = true;
                 this.checkShow = true;
-                this.$http.get('/mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=2').then(res=>{
+                this.$http.get('/mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=20').then(res=>{
+                    this.spinShow = false;
                     if(res.data.head.code == 200){
-                        this.spinShow = false;
                         this.checkData = res.data.body[0].logDetailList;
                         for(let i=0; i<this.checkData.length; i++){
                             this.checkData[i].operateTime = res.data.body[0].operateTime;
                             this.checkData[i].operatorName = res.data.body[0].operatorName;
                         }
                     }else {
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     }
                 }).catch(err=>{
-                    this.$Notice.warning({
-                        title: '接口异常',
-                        desc:'请稍后再试'
-                    });
+
                 })
             },
             // 点击查看Tree信息
@@ -853,16 +811,10 @@
                         this.treeJDHotelApproval.push(res.data.body.jdHotelApproval);
                         this.treeData = res.data.body.hotelApprovalList;
                     }else {
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     }
                 }).catch(err=>{
-                    this.$Notice.warning({
-                        title: '接口异常',
-                        desc:'请稍后再试'
-                    });
+
                 })
             },
             // 当勾选复选框的时候,重置一下radio的value值
