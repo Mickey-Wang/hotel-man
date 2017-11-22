@@ -521,7 +521,7 @@
                 }
             },
             getHotelApprovalList(){
-                if (this.$store.getters.hotelCheckList.hotelApprovalList) {
+                if (this.hotelCheckList && this.$store.getters.hotelCheckList.hotelApprovalList) {
                     this.hotelApprovalList = this.$store.getters.hotelCheckList.hotelApprovalList;
                     // 把已聚已审的数据提取到一个数组里面，计算一下数据里面已聚已审的长度
                     let arrList = [];

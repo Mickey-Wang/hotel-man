@@ -496,7 +496,6 @@
                 // 确定是提交按钮(设为已聚已审的状态)
                 this.buttonType = 1;
                 this.submitData.checkBoxData = [];
-                this.submitData.checkBoxData = [];
                 let radioStr = this.submitData.radioData[0];
                 if(radioStr==undefined){
                     this.submitData.radioData.push(this.JDCityApproval.cityId);
