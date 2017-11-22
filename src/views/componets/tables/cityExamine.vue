@@ -499,7 +499,7 @@
                 this.submitData.checkBoxData = [];
                 let radioStr = this.submitData.radioData[0];
                 if(radioStr==undefined){
-                    this.submitData.radioData.push(this.JDHotelApproval.hotelId);
+                    this.submitData.radioData.push(this.JDCityApproval.cityId);
                 }
                 if(this.cityTableType==20 || this.cityTableType==30){
                     this.getForData(20);
@@ -634,8 +634,8 @@
             },
             // 获取日志接口
             getCheckData(dataId){
-                this.checkShow = true;
                 this.spinShow = true;
+                this.checkShow = true;
                 this.$http.get('/mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=1').then(res=>{
                     if(res.data.head.code == 200){
                         this.spinShow = false;

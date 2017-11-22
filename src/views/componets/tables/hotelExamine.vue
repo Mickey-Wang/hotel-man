@@ -792,12 +792,9 @@
                             this.checkData[i].operatorName = res.data.body[0].operatorName;
                         }
                     }else {
-                        this.checkShow = false;
 
                     }
                 }).catch(err=>{
-                    this.checkShow = false;
-                    this.spinShow = false;
 
                 })
             },
