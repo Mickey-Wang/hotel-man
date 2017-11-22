@@ -67,9 +67,9 @@
             </div>
         </div>
         <div class="bottomTable">
-            <div class="title">相似城市列表</div>
+            <div class="title">相似酒店列表</div>
             <div class="button">
-                <span>酒店名称</span>
+                <!--<span>酒店名称</span>-->
                 <Input v-model="hotelValue" placeholder="JD数据模糊比配" style="width: 200px"></Input>
                 <Button type="primary" @click="getSimilar">Go</Button>
             </div>
@@ -786,6 +786,7 @@
                 this.$http.get('/mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=20').then(res=>{
                     this.spinShow = false;
                     if(res.data.head.code == 200){
+                        console.log('日志:',res.data.body);
                         this.checkData = res.data.body[0].logDetailList;
                         for(let i=0; i<this.checkData.length; i++){
                             this.checkData[i].operateTime = res.data.body[0].operateTime;

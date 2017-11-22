@@ -63,7 +63,7 @@
         <div class="bottomTable">
             <div class="title">相似城市列表</div>
             <div class="button">
-                <span>城市名称</span>
+                <!--<span>城市名称</span>-->
                 <Input v-model="cityValue" placeholder="JD数据模糊比配" style="width: 200px"></Input>
                 <Button type="primary" @click="getSimilar">Go</Button>
             </div>
