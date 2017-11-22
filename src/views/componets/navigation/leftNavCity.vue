@@ -117,7 +117,7 @@
             <Menu theme="light" width="auto" @on-select="chooseCity" v-if="cityListChooseBySuppliers.length>0">
               <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
-              <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
+              <!-- <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span> -->
               </MenuItem>
             </Menu>
             <Row v-else style="font-size:18px;text-align:center;">
@@ -439,7 +439,7 @@ export default {
     },
     chooseCity(index) {
       this.currentCityIndexBySuppliers = index;
-      let id = this.cityListChooseBySuppliers[index].id;
+      var id = this.cityListChooseBySuppliers[index].id;
       return this.$http
         .post(`/mapping/cityMapping/queryCityApprovalList`, {
           cityCode: id,
