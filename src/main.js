@@ -16,6 +16,22 @@ Vue.use(Vuex);
 
 Vue.use(iView);
 
+//添加响应拦截器
+Util.ajax.interceptors.response.use(function (response) {
+    // console.log(response);
+    //对响应数据做些事
+    if (response.data.head.code !== "200") {
+        var msg = response.data.head.message;
+        vm.$Notice.warning({
+            title: msg,
+        });
+        // console.log(msg);
+    }
+    return response;
+}, function (error) {
+    //请求错误时做些事
+    return Promise.reject(error);
+});
 Vue.prototype.$http = Util.ajax;
 //Vue.prototype.highlight =
 
@@ -43,7 +59,7 @@ Object.keys(filter).forEach(function(k) {
     Vue.filter(k, filter[k]);
 });
 
-new Vue({
+const vm = new Vue({
     el: '#app',
     router: router,
     store: store,
