@@ -19,7 +19,7 @@
                                 <th style="border-top: none;"><input type="checkbox" v-if="cityTableType!=10" v-model="checkAll" @click="toggleCheckAll" :disabled="isNot20Check"></th>
                                 <th style="border-top: none;" v-for="(item,index) in cityHeaderData" :key="index">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-if="cityCheckList!=null && cityTableType!=10 && JDCityApproval && cityApprovalList.length!=0">
+                            <tr class="fontColor" v-if="cityCheckList && cityTableType!=10 && JDCityApproval && cityApprovalList.length!=0">
                                 <td></td>
                                 <td @click="getInputValue(JDCityApproval)">{{JDCityApproval.cityName}}</td>
                                 <td>{{JDCityApproval.cityId}}</td>
@@ -34,7 +34,7 @@
                         </table>
                     </div>
                     <div :style="{'height':cityTableType==10?'85%':'71%'}">
-                        <table v-if="cityCheckList!=null && cityApprovalList && cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
+                        <table v-if="cityCheckList && cityApprovalList && cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in cityApprovalList" :key="index" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
                                 <td @click="getInputValue(item)">{{item.cityName}}</td>
@@ -49,7 +49,7 @@
                                 <td @click="getCheckData(item.geoMapId)">查看</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="cityCheckList==null && cityApprovalList.length==0">
+                        <div class="noData" v-if="!cityCheckList && cityApprovalList.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -337,7 +337,7 @@
                     if(this.arrListLen!=0){
                         let check = true;
                         // 先确定是否有已聚待审的数据的存在
-                        if(this.cityTableType==20 || this.cityTableType==30){
+                        if((this.cityTableType==20 || this.cityTableType==30)){
                             for (let i = 0; i < this.cityApprovalList.length; i++) {
                                 let item = this.cityApprovalList[i];
                                 if (item.mapStatus === 20) {
@@ -385,16 +385,10 @@
                             if(res.data.head.code == 200){
                                 this.similarCityData = this.similarCityData.concat(res.data.body.cityList);
                             }else {
-                                this.$Notice.warning({
-                                    title: '接口异常',
-                                    desc:'请稍后再试'
-                                });
+
                             }
                         }).catch(error=>{
-                            this.$Notice.warning({
-                                title: '接口异常',
-                                desc:'请稍后再试'
-                            });
+
                         });
                     }
                 }
@@ -469,17 +463,11 @@
                         this.similarCityData = res.data.body.cityList;
                     }else {
                         console.log('city:',"非200");
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     }
                 }).catch(error=>{
                     console.log('city:',error);
-                    this.$Notice.warning({
-                        title: '接口异常',
-                        desc:'请稍后再试'
-                    });
+
                 });
             },
             // highlight函数
@@ -571,16 +559,10 @@
                             this.modelShow = false;
                             this.cityValue = '';
                         }else {
-                            this.$Notice.warning({
-                                title: '接口异常',
-                                desc:'请稍后再试'
-                            });
+
                         }
                     }).catch((err)=>{
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     })
                 }
                 // 提交，设为已审按钮(当是未聚未审的时候)
@@ -593,16 +575,10 @@
                             this.modelShow = false;
                             this.cityValue = '';
                         }else {
-                            this.$Notice.warning({
-                                title: '接口异常',
-                                desc:'请稍后再试'
-                            });
+
                         }
                     }).catch((err)=>{
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     })
                 }
                 // 设为待审按钮
@@ -615,16 +591,10 @@
                             this.modelShow = false;
                             this.cityValue = '';
                         }else {
-                            this.$Notice.warning({
-                                title: '接口异常',
-                                desc:'请稍后再试'
-                            });
+
                         }
                     }).catch(err=>{
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     })
                 }
             },
@@ -675,16 +645,10 @@
                             this.checkData[i].operatorName = res.data.body[0].operatorName;
                         }
                     }else {
-                        this.$Notice.warning({
-                            title: '接口异常',
-                            desc:'请稍后再试'
-                        });
+
                     }
                 }).catch(err=>{
-                    this.$Notice.warning({
-                        title: '接口异常',
-                        desc:'请稍后再试'
-                    });
+                    
                 })
             },
             // 当勾选复选框的时候,重置一下radio的value值
