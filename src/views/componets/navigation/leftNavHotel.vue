@@ -127,7 +127,7 @@
             <Menu theme="light" width="auto" @on-select="chooseHotel" v-if="hotelListChooseBySuppliers.length>0">
               <MenuItem :name="index" v-for="(item,index) in hotelListChooseBySuppliers" :key="index">
               <span>{{item.name}}</span>
-              <span>{{`${item.matchedCount||""}/${item.matchedUncheckCount||""}/${item.unmatchedCount||""}`}}</span>
+              <!-- <span>{{`${item.matchedCount||""}/${item.matchedUncheckCount||""}/${item.unmatchedCount||""}`}}</span> -->
               </MenuItem>
             </Menu>
             <Row v-else style="font-size:18px;text-align:center;">
@@ -135,7 +135,7 @@
             </Row>
           </Row>
           <Row type="flex" justify="center">
-            <Page :current.sync="curPageSuppliers" :total="hotelTotalSuppliers" :page-size="hotelPageSizeSuppliers" @on-change="choosePageSuppliers" size="small" show-total></Page>
+            <Page :current="curPageSuppliers" :total="hotelTotalSuppliers" :page-size="hotelPageSizeSuppliers" @on-change="choosePageSuppliers" size="small" show-total></Page>
           </Row>
         </TabPane>
       </Tabs>
@@ -198,7 +198,7 @@
             </Row>
           </Row>
           <Row type="flex" justify="center">
-            <Page :current.sync="curPageRegions" :total="hotelTotalRegions" :page-size="hotelPageSizeRegions" @on-change="choosePageRegions" size="small" show-total></Page>
+            <Page :current="curPageRegions" :total="hotelTotalRegions" :page-size="hotelPageSizeRegions" @on-change="choosePageRegions" size="small" show-total></Page>
           </Row>
         </TabPane>
       </Tabs>
@@ -286,8 +286,8 @@ export default {
       curPageRegions: 1,
       hotelTotalSuppliers: 0,
       hotelTotalRegions: 0,
-      hotelPageSizeSuppliers: 20,
-      hotelPageSizeRegions: 20
+      hotelPageSizeSuppliers: 30,
+      hotelPageSizeRegions: 30
     };
   },
   watch: {
@@ -367,6 +367,7 @@ export default {
     },
     //分页按钮选择
     choosePageSuppliers(page) {
+      console.log(page)
       this.chooseCity(
         this.currentCityIdBySuppliers,
         this.checkStateBySuppliers,
@@ -374,6 +375,7 @@ export default {
       );
     },
     choosePageRegions(page) {
+      console.log(page)    
       this.chooseCityCopy(
         this.currentCityIdByRegions,
         this.checkStateByRegions,
