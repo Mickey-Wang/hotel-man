@@ -49,7 +49,7 @@
                                 <td @click="getCheckData(item.geoMapId)">查看</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="!cityCheckList && cityApprovalList.length==0">
+                        <div class="noData" v-if="!cityCheckList || cityApprovalList.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                         </table>
                     </div>
                     <div ref="divH" style="height: 80%;">
-                        <table ref="tableH" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
+                        <table ref="tableH" v-if="similarCityData && similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
                             <tr v-for="(item,index) in similarCityData" :key="index">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <!--<td>{{item.cityName}}</td>-->
@@ -90,7 +90,7 @@
                                 <td>{{item.supplierName}}</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="similarCityData==0">
+                        <div class="noData" v-if="!similarCityData || similarCityData==0">
                             暂无数据
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                         </table>
                     </div>
                     <div style="overflow-x: hidden">
-                        <table style="width: 767px;" v-if="checkData.length!=0">
+                        <table style="width: 767px;" v-if="checkData && checkData.length!=0">
                             <tr v-for="(item,index) in checkData" :key="index">
                                 <td>{{item.oldString}}</td>
                                 <td>{{item.newString}}</td>
@@ -126,7 +126,7 @@
                                 <td>{{item.operateTime}}</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="checkData.length==0">
+                        <div class="noData" v-if="!checkData || checkData.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -635,7 +635,7 @@
             getCheckData(dataId){
                 this.spinShow = true;
                 this.checkShow = true;
-                this.$http.get('/mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=1').then(res=>{
+                this.$http.get('/mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=10').then(res=>{
                     if(res.data.head.code == 200){
                         this.spinShow = false;
                         this.checkData = res.data.body[0].logDetailList;

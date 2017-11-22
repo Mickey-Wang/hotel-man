@@ -52,7 +52,7 @@
                                 <td>{{item.lastOperator}}</td>
                                 <td>{{item.lastModifyTime}}</td>
                                 <!--<td @click="checkShow = true">查看</td>-->
-                                <td @click="getCheckData(item.geoMapId)">查看</td>
+                                <td @click="getCheckData(item.hotelMapId)">查看</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="!hotelCheckList || hotelApprovalList.length==0">
@@ -98,7 +98,7 @@
                                 <td @click="getTreeData(item.hotelId)">Tree信息</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="similarCityData && similarCityData==0">
+                        <div class="noData" v-if="!similarCityData || similarCityData==0">
                             暂无数据
                         </div>
                     </div>
@@ -123,7 +123,7 @@
                         </table>
                     </div>
                     <div style="overflow-x: hidden">
-                        <table style="width: 767px;">
+                        <table style="width: 767px;" v-if="checkData && checkData.length>0">
                             <tr v-for="(item,index) in checkData" :key="index">
                                 <td>{{getStatusValue(item.originalValue)}}</td>
                                 <td>{{getStatusValue(item.modifedValue)}}</td>
@@ -131,7 +131,7 @@
                                 <td>{{item.operator}}</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="checkData.length==0">
+                        <div class="noData" v-if="!checkData && checkData.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -158,7 +158,7 @@
                                 <th></th>
                                 <th v-for="(item,index) in treeTitle" :key="index">{{item.title}}</th>
                             </tr>
-                            <tr class="fontColor" v-for="(item,index) in treeJDHotelApproval" :key="index">
+                            <tr class="fontColor" v-if="treeJDHotelApproval" v-for="(item,index) in treeJDHotelApproval" :key="index">
                                 <td></td>
                                 <td>{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
@@ -174,7 +174,7 @@
                         </table>
                     </div>
                     <div style="overflow-x: hidden">
-                        <table style="width: 1266px;">
+                        <table style="width: 1266px;" v-if="treeData && treeData.length>0">
                             <tr v-for="(item,index) in treeData" v-if="index>0" :key="index">
                                 <td><input type="checkbox" v-model="item.checked"/></td>
                                 <td>{{item.hotelName}}</td>
@@ -189,7 +189,7 @@
                                 <td>{{getStatusValue(item.mapStatus)}}</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="treeData.length==0&&treeJDHotelApproval.length==0">
+                        <div class="noData" v-if="!treeData || !treeJDHotelApproval || (treeData.length==0&&treeJDHotelApproval.length==0)">
                             暂无数据
                         </div>
                     </div>
@@ -783,7 +783,7 @@
             getCheckData(dataId){
                 this.spinShow = true;
                 this.checkShow = true;
-                this.$http.get('/mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=2').then(res=>{
+                this.$http.get('/mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=20').then(res=>{
                     this.spinShow = false;
                     if(res.data.head.code == 200){
                         this.checkData = res.data.body[0].logDetailList;
