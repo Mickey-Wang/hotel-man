@@ -3,7 +3,7 @@
         <div class="topTable">
             <div class="title">酒店审核列表</div>
             <div class="button">
-                <Button type="primary" @click="toSubmit1" v-if="hotelApprovalList.length!=0" :disabled="isNot20Check">提交</Button>
+                <Button type="primary" @click="toSubmit1" v-if="hotelApprovalList.length!=0" :disabled="isNot20Check && hotelTableType!=10">提交</Button>
                 <Button type="primary" disabled v-else>提交</Button>
                 <Button type="primary" @click="toSubmit2" v-if="hotelTableType!=10 && hotelApprovalList.length!=0" :disabled="is20Check">设为待审</Button>
                 <Button type="primary" disabled v-if="hotelApprovalList.length==0">设为待审</Button>
@@ -85,7 +85,7 @@
                         </table>
                     </div>
                     <div ref="divH" style="height: 80%;">
-                        <table ref="tableH" v-if="similarCityData && similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
+                        <table ref="tableH" v-if="similarCityData.length>0" :style="{'min-width':divWidth2+'px'}">
                             <tr v-for="(item,index) in similarCityData" :key="index">
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <td>{{item.hotelId}}</td>
@@ -98,7 +98,7 @@
                                 <td @click="getTreeData(item.hotelId)">Tree信息</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="!similarCityData || similarCityData==0">
+                        <div class="noData" v-if="similarCityData==0">
                             暂无数据
                         </div>
                     </div>
@@ -123,15 +123,15 @@
                         </table>
                     </div>
                     <div style="overflow-x: hidden">
-                        <table style="width: 767px;" v-if="checkData && checkData.length>0">
+                        <table style="width: 767px;" v-if="checkData.length>0">
                             <tr v-for="(item,index) in checkData" :key="index">
-                                <td>{{getStatusValue(item.originalValue)}}</td>
-                                <td>{{getStatusValue(item.modifedValue)}}</td>
+                                <td>{{item.newString}}</td>
+                                <td>{{item.oldString}}</td>
                                 <td>{{item.operateTime}}</td>
-                                <td>{{item.operator}}</td>
+                                <td>{{item.operatorName}}</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="!checkData && checkData.length==0">
+                        <div class="noData" v-if="checkData.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -174,8 +174,8 @@
                         </table>
                     </div>
                     <div style="overflow-x: hidden">
-                        <table style="width: 1266px;" v-if="treeData && treeData.length>0">
-                            <tr v-for="(item,index) in treeData" v-if="index>0" :key="index">
+                        <table style="width: 1266px;" v-if="treeData.length>0">
+                            <tr v-for="(item,index) in treeData" :key="index">
                                 <td><input type="checkbox" v-model="item.checked"/></td>
                                 <td>{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
@@ -189,7 +189,7 @@
                                 <td>{{getStatusValue(item.mapStatus)}}</td>
                             </tr>
                         </table>
-                        <div class="noData" v-if="!treeData || !treeJDHotelApproval || (treeData.length==0&&treeJDHotelApproval.length==0)">
+                        <div class="noData" v-if="treeData.length==0&&treeJDHotelApproval.length==0">
                             暂无数据
                         </div>
                     </div>
@@ -401,7 +401,7 @@
                 pageNum:1,
                 // 总页数
                 pages:null,
-                similarTotalNum:null
+                similarTotalNum:0
             }
         },
         created(){
@@ -691,9 +691,9 @@
                 // 提交，设为已审按钮(当不是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType!=10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res => {
+                        this.modelShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
-                            this.modelShow = false;
                             this.hotelValue = '';
                         }else {
 
@@ -705,9 +705,9 @@
                 // 提交，设为已审按钮(当是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType==10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res => {
+                        this.modelShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
-                            this.modelShow = false;
                             this.hotelValue = '';
                         }else {
 
@@ -719,9 +719,9 @@
                 // 设为待审按钮
                 if(this.buttonType == 2){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr}).then(res=>{
+                        this.modelShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
-                            this.modelShow = false;
                             this.hotelValue = '';
                         }else {
 
@@ -733,9 +733,9 @@
                 // tree中的设为已聚待审的按钮
                 if(this.buttonType == 3){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr}).then(res=>{
+                        this.treeShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
-                            this.treeShow = false;
                             this.hotelValue = '';
                         }else {
 
@@ -781,17 +781,20 @@
             },
             // 点击查看日志
             getCheckData(dataId){
+                this.checkData = [];
                 this.spinShow = true;
                 this.checkShow = true;
                 this.$http.get('/mapping/log/getLogListByDataId?dataId='+ dataId +'&dataType=20').then(res=>{
                     this.spinShow = false;
                     if(res.data.head.code == 200){
                         console.log('日志:',res.data.body);
-                        this.checkData = res.data.body[0].logDetailList;
-                        for(let i=0; i<this.checkData.length; i++){
-                            this.checkData[i].operateTime = res.data.body[0].operateTime;
-                            this.checkData[i].operatorName = res.data.body[0].operatorName;
+                        let checkRes = res.data.body;
+                        for (let i=0; i<checkRes.length; i++){
+                            for (let j=0;j<checkRes[i].logDetailList.length; j++){
+                                this.checkData.push(checkRes[i].logDetailList[j]);
+                            }
                         }
+                        console.log('酒店日志:',this.checkData);
                     }else {
 
                     }
@@ -804,10 +807,10 @@
                 this.treeShow = true;
                 this.spinShow = true;
                 this.$http.get('/mapping/hotelMapping/getHotelTreeByJDHotelId?jdHotelId=' + JDHotelId).then(res=>{
+                    this.spinShow = false;
                     if(res.data.head.code == 200){
                         console.log('tree信息JDHotelApproval:',res.data.body.jdHotelApproval);
                         console.log('tree信息hotelApprovalList:',res.data.body.hotelApprovalList);
-                        this.spinShow = false;
                         this.treeJDHotelApproval = [];
                         this.treeJDHotelApproval.push(res.data.body.jdHotelApproval);
                         this.treeData = res.data.body.hotelApprovalList;
