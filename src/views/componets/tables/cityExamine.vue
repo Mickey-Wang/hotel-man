@@ -395,7 +395,7 @@
             },
             // 获取城市审核列表
             getCityApprovalList () {
-                if (this.$store.getters.cityCheckList.cityApprovalList) {
+                if (this.cityCheckList!=null && this.$store.getters.cityCheckList.cityApprovalList) {
                     this.cityApprovalList = this.$store.getters.cityCheckList.cityApprovalList;
                     // 把已聚已审的数据提取到一个数组里面，计算一下数据里面已聚已审的长度
                     let arrList = [];
@@ -497,8 +497,10 @@
                 this.buttonType = 1;
                 this.submitData.checkBoxData = [];
                 let radioStr = this.submitData.radioData[0];
-                if(radioStr==undefined){
-                    this.submitData.radioData.push(this.JDCityApproval.cityId);
+                if(this.cityTableType!=10){
+                    if(radioStr==undefined){
+                        this.submitData.radioData.push(this.JDCityApproval.cityId);
+                    }
                 }
                 if(this.cityTableType==20 || this.cityTableType==30){
                     this.getForData(20);

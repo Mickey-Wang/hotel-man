@@ -521,7 +521,7 @@
                 }
             },
             getHotelApprovalList(){
-                if (this.hotelCheckList && this.$store.getters.hotelCheckList.hotelApprovalList) {
+                if (this.hotelCheckList!=null && this.$store.getters.hotelCheckList.hotelApprovalList) {
                     this.hotelApprovalList = this.$store.getters.hotelCheckList.hotelApprovalList;
                     // 把已聚已审的数据提取到一个数组里面，计算一下数据里面已聚已审的长度
                     let arrList = [];
@@ -620,8 +620,10 @@
                 this.buttonType = 1;
                 this.submitData.checkBoxData = [];
                 let radioStr = this.submitData.radioData[0];
-                if(radioStr==undefined){
-                    this.submitData.radioData.push(this.JDHotelApproval.hotelId);
+                if(this.hotelTableType!=10){
+                    if(radioStr==undefined){
+                        this.submitData.radioData.push(this.JDHotelApproval.hotelId);
+                    }
                 }
                 if(this.hotelTableType==20 || this.hotelTableType==30){
                     this.getForData(20);
