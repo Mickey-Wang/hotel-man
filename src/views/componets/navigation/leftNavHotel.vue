@@ -347,7 +347,7 @@ export default {
             if (rs) {
               return this.chooseHotel(this.currentHotelIndexBySuppliers);
             } else {
-              return this.chooseHotel(-1);              
+              return this.chooseHotel(-1);//传入-1自动响应停止请求数据的情况    
             }
           })
           .then(rs => {
@@ -365,7 +365,7 @@ export default {
             if (rs) {
               return this.chooseHotelCopy(this.currentHotelIndexByRegions);
             } else {
-              return this.chooseHotelCopy(-1);
+              return this.chooseHotelCopy(-1);//传入-1自动响应停止请求数据的情况
             }
           })
           .then(rs => {
@@ -457,7 +457,7 @@ export default {
         .then(rs => {
           this.hotelListChooseBySuppliers = rs.data.body.statisticList;
           this.hotelTotalSuppliers = rs.data.body.total;
-          if (this.hotelListChooseBySuppliers.length>0) {
+          if (this.hotelListChooseBySuppliers.length>0) {//适配同步刷新时本列表为空时提供后续流程的bool
             return true;
           }else{
             return false;
@@ -472,7 +472,7 @@ export default {
       this.chooseCity(this.currentCityIdBySuppliers, val);
     },
     chooseHotel(index) {
-      if (index == -1) {
+      if (index == -1) {//响应同步刷新酒店列表为空的情况
         this.$store.commit("HOTEL_CHECK_LIST", null);
         return this.getDataType = "supplier";
       }
@@ -554,7 +554,7 @@ export default {
         .then(rs => {
           this.hotelListChooseByRegions = rs.data.body.statisticList;
           this.hotelTotalRegions = rs.data.body.total;
-          if (this.hotelListChooseByRegions.length>0) {
+          if (this.hotelListChooseByRegions.length>0) {//适配同步刷新时本列表为空时提供后续流程的bool
             return true;
           }else{
             return false;
@@ -569,7 +569,7 @@ export default {
       this.chooseCityCopy(this.currentCityIdByRegions, val);
     },
     chooseHotelCopy(index) {
-      if (index == -1) {
+      if (index == -1) {//响应同步刷新酒店列表为空的情况
         this.$store.commit("HOTEL_CHECK_LIST", null);
         return this.getDataType = "region";
       }
