@@ -132,7 +132,7 @@
       </Tabs>
 
       <!-- 区域 -->
-      <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='region'" v-model="chooseTabByRegions">
+      <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='region'" v-model="chooseTabByRegions" @on-click="doClickRegionTab">
         <TabPane label="国家" name="nation" :disabled="regionTabDisable[0]">
           <Menu theme="light" width="auto" @on-select="chooseNationCopy">
             <!-- :active-name="1" -->
@@ -323,6 +323,50 @@ export default {
     }
   },
   methods: {
+    reset(status){
+      if (status == 'suppliers') {
+        this.$http
+        /* .get("/mapping/cityMapping/navTabSearch", {params:{
+          sourceType: 20,
+          dimensionType: 10,
+          //times: 7
+        }}) */
+        .post("/mapping/cityMapping/navTabSearch", {
+          sourceType: 20,
+          dimensionType: 10
+          //times: 7
+        }) //{headers:{'content-type':'application/x-www-form-urlencoded'}}
+        .then(rs => {
+          this.supplierList = rs.data.body;
+        })
+        .then(rs=>{
+          this.checkStateBySuppliers = 20;
+          this.$store.commit("CITY_TABLETYPE", 20); //将数据状态重置为20          
+        })
+        .then(rs => {
+          this.doSupplierListFilter();
+        })
+        .catch(err => {
+          this.supplierList = [];
+        });
+        
+      } else {
+        this.$http
+          .post("/mapping/cityMapping/navTabSearch", {
+            sourceType: 10,
+            dimensionType: 20
+            //times: 1
+          })
+          .then(rs => {
+            this.nationListChooseByRegions = rs.data.body;
+          })
+          .then(rs=>{
+            this.checkStateByRegions = 20;
+            this.$store.commit("CITY_TABLETYPE", 20); //将数据状态重置为20      
+          });
+        
+      }
+    },
     changeState() {
       this.$store.commit("CITY_SYNC_MAPPING_DATA_STATE");
     },
@@ -416,7 +460,15 @@ export default {
     //选择供应商tab
     doClickSupplierTab(name) {
       // console.log(name)
-      if (name == "suppliers") this.supplierMenuSelect = 1;
+      if (name == "suppliers"){
+        this.reset('suppliers')
+      }
+    },
+    //选择区域tab
+    doClickRegionTab(name){
+      if (name == "nation"){
+        this.reset('regions')
+      }
     },
     //选择供应商tab下的列表内容
     chooseSupplier(id) {
@@ -472,6 +524,7 @@ export default {
     },
     //选择供应商侧城市列表审核状态
     chooseStatebySupplier(val) {
+      if(this.chooseTabBySuppliers == "suppliers")return;
       this.$store.commit("CITY_TABLETYPE", val);
       this.chooseProvince(this.currentProvinceIdBySuppliers, val);
     },
@@ -531,6 +584,7 @@ export default {
     },
     //选择区域城市列表审核状态
     chooseStatebyRegion(val) {
+      if(this.chooseTabByRegions == 'nation')return;
       this.$store.commit("CITY_TABLETYPE", val);
       this.chooseProvinceCopy(this.currentProvinceIdByRegions, val);
     },
