@@ -344,7 +344,11 @@ export default {
         )
           .then(rs => {
             this.listShow = false;
-            return this.chooseHotel(this.currentHotelIndexBySuppliers);
+            if (rs) {
+              return this.chooseHotel(this.currentHotelIndexBySuppliers);
+            } else {
+              return this.chooseHotel(-1);              
+            }
           })
           .then(rs => {
             this.$store.commit("HOTEL_SYNC_MAPPING_DATA_STATE");
@@ -358,7 +362,11 @@ export default {
         )
           .then(rs => {
             this.listShow = false;
-            return this.chooseHotelCopy(this.currentHotelIndexByRegions);
+            if (rs) {
+              return this.chooseHotelCopy(this.currentHotelIndexByRegions);
+            } else {
+              return this.chooseHotelCopy(-1);
+            }
           })
           .then(rs => {
             this.$store.commit("HOTEL_SYNC_MAPPING_DATA_STATE");
@@ -449,6 +457,11 @@ export default {
         .then(rs => {
           this.hotelListChooseBySuppliers = rs.data.body.statisticList;
           this.hotelTotalSuppliers = rs.data.body.total;
+          if (this.hotelListChooseBySuppliers.length>0) {
+            return true;
+          }else{
+            return false;
+          }
         });
     },
     //选择供应商侧城市列表审核状态
@@ -459,7 +472,10 @@ export default {
       this.chooseCity(this.currentCityIdBySuppliers, val);
     },
     chooseHotel(index) {
-      // console.log(index);
+      if (index == -1) {
+        this.$store.commit("HOTEL_CHECK_LIST", null);
+        return this.getDataType = "supplier";
+      }
       this.currentHotelIndexBySuppliers = index;
       var id = this.hotelListChooseBySuppliers[index].id,
         name = this.hotelListChooseBySuppliers[index].name;    
@@ -474,7 +490,7 @@ export default {
             sourceType: 20
           })
           .then(rs => {
-            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body||null);
+            this.$store.commit("HOTEL_CHECK_LIST", rs.data.body||null);         
           });
       } else {     
         return this.$http
@@ -538,6 +554,11 @@ export default {
         .then(rs => {
           this.hotelListChooseByRegions = rs.data.body.statisticList;
           this.hotelTotalRegions = rs.data.body.total;
+          if (this.hotelListChooseByRegions.length>0) {
+            return true;
+          }else{
+            return false;
+          }
         });
       this.isCheckStateByRegionsShow = true;
     },
@@ -548,6 +569,10 @@ export default {
       this.chooseCityCopy(this.currentCityIdByRegions, val);
     },
     chooseHotelCopy(index) {
+      if (index == -1) {
+        this.$store.commit("HOTEL_CHECK_LIST", null);
+        return this.getDataType = "region";
+      }
       this.currentHotelIndexByRegions = index;
       var id =
           this.hotelListChooseByRegions[index].id ||

@@ -338,7 +338,11 @@ export default {
         )
           .then(rs => {
             this.listShow = false;
-            return this.chooseCity(this.currentCityIndexBySuppliers);
+            if (rs) {
+              return this.chooseCity(this.currentCityIndexBySuppliers);
+            }else{
+              return this.chooseCity(-1);
+            }
           })
           .then(rs => {
             this.$store.commit("CITY_SYNC_MAPPING_DATA_STATE");
@@ -351,14 +355,43 @@ export default {
         )
           .then(rs => {
             this.listShow = false;
-            return this.chooseCityCopy(this.currentCityIndexByRegions);
+            if (rs) {
+              return this.chooseCityCopy(this.currentCityIndexByRegions);
+            }else{
+              return this.chooseCityCopy(-1);              
+            }
           })
           .then(rs => {
             this.$store.commit("CITY_SYNC_MAPPING_DATA_STATE");
           });
       }
     },
+    //筛选
     doSupplierListFilter() {
+      // console.log(1);
+      let arr = [];
+      if (this.searchSupplier == "")
+        return (this.supplierListFilter = this.supplierList);
+      this.supplierList.map((val, index) => {
+        if (val.name.indexOf(this.searchSupplier) > -1) {
+          arr.push(val);
+        }
+      });
+      this.supplierListFilter = arr;
+    },
+    listFilter(keywords,searchArr){
+      let resultArr = [];
+      if (keywords == ""){
+        resultArr = searchArr;
+      }
+      searchArr.map((val, index) => {
+        if (val.name.indexOf(keywords) > -1) {
+          resultArr.push(val);
+        }
+      });
+      return resultArr;
+    },
+    doProvinceListFilter() {
       // console.log(1);
       let arr = [];
       if (this.searchSupplier == "")
@@ -429,6 +462,11 @@ export default {
         })
         .then(rs => {
           this.cityListChooseBySuppliers = rs.data.body || [];
+          if (this.cityListChooseBySuppliers.length>0) {
+            return true;
+          }else{
+            return false;
+          }
         });
       return promise;
     },
@@ -438,6 +476,10 @@ export default {
       this.chooseProvince(this.currentProvinceIdBySuppliers, val);
     },
     chooseCity(index) {
+      if (index == -1) {
+        this.$store.commit("CITY_CHECK_LIST", null);//同步刷新
+        return this.getDataType = "supplier";
+      }
       this.currentCityIndexBySuppliers = index;
       var id = this.cityListChooseBySuppliers[index].id;
       return this.$http
@@ -478,6 +520,11 @@ export default {
         })
         .then(rs => {
           this.cityListChooseByRegions = rs.data.body || [];
+          if (this.cityListChooseByRegions.length>0) {
+            return true
+          }else{
+            return false
+          }
         });
       this.isCheckStateByRegionsShow = true;
       return promise;
@@ -488,6 +535,10 @@ export default {
       this.chooseProvinceCopy(this.currentProvinceIdByRegions, val);
     },
     chooseCityCopy(index) {
+      if (index == -1) {
+        this.$store.commit("CITY_CHECK_LIST", null);
+        return this.getDataType = "region";
+      }
       this.currentCityIndexByRegions = index;
       var id = this.cityListChooseByRegions[index].id||this.cityListChooseByRegions[index].cityId,
         name = this.cityListChooseByRegions[index].name||this.cityListChooseByRegions[index].cityName;
