@@ -552,7 +552,7 @@ export default {
       var id =
           this.hotelListChooseByRegions[index].id ||
           this.hotelListChooseByRegions[index].hotelId, //兼容搜索
-        name = this.hotelListChooseByRegions[index].name;
+        name = this.hotelListChooseByRegions[index].name || this.hotelListChooseByRegions[index].hotelName;
       if (this.checkStateByRegions == 10) {
         //未聚待审
         return this.$http

@@ -167,7 +167,7 @@
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseCityCopy" v-if="cityListChooseByRegions.length>0">
               <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions" :key="index">
-              <span>{{item.name}}</span>
+              <span>{{item.name||item.cityName}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
@@ -489,8 +489,8 @@ export default {
     },
     chooseCityCopy(index) {
       this.currentCityIndexByRegions = index;
-      var id = this.cityListChooseByRegions[index].id,
-        name = this.cityListChooseByRegions[index].name;
+      var id = this.cityListChooseByRegions[index].id||this.cityListChooseByRegions[index].cityId,
+        name = this.cityListChooseByRegions[index].name||this.cityListChooseByRegions[index].cityName;
       if (this.checkStateByRegions == 10) {
         //未聚待审
         var promise = this.$http
@@ -539,7 +539,17 @@ export default {
         this.$http
           .get(`/mapping/cityMapping/navSearch?cityId=${this.searchInput}`)
           .then(rs => {
-            this.cityListChooseByRegions = rs.data.body || [];
+            if (Array.isArray(rs.data.body)) {
+              this.cityListChooseByRegions = rs.data.body || [];
+            }else{
+              this.cityListChooseByRegions = rs.data.body?[rs.data.body]:[];
+            }
+            if (!this.cityListChooseByRegions.length) {
+              this.$Notice.warning({
+                title: "没有找到响应结果",
+                desc: "请重新输入查询条件"
+              });
+            }
           })
           .then(rs => {
             this.btnType = "region";
@@ -559,13 +569,17 @@ export default {
         this.$http
           .get(`/mapping/cityMapping/navSearch?cityName=${this.searchInput}`)
           .then(rs => {
+            if (Array.isArray(rs.data.body)) {
+              this.cityListChooseByRegions = rs.data.body || [];
+            }else{
+              this.cityListChooseByRegions = rs.data.body?[rs.data.body]:[];
+            }
             if (!this.cityListChooseByRegions.length) {
               this.$Notice.warning({
                 title: "没有找到响应结果",
                 desc: "请重新输入查询条件"
               });
             }
-            this.cityListChooseByRegions = rs.data.body;
           })
           .then(rs => {
             this.btnType = "region";
