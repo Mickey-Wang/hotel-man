@@ -461,15 +461,16 @@ export default {
     chooseHotel(index) {
       // console.log(index);
       this.currentHotelIndexBySuppliers = index;
-      var id = this.hotelListChooseBySuppliers[index].id;
-      if (this.checkStateByRegions == 10) {
+      var id = this.hotelListChooseBySuppliers[index].id,
+        name = this.hotelListChooseBySuppliers[index].name;    
+      if (this.checkStateBySuppliers == 10) {
         //未聚待审
         return this.$http
           .post(`/mapping/hotelMapping/list`, {
             cityCode: this.currentCityIdBySuppliers,
             supplierCode: this.currentSupplierId,
             hotelName: name,
-            mapStatus: this.checkStateByRegions,
+            mapStatus: this.checkStateBySuppliers,
             sourceType: 20
           })
           .then(rs => {
