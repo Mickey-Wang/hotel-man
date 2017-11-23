@@ -70,7 +70,7 @@
       <!-- 供应商 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseTabBySuppliers" @on-click="doClickSupplierTab">
         <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
-          <Row>
+          <Row v-if="doSupplierListFilter.length>20">
             <Input v-model="searchSupplier" placeholder="输入关键词查询" @on-change="doSupplierListFilter"></Input>
           </Row>
           <Menu theme="light" width="auto" @on-select="chooseSupplier" ref="supplierMenu" :active-name="supplierMenuSelect">
@@ -80,7 +80,7 @@
             </MenuItem>
           </Menu>
           <Row class-name="bottom-total">
-            <!-- <span>共计{{supplierList.length}}条</span> -->
+            <span>共计{{supplierList?supplierList.length:0}}条</span>
           </Row>
         </TabPane>
         <TabPane label="国家" name="nation" :disabled="supplierTabDisable[1]">
@@ -313,10 +313,10 @@ export default {
       return this.btnType == "region" ? "primary" : "ghost";
     },
     cityTotalSuppliers() {
-      return this.cityListChooseBySuppliers.length;
+      return this.cityListChooseBySuppliers?this.cityListChooseBySuppliers.length:0;
     },
     cityTotalRegions() {
-      return this.cityListChooseByRegions.length;
+      return this.cityListChooseByRegions?this.cityListChooseByRegions.length:0;
     },
     citySyncMappingDataState() {
       return this.$store.getters.citySyncMappingDataState;
