@@ -55,7 +55,7 @@
       <Input v-model="searchInput" placeholder="请输入ID或名称" class="search-top-right"></Input>
       </Col>
       <Col span="4" style="text-align:center">
-      <Button type="primary" shape="circle" icon="ios-search" @click="searchHotel"></Button>
+      <Button type="primary" shape="circle" icon="ios-search" @click="searchHotel(searchInput)"></Button>
       <!-- <Button type="dashed" shape="circle" icon="ios-refresh" @click="changeState"></Button> -->
       </Col>
     </Row>
@@ -198,7 +198,7 @@
             </Row>
           </Row>
           <Row type="flex" justify="center">
-            <Page :current="curPageRegions" :total="hotelTotalRegions" :page-size="hotelPageSizeRegions" @on-change="choosePageRegions" size="small" show-total></Page>
+            <Page :current.sync="curPageRegions" :total="hotelTotalRegions" :page-size="hotelPageSizeRegions" @on-change="choosePageRegions" size="small" show-total></Page>
           </Row>
         </TabPane>
       </Tabs>
@@ -226,6 +226,7 @@ export default {
       ],
       //搜索框内容
       searchInput: "",
+      searchInputCache: "",
 
       //供应商区域按钮
       btnType: "supplier",
@@ -407,13 +408,18 @@ export default {
         page
       );
     },
-    choosePageRegions(page) {
-      console.log(page)    
-      this.chooseCityCopy(
-        this.currentCityIdByRegions,
-        this.checkStateByRegions,
-        page
-      );
+    choosePageRegions() {
+      let page = this.curPageRegions;
+      console.log(page)
+      if (this.isCheckStateByRegionsShow) {
+        this.chooseCityCopy(
+          this.currentCityIdByRegions,
+          this.checkStateByRegions,
+          page
+        );        
+      } else {
+        this.searchHotel(this.searchInputCache,page);
+      }
     },
     //按钮选择
     btnSupplier() {
@@ -430,6 +436,8 @@ export default {
       if (name == "suppliers"){
         this.reset('suppliers');
         this.checkStateBySuppliers = 20;
+        this.curPageSuppliers = 1;
+        this.hotelTotalSuppliers = 0;    
         this.$store.commit("HOTEL_TABLETYPE", 20);
         this.chooseTabBySuppliers = "suppliers";
       }
@@ -439,6 +447,8 @@ export default {
       if (name == "nation"){
         this.reset('regions');
         this.checkStateByRegions = 20;
+        this.urPageRegions = 1,
+        this.hotelTotalRegions = 0;
         this.$store.commit("HOTEL_TABLETYPE", 20);
         this.chooseTabByRegions = "nation";
       }
@@ -656,8 +666,12 @@ export default {
       }
     },
     //按城市名和id查询
-    searchHotel() {
-      if (this.searchInput == "") {
+    searchHotel(keywords,num=1,size=30) {
+      if(num == 1){
+        this.searchInputCache = keywords;
+        this.curPageRegions = 1;
+      }
+      if (keywords == "") {
         this.$Notice.warning({
           title: "请输入查询内容",
           desc: "查询内容不能为空"
@@ -666,7 +680,7 @@ export default {
       }
       this.isCheckStateByRegionsShow = false;
       if (this.searchID === "hotelId") {
-        if (!/^[0-9]*$/.test(this.searchInput)) {
+        if (!/^[0-9]*$/.test(keywords)) {
           this.$Notice.warning({
             title: "请输入正确的酒店id",
             desc: "请输入数字id"
@@ -675,10 +689,22 @@ export default {
         }
         this.$http
           .get(
-            `/mapping/hotelMapping/navSearch?keyword=${this.searchInput}&type=1`
+            `/mapping/hotelMapping/navSearch`,{params:{
+              keyword:keywords,
+              type:1,
+              pageNum:num,
+              pageSize:size
+            }}
           )
           .then(rs => {
-            this.hotelListChooseByRegions = rs.data.body;
+            this.hotelTotalRegions = rs.data.body.total;
+            this.hotelListChooseByRegions = rs.data.body.statisticList;
+             if (rs.data.head.code == 200&&!this.hotelListChooseByRegions.length) {
+              this.$Notice.warning({
+                title: "没有找到响应结果",
+                desc: "请重新输入查询条件"
+              });
+            }
           })
           .then(rs => {
             this.btnType = "region";
@@ -686,8 +712,8 @@ export default {
           });
       } else {
         if (
-          // !(/^[\u4E00-\u9FA5]+$/.test(this.searchInput)) ||
-          this.searchInput === "酒店"
+          // !(/^[\u4E00-\u9FA5]+$/.test(keywords)) ||
+          keywords === "酒店"
         ) {
           this.$Notice.warning({
             title: "请输入正确的酒店名称",
@@ -697,10 +723,21 @@ export default {
         }
         this.$http
           .get(
-            `/mapping/hotelMapping/navSearch?keyword=${this.searchInput}&type=2`
-          )
-          .then(rs => {
-            this.hotelListChooseByRegions = rs.data.body;
+            `/mapping/hotelMapping/navSearch`,{params:{
+              keyword:keywords,
+              type:2,
+              pageNum:num,
+              pageSize:size
+            }},
+          ).then(rs => {
+            this.hotelListChooseByRegions = rs.data.body.statisticList;
+            this.hotelTotalRegions = rs.data.body.total;
+             if (rs.data.head.code == 200&&!this.hotelListChooseByRegions.length) {
+              this.$Notice.warning({
+                title: "没有找到响应结果",
+                desc: "请重新输入查询条件"
+              });
+            }
           })
           .then(rs => {
             this.btnType = "region";

@@ -70,10 +70,10 @@
       <!-- 供应商 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseTabBySuppliers" @on-click="doClickSupplierTab">
         <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
-          <Row v-if="doSupplierListFilter.length>20">
+          <Row v-if="supplierListFilter.length>20">
             <Input v-model="searchSupplier" placeholder="输入关键词查询" @on-change="doSupplierListFilter"></Input>
           </Row>
-          <Menu theme="light" width="auto" @on-select="chooseSupplier" ref="supplierMenu" :active-name="supplierMenuSelect">
+          <Menu theme="light" width="auto" @on-select="chooseSupplier" ref="supplierMenu"><!--:active-name="supplierMenuSelect"-->
             <MenuItem :name="index" v-for="(item,index) in supplierListFilter" :key="index">
             <span>{{item.name}}</span>
             <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
@@ -95,9 +95,12 @@
           </Row>
         </TabPane>
         <TabPane label="省份" name="province" :disabled="supplierTabDisable[2]">
+          <Row v-if="provinceListChooseBySuppliersFilter.length>20">
+            <Input v-model="searchProvinceBySuppliers" placeholder="输入关键词查询" @on-change="doListFilter(searchProvinceBySuppliers,'provinceListChooseBySuppliers','provinceListChooseBySuppliersFilter')"></Input>
+          </Row>
           <Row class-name="menu-box-large">
             <Menu theme="light" width="auto" @on-select="chooseProvince">
-              <MenuItem :name="item.id" v-for="(item,index) in provinceListChooseBySuppliers" :key="index">
+              <MenuItem :name="item.id" v-for="(item,index) in provinceListChooseBySuppliersFilter" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
@@ -204,8 +207,12 @@ export default {
         }
       ],
       //搜索框内容
-      searchInput: "",
-      searchSupplier: "",
+      searchInput: "",//快速查询入口
+      searchSupplier: "",//供应商筛选入口
+      searchProvinceBySuppliers:'',//供应商侧省份筛选入口
+      searchProvinceByRegions:'',//jd侧省份筛选入口
+      searchCityBySuppliers:'',//供应商侧城市筛选入口
+      searchCityeByRegions:'',//jd侧城市筛选入口
 
       //供应商和区域选择按钮是supplier/region
       btnType: "supplier",
@@ -260,8 +267,10 @@ export default {
       nationListChooseByRegions: [],
       //供应商侧省份列表
       provinceListChooseBySuppliers: [],
+      provinceListChooseBySuppliersFilter:[],
       //jd侧省份列表
       provinceListChooseByRegions: [],
+      provinceListChooseByRegionsFilter: [],
       //供应商侧城市列表
       cityListChooseBySuppliers: [],
       //jd侧城市列表
@@ -323,6 +332,7 @@ export default {
     }
   },
   methods: {
+    //重新请求tab1方法
     reset(status){
       if (status == 'suppliers') {
         this.$http
@@ -435,17 +445,10 @@ export default {
       });
       return resultArr;
     },
-    doProvinceListFilter() {
-      // console.log(1);
-      let arr = [];
-      if (this.searchSupplier == "")
-        return (this.supplierListFilter = this.supplierList);
-      this.supplierList.map((val, index) => {
-        if (val.name.indexOf(this.searchSupplier) > -1) {
-          arr.push(val);
-        }
-      });
-      this.supplierListFilter = arr;
+    doListFilter(keywords,searchArr,filterArr) {
+    console.log(this['provinceListChooseBySuppliers'])
+     this[filterArr] = this.listFilter(keywords,this[searchArr])
+      console.log(this.$data[filterArr])
     },
     //点击供应商审核tab
     //按钮选择
@@ -498,7 +501,7 @@ export default {
           supplierCode: this.currentSupplierId
         })
         .then(rs => {
-          this.provinceListChooseBySuppliers = rs.data.body;
+          this.provinceListChooseBySuppliersFilter = this.provinceListChooseBySuppliers = rs.data.body;
         });
     },
     chooseProvince(id, map = 20) {
@@ -649,7 +652,7 @@ export default {
             }else{
               this.cityListChooseByRegions = rs.data.body?[rs.data.body]:[];
             }
-            if (!this.cityListChooseByRegions.length) {
+            if (rs.data.head.code == 200&&!this.cityListChooseByRegions.length) {
               this.$Notice.warning({
                 title: "没有找到响应结果",
                 desc: "请重新输入查询条件"
@@ -667,7 +670,7 @@ export default {
         ) {
           this.$Notice.warning({
             title: "请输入正确的城市名称",
-            desc: '不能只输入一个"市"字'
+            desc: '需输入正确的中文名称,注意不能只输入一个"市"字'
           });
           return;
         }
@@ -679,7 +682,7 @@ export default {
             }else{
               this.cityListChooseByRegions = rs.data.body?[rs.data.body]:[];
             }
-            if (!this.cityListChooseByRegions.length) {
+            if (rs.data.head.code == 200&&!this.cityListChooseByRegions.length) {
               this.$Notice.warning({
                 title: "没有找到响应结果",
                 desc: "请重新输入查询条件"
