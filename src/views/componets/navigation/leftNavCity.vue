@@ -70,8 +70,8 @@
       <!-- 供应商 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseTabBySuppliers" @on-click="doClickSupplierTab">
         <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
-          <Row v-if="supplierListFilter.length>20">
-            <Input v-model="searchSupplier" placeholder="输入关键词查询" @on-change="doSupplierListFilter"></Input>
+          <Row v-if="supplierList.length>20">
+            <Input v-model="searchSupplier" placeholder="输入关键词查询" @on-change="doListFilter(searchSupplier,'supplierList','supplierListFilter')"></Input>
           </Row>
           <Menu theme="light" width="auto" @on-select="chooseSupplier" ref="supplierMenu"><!--:active-name="supplierMenuSelect"-->
             <MenuItem :name="index" v-for="(item,index) in supplierListFilter" :key="index">
@@ -94,8 +94,8 @@
             <span>共计{{nationListChooseBySuppliers.length}}条</span>
           </Row>
         </TabPane>
-        <TabPane label="省份" name="province" :disabled="supplierTabDisable[2]">
-          <Row v-if="provinceListChooseBySuppliersFilter.length>20">
+        <TabPane label="省份" style="height:94%" name="province" :disabled="supplierTabDisable[2]">
+          <Row v-if="provinceListChooseBySuppliers.length>20">
             <Input v-model="searchProvinceBySuppliers" placeholder="输入关键词查询" @on-change="doListFilter(searchProvinceBySuppliers,'provinceListChooseBySuppliers','provinceListChooseBySuppliersFilter')"></Input>
           </Row>
           <Row class-name="menu-box-large">
@@ -107,18 +107,21 @@
             </Menu>
           </Row>
           <Row class-name="bottom-total">
-            <span>共计{{provinceListChooseBySuppliers.length}}条</span>
+            <span>共计{{provinceListChooseBySuppliersFilter.length}}条</span>
           </Row>
         </TabPane>
-        <TabPane label="城市" style="height:100%" name="city" :disabled="supplierTabDisable[3]">
+        <TabPane label="城市" style="height:94%" name="city" :disabled="supplierTabDisable[3]">
           <Row class="check-select">
             <Select v-model="checkStateBySuppliers" @on-change="chooseStatebySupplier">
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
+          <Row v-if="cityListChooseBySuppliers.length>20">
+            <Input v-model="searchCityBySuppliers" placeholder="输入关键词查询" @on-change="doListFilter(searchCityBySuppliers,'cityListChooseBySuppliers','cityListChooseBySuppliersFilter')"></Input>
+          </Row>
           <Row class-name="menu-box">
-            <Menu theme="light" width="auto" @on-select="chooseCity" v-if="cityListChooseBySuppliers.length>0">
-              <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
+            <Menu theme="light" width="auto" @on-select="chooseCity" v-if="cityListChooseBySuppliersFilter.length>0">
+              <MenuItem :name="index" v-for="(item,index) in cityListChooseBySuppliersFilter" :key="index">
               <span>{{item.name}}</span>
               <!-- <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span> -->
               </MenuItem>
@@ -148,28 +151,50 @@
             <span>共计{{nationListChooseByRegions.length}}条</span>
           </Row>
         </TabPane>
-        <TabPane label="省份" name="province" :disabled="regionTabDisable[1]">
+        <TabPane label="省份" style="height:94%" name="province" :disabled="regionTabDisable[1]">
+          <Row v-if="provinceListChooseByRegions.length>20">
+            <Input 
+              v-model="searchProvinceByRegions" 
+              placeholder="输入关键词查询" 
+              @on-change="doListFilter(
+                searchProvinceByRegions,
+                'provinceListChooseByRegions',
+                'provinceListChooseByRegionsFilter'
+                )">
+              </Input>
+          </Row>
           <Row class-name="menu-box-large">
             <Menu theme="light" width="auto" @on-select="chooseProvinceCopy">
-              <MenuItem :name="item.id" v-for="(item,index) in provinceListChooseByRegions" :key="index">
+              <MenuItem :name="item.id" v-for="(item,index) in provinceListChooseByRegionsFilter" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
           </Row>
           <Row class-name="bottom-total">
-            <span>共计{{provinceListChooseByRegions.length}}条</span>
+            <span>共计{{provinceListChooseByRegionsFilter.length}}条</span>
           </Row>
         </TabPane>
-        <TabPane label="城市" style="height:100%" name="city" :disabled="regionTabDisable[2]">
+        <TabPane label="城市" style="height:94%" name="city" :disabled="regionTabDisable[2]">
           <Row class="check-select" v-show="isCheckStateByRegionsShow">
             <Select v-model="checkStateByRegions" @on-change="chooseStatebyRegion">
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
+          <Row v-if="cityListChooseByRegions.length>20">
+            <Input 
+              v-model="searchCityByRegions" 
+              placeholder="输入关键词查询" 
+              @on-change="doListFilter(
+                searchCityByRegions,
+                'cityListChooseByRegions',
+                'cityListChooseByRegionsFilter'
+                )">
+              </Input>
+          </Row>
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseCityCopy" v-if="cityListChooseByRegions.length>0">
-              <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegions" :key="index">
+              <MenuItem :name="index" v-for="(item,index) in cityListChooseByRegionsFilter" :key="index">
               <span>{{item.name||item.cityName}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
@@ -273,8 +298,10 @@ export default {
       provinceListChooseByRegionsFilter: [],
       //供应商侧城市列表
       cityListChooseBySuppliers: [],
+      cityListChooseBySuppliersFilter: [],
       //jd侧城市列表
-      cityListChooseByRegions: []
+      cityListChooseByRegions: [],
+      cityListChooseByRegionsFilter: [],
     };
   },
   watch: {
@@ -296,10 +323,7 @@ export default {
         //times: 7
       }) //{headers:{'content-type':'application/x-www-form-urlencoded'}}
       .then(rs => {
-        this.supplierList = rs.data.body;
-      })
-      .then(rs => {
-        this.doSupplierListFilter();
+        this.supplierListFilter = this.supplierList = rs.data.body;
       })
       .catch(err => {
         this.supplierList = [];
@@ -322,10 +346,10 @@ export default {
       return this.btnType == "region" ? "primary" : "ghost";
     },
     cityTotalSuppliers() {
-      return this.cityListChooseBySuppliers?this.cityListChooseBySuppliers.length:0;
+      return this.cityListChooseBySuppliersFilter?this.cityListChooseBySuppliersFilter.length:0;
     },
     cityTotalRegions() {
-      return this.cityListChooseByRegions?this.cityListChooseByRegions.length:0;
+      return this.cityListChooseByRegionsFilter?this.cityListChooseByRegionsFilter.length:0;
     },
     citySyncMappingDataState() {
       return this.$store.getters.citySyncMappingDataState;
@@ -347,14 +371,11 @@ export default {
           //times: 7
         }) //{headers:{'content-type':'application/x-www-form-urlencoded'}}
         .then(rs => {
-          this.supplierList = rs.data.body;
+          this.supplierListFilter = this.supplierList = rs.data.body;
         })
         .then(rs=>{
           this.checkStateBySuppliers = 20;
           this.$store.commit("CITY_TABLETYPE", 20); //将数据状态重置为20          
-        })
-        .then(rs => {
-          this.doSupplierListFilter();
         })
         .catch(err => {
           this.supplierList = [];
@@ -421,18 +442,6 @@ export default {
       }
     },
     //筛选
-    doSupplierListFilter() {
-      // console.log(1);
-      let arr = [];
-      if (this.searchSupplier == "")
-        return (this.supplierListFilter = this.supplierList);
-      this.supplierList.map((val, index) => {
-        if (val.name.indexOf(this.searchSupplier) > -1) {
-          arr.push(val);
-        }
-      });
-      this.supplierListFilter = arr;
-    },
     listFilter(keywords,searchArr){
       let resultArr = [];
       if (keywords == ""){
@@ -446,9 +455,7 @@ export default {
       return resultArr;
     },
     doListFilter(keywords,searchArr,filterArr) {
-    console.log(this['provinceListChooseBySuppliers'])
-     this[filterArr] = this.listFilter(keywords,this[searchArr])
-      console.log(this.$data[filterArr])
+      this[filterArr] = this.listFilter(keywords,this[searchArr])
     },
     //点击供应商审核tab
     //按钮选择
@@ -516,7 +523,7 @@ export default {
           supplierCode: this.currentSupplierId
         })
         .then(rs => {
-          this.cityListChooseBySuppliers = rs.data.body || [];
+          this.cityListChooseBySuppliersFilter = this.cityListChooseBySuppliers = rs.data.body || [];
           if (this.cityListChooseBySuppliers.length>0) {//适配同步刷新时本列表为空时提供后续流程的bool
             return true;
           }else{
@@ -537,7 +544,7 @@ export default {
         return this.getDataType = "supplier";
       }
       this.currentCityIndexBySuppliers = index;
-      var id = this.cityListChooseBySuppliers[index].id;
+      var id = this.searchCityBySuppliers?this.cityListChooseBySuppliersFilter[index].id:this.cityListChooseBySuppliers[index].id;
       return this.$http
         .post(`/mapping/cityMapping/queryCityApprovalList`, {
           cityCode: id,
@@ -561,7 +568,7 @@ export default {
           countryCode: id
         })
         .then(rs => {
-          this.provinceListChooseByRegions = rs.data.body;
+          this.provinceListChooseByRegionsFilter = this.provinceListChooseByRegions = rs.data.body;
         });
     },
     chooseProvinceCopy(id, map = 20) {
@@ -575,7 +582,7 @@ export default {
           mapStatus: map
         })
         .then(rs => {
-          this.cityListChooseByRegions = rs.data.body || [];
+          this.cityListChooseByRegionsFilter = this.cityListChooseByRegions = rs.data.body || [];
           if (this.cityListChooseByRegions.length>0) {//适配同步刷新时本列表为空时提供后续流程的bool
             return true
           }else{
@@ -597,8 +604,14 @@ export default {
         return this.getDataType = "region";
       }
       this.currentCityIndexByRegions = index;
-      var id = this.cityListChooseByRegions[index].id||this.cityListChooseByRegions[index].cityId,
-        name = this.cityListChooseByRegions[index].name||this.cityListChooseByRegions[index].cityName;
+      if (this.searchCityeByRegions) {
+        var id = this.cityListChooseByRegionsFilter[index].id||this.cityListChooseByRegionsFilter[index].cityId,
+          name = this.cityListChooseByRegionsFilter[index].name||this.cityListChooseByRegionsFilter[index].cityName;
+        
+      } else {
+        var id = this.cityListChooseByRegions[index].id||this.cityListChooseByRegions[index].cityId,
+          name = this.cityListChooseByRegions[index].name||this.cityListChooseByRegions[index].cityName;
+      }
       if (this.checkStateByRegions == 10) {
         //未聚待审
         var promise = this.$http

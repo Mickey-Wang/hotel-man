@@ -88,44 +88,53 @@
             </MenuItem>
           </Menu>
           <Row class-name="bottom-total">
-            <span>共计{{nationListChooseByRegions.length}}条</span>
+            <span>共计{{nationListChooseBySuppliers.length}}条</span>
           </Row>
         </TabPane>
-        <TabPane label="省份" name="province" :disabled="supplierTabDisable[2]">
+        <TabPane label="省份" style="height:94%" name="province" :disabled="supplierTabDisable[2]">
+          <Row v-if="provinceListChooseBySuppliers.length>20">
+            <Input v-model="searchProvinceBySuppliers" placeholder="输入关键词查询" @on-change="doListFilter(searchProvinceBySuppliers,'provinceListChooseBySuppliers','provinceListChooseBySuppliersFilter')"></Input>
+          </Row>
           <Row class-name="menu-box-large">
             <Menu theme="light" width="auto" @on-select="chooseProvince">
-              <MenuItem :name="index" v-for="(item,index) in provinceListChooseBySuppliers" :key="index">
+              <MenuItem :name="index" v-for="(item,index) in provinceListChooseBySuppliersFilter" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
           </Row>
           <Row class-name="bottom-total">
-            <span>共计{{provinceListChooseByRegions.length}}条</span>
+            <span>共计{{provinceListChooseBySuppliersFilter.length}}条</span>
           </Row>
         </TabPane>
-        <TabPane label="城市" name="city" :disabled="supplierTabDisable[3]">
+        <TabPane label="城市" style="height:94%" name="city" :disabled="supplierTabDisable[3]">
+          <Row v-if="cityListChooseBySuppliers.length>20">
+            <Input v-model="searchCityBySuppliers" placeholder="输入关键词查询" @on-change="doListFilter(searchCityBySuppliers,'cityListChooseBySuppliers','cityListChooseBySuppliersFilter')"></Input>
+          </Row>
           <Row class-name="menu-box-large">
             <Menu theme="light" width="auto" @on-select="chooseCity">
-              <MenuItem :name="item.id" v-for="(item,index) in cityListChooseBySuppliers" :key="index">
+              <MenuItem :name="item.id" v-for="(item,index) in cityListChooseBySuppliersFilter" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
           </Row>
           <Row class-name="bottom-total">
-            <span>共计{{cityListChooseByRegions.length}}条</span>
+            <span>共计{{cityListChooseBySuppliersFilter.length}}条</span>
           </Row>
         </TabPane>
-        <TabPane label="酒店" style="height:100%" name="hotel" :disabled="supplierTabDisable[4]">
+        <TabPane label="酒店" style="height:94%" name="hotel" :disabled="supplierTabDisable[4]">
           <Row class="check-select">
             <Select v-model="checkStateBySuppliers" @on-change="chooseStatebySupplier">
               <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
+          <Row v-if="hotelListChooseBySuppliers.length>20">
+            <Input v-model="searchHotelBySuppliers" placeholder="输入关键词查询" @on-change="doListFilter(searchHotelBySuppliers,'hotelListChooseBySuppliers','hotelListChooseBySuppliersFilter')"></Input>
+          </Row>
           <Row class-name="menu-box">
-            <Menu theme="light" width="auto" @on-select="chooseHotel" v-if="hotelListChooseBySuppliers.length>0">
-              <MenuItem :name="index" v-for="(item,index) in hotelListChooseBySuppliers" :key="index">
+            <Menu theme="light" width="auto" @on-select="chooseHotel" v-if="hotelListChooseBySuppliersFilter.length>0">
+              <MenuItem :name="index" v-for="(item,index) in hotelListChooseBySuppliersFilter" :key="index">
               <span>{{item.name}}</span>
               <!-- <span>{{`${item.matchedCount||""}/${item.matchedUncheckCount||""}/${item.unmatchedCount||""}`}}</span> -->
               </MenuItem>
@@ -154,43 +163,76 @@
             <span>共计{{nationListChooseByRegions.length}}条</span>
           </Row>
         </TabPane>
-        <TabPane label="省份" name="province" :disabled="regionTabDisable[1]">
+        <TabPane label="省份" style="height:94%" name="province" :disabled="regionTabDisable[1]">
+          <Row v-if="provinceListChooseByRegions.length>20">
+            <Input 
+              v-model="searchProvinceByRegions" 
+              placeholder="输入关键词查询" 
+              @on-change="doListFilter(
+                searchProvinceByRegions,
+                'provinceListChooseByRegions',
+                'provinceListChooseByRegionsFilter'
+                )">
+              </Input>
+          </Row>
           <Row class-name="menu-box-large">
             <Menu theme="light" width="auto" @on-select="chooseProvinceCopy">
-              <MenuItem :name="index" v-for="(item,index) in provinceListChooseByRegions" :key="index">
+              <MenuItem :name="index" v-for="(item,index) in provinceListChooseByRegionsFilter" :key="index">
               <span>{{item.name}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
           </Row>
           <Row class-name="bottom-total">
-            <span>共计{{provinceListChooseByRegions.length}}条</span>
+            <span>共计{{provinceListChooseByRegionsFilter.length}}条</span>
           </Row>
         </TabPane>
-        <TabPane label="城市" name="city" :disabled="regionTabDisable[2]">
+        <TabPane label="城市" style="height:94%" name="city" :disabled="regionTabDisable[2]">
+          <Row v-if="cityListChooseByRegions.length>20">
+            <Input 
+              v-model="searchCityByRegions" 
+              placeholder="输入关键词查询" 
+              @on-change="doListFilter(
+                searchCityByRegions,
+                'cityListChooseByRegions',
+                'cityListChooseByRegionsFilter'
+                )">
+              </Input>
+          </Row>
           <Row class-name="menu-box-large">
             <Menu theme="light" width="auto" @on-select="chooseCityCopy">
-              <MenuItem :name="item.id" v-for="(item,index) in cityListChooseByRegions" :key="index">
+              <MenuItem :name="item.id" v-for="(item,index) in cityListChooseByRegionsFilter" :key="index">
               <span>{{item.name||item.hotelName}}</span>
               <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
               </MenuItem>
             </Menu>
           </Row>
           <Row class-name="bottom-total">
-            <span>共计{{cityListChooseByRegions.length}}条</span>
+            <span>共计{{cityListChooseByRegionsFilter.length}}条</span>
           </Row>
         </TabPane>
-        <TabPane label="酒店" style="height:100%" name="hotel" :disabled="regionTabDisable[3]">
+        <TabPane label="酒店" style="height:94%" name="hotel" :disabled="regionTabDisable[3]">
+          <Row v-if="hotelListChooseByRegions.length>20">
+            <Input 
+              v-model="searchHotelByRegions" 
+              placeholder="输入关键词查询" 
+              @on-change="doListFilter(
+                searchHotelByRegions,
+                'hotelListChooseByRegions',
+                'hotelListChooseByRegionsFilter'
+                )">
+              </Input>
+          </Row>
           <Row class="check-select">
             <Select v-model="checkStateByRegions" v-show="isCheckStateByRegionsShow" @on-change="chooseStatebyRegion">
               <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
           <Row class-name="menu-box">
-            <Menu theme="light" width="auto" @on-select="chooseHotelCopy" v-if="hotelListChooseByRegions.length>0">
-              <MenuItem :name="index" v-for="(item,index) in hotelListChooseByRegions" :key="index">
+            <Menu theme="light" width="auto" @on-select="chooseHotelCopy" v-if="hotelListChooseByRegionsFilter.length>0">
+              <MenuItem :name="index" v-for="(item,index) in hotelListChooseByRegionsFilter" :key="index">
               <span>{{item.name||item.hotelName}}</span>
-              <span>{{`${item.matchedCount||""}/${item.matchedUncheckCount||""}/${item.unmatchedCount||""}`}}</span>
+              <span>{{`${item.matchedCount||"0"}/${item.matchedUncheckCount||"0"}/${item.unmatchedCount||"0"}`}}</span>
               </MenuItem>
             </Menu>
             <Row v-else style="font-size:18px;text-align:center;">
@@ -227,7 +269,14 @@ export default {
       //搜索框内容
       searchInput: "",
       searchInputCache: "",
-
+      searchSupplier: "",//供应商筛选入口
+      searchProvinceBySuppliers:'',//供应商侧省份筛选入口
+      searchProvinceByRegions:'',//jd侧省份筛选入口
+      searchCityBySuppliers:'',//供应商侧城市筛选入口
+      searchCityeByRegions:'',//jd侧城市筛选入口
+      searchHotelBySuppliers:'',//供应商侧酒店筛选入口
+      searchHotelByRegions:'',//jd侧酒店筛选入口
+      
       //供应商区域按钮
       btnType: "supplier",
       //最后一次数据获取是supplier/region
@@ -282,6 +331,12 @@ export default {
       cityListChooseByRegions: [],
       hotelListChooseBySuppliers: [],
       hotelListChooseByRegions: [],
+      provinceListChooseBySuppliersFilter: [],
+      provinceListChooseByRegionsFilter: [],
+      cityListChooseBySuppliersFilter: [],
+      cityListChooseByRegionsFilter: [],
+      hotelListChooseBySuppliersFilter: [],
+      hotelListChooseByRegionsFilter: [],
       //分页信息
       curPageSuppliers: 1,
       curPageRegions: 1,
@@ -377,6 +432,7 @@ export default {
             }
           })
           .then(rs => {
+            console.log('hotel sync');
             this.$store.commit("HOTEL_SYNC_MAPPING_DATA_STATE");
           });
       } else {
@@ -398,6 +454,23 @@ export default {
             this.$store.commit("HOTEL_SYNC_MAPPING_DATA_STATE");
           });
       }
+    },
+    //筛选
+    listFilter(keywords,searchArr){
+      let resultArr = [];
+      if (keywords == ""){
+        resultArr = searchArr;
+      }
+      searchArr.map((val, index) => {
+        if (val.name.indexOf(keywords) > -1) {
+          resultArr.push(val);
+        }
+      });
+      console.log(resultArr)
+      return resultArr;
+    },
+    doListFilter(keywords,searchArr,filterArr) {
+      this[filterArr] = this.listFilter(keywords,this[searchArr])
     },
     //分页按钮选择
     choosePageSuppliers(page) {
@@ -478,20 +551,21 @@ export default {
           supplierCode: this.currentSupplierId
         })
         .then(rs => {
-          this.provinceListChooseBySuppliers = rs.data.body.statisticList;
+          this.provinceListChooseBySuppliersFilter = this.provinceListChooseBySuppliers = rs.data.body.statisticList;
         });
     },
     chooseProvince(index) {
       this.chooseTabBySuppliers = "city";
+      var provinceCode = this.searchProvinceBySuppliers?this.provinceListChooseBySuppliersFilter[index].id:this.provinceListChooseBySuppliersFilter[index].id
       this.$http
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 20,
           dimensionType: 40,
-          provinceCode: this.provinceListChooseBySuppliers[index].id,
+          provinceCode: provinceCode,
           supplierCode: this.currentSupplierId
         })
         .then(rs => {
-          this.cityListChooseBySuppliers = rs.data.body.statisticList;
+          this.cityListChooseBySuppliersFilter = this.cityListChooseBySuppliers = rs.data.body.statisticList;
         });
     },
     chooseCity(id, map = 20, page = 1, pageSize = 30) {
@@ -509,7 +583,7 @@ export default {
           supplierCode: this.currentSupplierId
         })
         .then(rs => {
-          this.hotelListChooseBySuppliers = rs.data.body.statisticList;
+          this.hotelListChooseBySuppliersFilter = this.hotelListChooseBySuppliers = rs.data.body.statisticList;
           this.hotelTotalSuppliers = rs.data.body.total;
           if (this.hotelListChooseBySuppliers.length>0) {//适配同步刷新时本列表为空时提供后续流程的bool
             return true;
@@ -532,8 +606,8 @@ export default {
         return this.getDataType = "supplier";
       }
       this.currentHotelIndexBySuppliers = index;
-      var id = this.hotelListChooseBySuppliers[index].id,
-        name = this.hotelListChooseBySuppliers[index].name;    
+      var id = this.searchHotelBySuppliers?this.hotelListChooseBySuppliersFilter[index].id:this.hotelListChooseBySuppliers[index].id,
+        name = this.searchHotelBySuppliers?this.hotelListChooseBySuppliersFilter[index].name:this.hotelListChooseBySuppliers[index].name;    
       if (this.checkStateBySuppliers == 10) {
         //未聚待审
         return this.$http
@@ -573,11 +647,12 @@ export default {
           countryCode: this.nationListChooseByRegions[index].id
         })
         .then(rs => {
-          this.provinceListChooseByRegions = rs.data.body.statisticList;
+          this.provinceListChooseByRegionsFilter =this.provinceListChooseByRegions = rs.data.body.statisticList;
         });
     },
     chooseProvinceCopy(index, map = 20) {
       this.chooseTabByRegions = "city";
+      var provinceCode = this.searchProvinceByRegions?this.provinceListChooseByRegionsFilter[index].id:this.provinceListChooseByRegions[index].id;
       this.$http
         /* .get("/mapping/hotelMapping/navTabSearch", {params:{
           sourceType: 10,
@@ -587,10 +662,10 @@ export default {
         .post("/mapping/hotelMapping/navTabSearch", {
           sourceType: 10,
           dimensionType: 40,
-          provinceCode: this.provinceListChooseByRegions[index].id
+          provinceCode: provinceCode
         })
         .then(rs => {
-          this.cityListChooseByRegions = rs.data.body.statisticList;
+          this.cityListChooseByRegionsFilter = this.cityListChooseByRegions = rs.data.body.statisticList;
         });
     },
 
@@ -607,7 +682,7 @@ export default {
           pageSize: pageSize
         })
         .then(rs => {
-          this.hotelListChooseByRegions = rs.data.body.statisticList;
+          this.hotelListChooseByRegionsFilter = this.hotelListChooseByRegions = rs.data.body.statisticList;
           this.hotelTotalRegions = rs.data.body.total;
           if (this.hotelListChooseByRegions.length>0) {//适配同步刷新时本列表为空时提供后续流程的bool
             return true;
@@ -687,6 +762,7 @@ export default {
           });
           return;
         }
+        this.listShow = true;
         this.$http
           .get(
             `/mapping/hotelMapping/navSearch`,{params:{
@@ -701,12 +777,13 @@ export default {
             this.hotelListChooseByRegions = rs.data.body.statisticList;
              if (rs.data.head.code == 200&&!this.hotelListChooseByRegions.length) {
               this.$Notice.warning({
-                title: "没有找到响应结果",
+                title: "没有找到查询结果",
                 desc: "请重新输入查询条件"
               });
             }
           })
           .then(rs => {
+            this.listShow = false;
             this.btnType = "region";
             this.chooseTabByRegions = "hotel";
           });
@@ -717,7 +794,7 @@ export default {
         ) {
           this.$Notice.warning({
             title: "请输入正确的酒店名称",
-            desc: '不能只输入"酒店"'
+            desc: '需要输入中文和英文的酒店名称关键字，注意不能只输入"酒店"'
           });
           return;
         }
@@ -734,12 +811,13 @@ export default {
             this.hotelTotalRegions = rs.data.body.total;
              if (rs.data.head.code == 200&&!this.hotelListChooseByRegions.length) {
               this.$Notice.warning({
-                title: "没有找到响应结果",
+                title: "没有找到查询结果",
                 desc: "请重新输入查询条件"
               });
             }
           })
           .then(rs => {
+            this.listShow = false;            
             this.btnType = "region";
             this.chooseTabByRegions = "hotel";
           });
