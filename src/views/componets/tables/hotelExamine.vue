@@ -175,8 +175,8 @@
                     </div>
                     <div style="overflow-x: hidden">
                         <table style="width: 1266px;" v-if="treeData.length>0">
-                            <tr v-for="(item,index) in treeData" :key="index">
-                                <td><input type="checkbox" v-model="item.checked"/></td>
+                            <tr v-for="(item,index) in treeData" :class="[{trClass: item.mapStatus==20}]" :key="index">
+                                <td><input type="checkbox" v-model="item.checked" :disabled="item.mapStatus!=30"/></td>
                                 <td>{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
                                 <td>{{item.tel}}</td>
