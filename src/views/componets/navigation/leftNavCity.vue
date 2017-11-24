@@ -471,13 +471,22 @@ export default {
     doClickSupplierTab(name) {
       // console.log(name)
       if (name == "suppliers"){
-        this.reset('suppliers')
+        this.searchSupplier = "";//供应商筛选入口
+        this.searchProvinceBySuppliers = '';//供应商侧省份筛选入口
+        this.searchCityBySuppliers = '';//供应商侧城市筛选入口
+        this.searchHotelBySuppliers = '';//供应商侧酒店筛选入口
+        this.checkStateBySuppliers = 20;
+        this.reset('suppliers');
       }
     },
     //选择区域tab
     doClickRegionTab(name){
       if (name == "nation"){
+        this.searchProvinceByRegions = '';//jd侧省份筛选入口
+        this.searchCityeByRegions = '';//jd侧城市筛选入口
+        this.searchHotelByRegions = '';//jd侧酒店筛选入口
         this.reset('regions')
+        this.checkStateByRegions = 20;
       }
     },
     //选择供应商tab下的列表内容

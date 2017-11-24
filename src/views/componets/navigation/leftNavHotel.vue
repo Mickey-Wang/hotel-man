@@ -321,7 +321,7 @@ export default {
       currentCityIdByRegions: 0,
       currentHotelIndexBySuppliers: 0,
       currentHotelIndexByRegions: 0,
-      //城市数据
+      //列表数据
       supplierList: [],
       nationListChooseBySuppliers: [],
       nationListChooseByRegions: [],
@@ -331,6 +331,7 @@ export default {
       cityListChooseByRegions: [],
       hotelListChooseBySuppliers: [],
       hotelListChooseByRegions: [],
+      //列表筛选数据
       provinceListChooseBySuppliersFilter: [],
       provinceListChooseByRegionsFilter: [],
       cityListChooseBySuppliersFilter: [],
@@ -357,7 +358,7 @@ export default {
       .post("/mapping/hotelMapping/navTabSearch", {
         sourceType: 20,
         dimensionType: 10,
-        times: 7
+        // times: 7
       })
       .then(rs => {
         this.supplierList = rs.data.body.statisticList;
@@ -366,7 +367,7 @@ export default {
       .post("/mapping/hotelMapping/navTabSearch", {
         sourceType: 10,
         dimensionType: 20,
-        times: 1
+        // times: 1
       })
       .then(rs => {
         this.nationListChooseByRegions = rs.data.body.statisticList;
@@ -423,18 +424,18 @@ export default {
           this.checkStateBySuppliers,
           this.curPageSuppliers
         )
-          .then(rs => {
-            this.listShow = false;
-            if (rs) {
-              return this.chooseHotel(this.currentHotelIndexBySuppliers);
-            } else {
-              return this.chooseHotel(-1);//传入-1自动响应停止请求数据的情况    
-            }
-          })
-          .then(rs => {
-            console.log('hotel sync');
-            this.$store.commit("HOTEL_SYNC_MAPPING_DATA_STATE");
-          });
+        .then(rs => {
+          this.listShow = false;
+          if (rs) {
+            return this.chooseHotel(this.currentHotelIndexBySuppliers);
+          } else {
+            return this.chooseHotel(-1);//传入-1自动响应停止请求数据的情况    
+          }
+        })
+        .then(rs => {
+          console.log('hotel sync');
+          this.$store.commit("HOTEL_SYNC_MAPPING_DATA_STATE");
+        });
       } else {
         this.chooseTabByRegions = "hotel";
         this.chooseCityCopy(
@@ -510,7 +511,11 @@ export default {
         this.reset('suppliers');
         this.checkStateBySuppliers = 20;
         this.curPageSuppliers = 1;
-        this.hotelTotalSuppliers = 0;    
+        this.hotelTotalSuppliers = 0;
+        this.searchSupplier = "";//供应商筛选入口
+        this.searchProvinceBySuppliers = '';//供应商侧省份筛选入口
+        this.searchCityBySuppliers = '';//供应商侧城市筛选入口
+        this.searchHotelBySuppliers = '';//供应商侧酒店筛选入口
         this.$store.commit("HOTEL_TABLETYPE", 20);
         this.chooseTabBySuppliers = "suppliers";
       }
@@ -522,6 +527,9 @@ export default {
         this.checkStateByRegions = 20;
         this.urPageRegions = 1,
         this.hotelTotalRegions = 0;
+        this.searchProvinceByRegions = '';//jd侧省份筛选入口
+        this.searchCityeByRegions = '';//jd侧城市筛选入口
+        this.searchHotelByRegions = '';//jd侧酒店筛选入口
         this.$store.commit("HOTEL_TABLETYPE", 20);
         this.chooseTabByRegions = "nation";
       }
@@ -535,7 +543,7 @@ export default {
           sourceType: 20,
           dimensionType: 20,
           supplierCode: this.supplierList[index].id,
-          times: 1
+          // times: 1
         })
         .then(rs => {
           this.nationListChooseBySuppliers = rs.data.body.statisticList;
