@@ -762,6 +762,7 @@ export default {
         return;
       }
       this.isCheckStateByRegionsShow = false;
+      this.listShow = true;
       if (this.searchID === "hotelId") {
         if (!/^[0-9]*$/.test(keywords)) {
           this.$Notice.warning({
@@ -770,7 +771,6 @@ export default {
           });
           return;
         }
-        this.listShow = true;
         this.$http
           .get(
             `/mapping/hotelMapping/navSearch`,{params:{
@@ -781,7 +781,7 @@ export default {
             }}
           )
           .then(rs => {
-            this.hotelTotalRegions = rs.data.body.total;
+            this.hotelListChooseByRegionsFilter = this.hotelTotalRegions = rs.data.body.total;
             this.hotelListChooseByRegions = rs.data.body.statisticList;
              if (rs.data.head.code == 200&&!this.hotelListChooseByRegions.length) {
               this.$Notice.warning({
@@ -815,7 +815,7 @@ export default {
               pageSize:size
             }},
           ).then(rs => {
-            this.hotelListChooseByRegions = rs.data.body.statisticList;
+            this.hotelListChooseByRegionsFilter = this.hotelListChooseByRegions = rs.data.body.statisticList;
             this.hotelTotalRegions = rs.data.body.total;
              if (rs.data.head.code == 200&&!this.hotelListChooseByRegions.length) {
               this.$Notice.warning({

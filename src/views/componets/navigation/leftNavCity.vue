@@ -657,6 +657,7 @@ export default {
         });
         return;
       }
+      this.listShow = true;      
       this.isCheckStateByRegionsShow = false;
       if (this.searchID === "cityId") {
         if (!/^[0-9]*$/.test(this.searchInput)) {
@@ -669,10 +670,12 @@ export default {
         this.$http
           .get(`/mapping/cityMapping/navSearch?cityId=${this.searchInput}`)
           .then(rs => {
+            this.listShow = false;
+            
             if (Array.isArray(rs.data.body)) {
-              this.cityListChooseByRegions = rs.data.body || [];
+              this.cityListChooseByRegionsFilter = this.cityListChooseByRegions = rs.data.body || [];
             }else{
-              this.cityListChooseByRegions = rs.data.body?[rs.data.body]:[];
+              this.cityListChooseByRegionsFilter = this.cityListChooseByRegions = rs.data.body?[rs.data.body]:[];
             }
             if (rs.data.head.code == 200&&!this.cityListChooseByRegions.length) {
               this.$Notice.warning({
@@ -699,10 +702,11 @@ export default {
         this.$http
           .get(`/mapping/cityMapping/navSearch?cityName=${this.searchInput}`)
           .then(rs => {
+            this.listShow = false;            
             if (Array.isArray(rs.data.body)) {
-              this.cityListChooseByRegions = rs.data.body || [];
+              this.cityListChooseByRegionsFilter = this.cityListChooseByRegions = rs.data.body || [];
             }else{
-              this.cityListChooseByRegions = rs.data.body?[rs.data.body]:[];
+              this.cityListChooseByRegionsFilter = this.cityListChooseByRegions = rs.data.body?[rs.data.body]:[];
             }
             if (rs.data.head.code == 200&&!this.cityListChooseByRegions.length) {
               this.$Notice.warning({
