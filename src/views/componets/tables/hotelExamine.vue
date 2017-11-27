@@ -11,7 +11,7 @@
                 <Button type="primary" disabled v-else>新增</Button>
             </div>
             <div class="total">共计{{hotelTotalNum}}条</div>
-            <div class="table table1">
+            <div class="table table1 table1Style">
                 <div class="wrap wrapW1">
                     <div ref="w1">
                         <table :style="{'min-width':divWidth1+'px'}">
@@ -22,10 +22,10 @@
                             <tr class="fontColor" v-if="hotelCheckList && hotelTableType!=10 && JDHotelApproval && hotelApprovalList.length!=0">
                                 <td></td>
                                 <td @click="getInputValue(JDHotelApproval)">{{JDHotelApproval.hotelName}}</td>
-                                <td>{{JDHotelApproval.address}}</td>
+                                <td style="cursor: pointer;" @click="getAddressValue(JDHotelApproval)">{{JDHotelApproval.address}}</td>
                                 <td>{{JDHotelApproval.tel}}</td>
                                 <td>{{JDHotelApproval.distance}}</td>
-                                <td>{{JDHotelApproval.link}}</td>
+                                <td><a v-if="JDHotelApproval.hotelUrl!=null" :href="JDHotelApproval.hotelUrl">酒店链接</a></td>
                                 <td>{{JDHotelApproval.cityName}}</td>
                                 <td>{{JDHotelApproval.supplierName}}</td>
                                 <td>{{JDHotelApproval.hotelId}}</td>
@@ -41,10 +41,10 @@
                             <tr v-for="(item,index) in hotelApprovalList" :key="index" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
                                 <td @click="getInputValue(item)">{{item.hotelName}}</td>
-                                <td>{{item.address}}</td>
+                                <td style="cursor: pointer;" @click="getAddressValue(item)">{{item.address}}</td>
                                 <td>{{item.tel}}</td>
                                 <td>{{item.distance}}</td>
-                                <td>{{item.link}}</td>
+                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
                                 <td>{{item.hotelId}}</td>
@@ -90,9 +90,10 @@
                                 <td><input type="radio" v-model="similar" :value="index" @change="radioSelect(item)"></td>
                                 <td>{{item.hotelId}}</td>
                                 <td v-html="highlight(item.hotelName, hotelValue)"></td>
-                                <td>{{item.address}}</td>
+                                <td v-html="highlight(item.address, hotelValue)"></td>
+                                <!--<td>{{item.address}}</td>-->
                                 <td>{{item.tel}}</td>
-                                <td>{{item.link}}</td>
+                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <!--<td @click="treeShow = true">Tree信息</td>-->
                                 <td @click="getTreeData(item.hotelId)">Tree信息</td>
@@ -164,7 +165,7 @@
                                 <td>{{item.address}}</td>
                                 <td>{{item.tel}}</td>
                                 <td>{{item.distance}}</td>
-                                <td>{{item.link}}</td>
+                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
                                 <td>{{item.hotelId}}</td>
@@ -181,7 +182,7 @@
                                 <td>{{item.address}}</td>
                                 <td>{{item.tel}}</td>
                                 <td>{{item.distance}}</td>
-                                <td>{{item.link}}</td>
+                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
                                 <td>{{item.hotelId}}</td>
@@ -564,6 +565,11 @@
                 this.hotelValue = item.hotelName;
                 this.toSearch();
             },
+            // 点击地址名称赋值到input,然后调取接口
+            getAddressValue(item){
+                this.hotelValue = item.address;
+                this.toSearch();
+            },
             // 点击Go，获取京东相似数据
             getSimilar(){
                 if(this.hotelValue==''){
@@ -862,6 +868,12 @@
     table tr td:nth-of-type(1),table tr th:nth-of-type(1){
         border-left: none;
         width: 60px;
+    }
+    .table1Style table tr td:nth-of-type(2),.table1Style table tr th:nth-of-type(2){
+        width: 200px;
+    }
+    .table1Style table tr td:nth-of-type(3),.table1Style table tr th:nth-of-type(3){
+        width: 200px;
     }
     .wrapW1 table tr td:nth-of-type(2){
         cursor: pointer;
