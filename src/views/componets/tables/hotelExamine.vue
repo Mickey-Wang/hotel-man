@@ -402,7 +402,10 @@
                 pageNum:1,
                 // 总页数
                 pages:null,
-                similarTotalNum:0
+                similarTotalNum:0,
+                // 相似酒店列表新增 cityId、supplierCode 两个字段
+                similarCityId:null,
+                similarSupplierCode:null
             }
         },
         created(){
@@ -539,6 +542,8 @@
                     this.submitData.radioData = [];
                     this.similar = '';
                     this.hotelValue = '';
+                    this.similarCityId = null;
+                    this.similarSupplierCode = null;
                 }
                 this.hotelApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);
@@ -563,11 +568,37 @@
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
                 this.hotelValue = item.hotelName;
+                if(!item.cityId){
+                    this.similarCityId = null;
+                }else {
+                    this.similarCityId = item.cityId;
+                }
+
+                if(!item.supplierCode){
+                    this.similarSupplierCode = null;
+                }else {
+                    this.similarSupplierCode = item.supplierCode;
+                }
+                console.log('similarCityId==1:',this.similarCityId);
+                console.log('similarSupplierCode==1:',this.similarSupplierCode);
                 this.toSearch();
             },
             // 点击地址名称赋值到input,然后调取接口
             getAddressValue(item){
                 this.hotelValue = item.address;
+                if(!item.cityId){
+                    this.similarCityId = null;
+                }else {
+                    this.similarCityId = item.cityId;
+                }
+
+                if(!item.supplierCode){
+                    this.similarSupplierCode = null;
+                }else {
+                    this.similarSupplierCode = item.supplierCode;
+                }
+                console.log('similarCityId==2:',this.similarCityId);
+                console.log('similarSupplierCode==2:',this.similarSupplierCode);
                 this.toSearch();
             },
             // 点击Go，获取京东相似数据
@@ -576,6 +607,8 @@
                     this.instance('warning');
                     return;
                 }
+                console.log('similarCityId==3:',this.similarCityId);
+                console.log('similarSupplierCode==3:',this.similarSupplierCode);
                 this.toSearch();
             },
             toSearch(){
@@ -586,7 +619,7 @@
                 this.divH.scrollTop = 0;
                 this.divWidth2 = this.$refs.w2.offsetWidth;
                 this.spinShow = true;
-                this.$http.get('/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum=1&pageSize=20').then(res=>{
+                this.$http.get('/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&cityId='+this.similarCityId+'&supplierCode='+this.similarSupplierCode+'&pageNum=1&pageSize=20').then(res=>{
                     this.spinShow = false;
                     if(res.data.head.code == 200){
                         this.similarTotalNum = res.data.body.total;
