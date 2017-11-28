@@ -232,7 +232,8 @@
             <Menu theme="light" width="auto" @on-select="chooseHotelCopy" v-if="hotelListChooseByRegionsFilter.length>0">
               <MenuItem :name="index" v-for="(item,index) in hotelListChooseByRegionsFilter" :key="index">
               <span>{{item.name||item.hotelName}}</span>
-              <span>{{`${item.matchedCount||"0"}/${item.matchedUncheckCount||"0"}/${item.unmatchedCount||"0"}`}}</span>
+              <span v-if="checkStateByRegions == 10">{{`${item.unmatchedCount||"0"}`}}</span>
+              <span v-else>{{`${item.matchedCount+"/"||"0"}${item.matchedUncheckCount||"0"}`}}</span>
               </MenuItem>
             </Menu>
             <Row v-else style="font-size:18px;text-align:center;">
@@ -461,6 +462,7 @@ export default {
       let resultArr = [];
       if (keywords == ""){
         resultArr = searchArr;
+        return resultArr
       }
       searchArr.map((val, index) => {
         if (val.name.indexOf(keywords) > -1) {
@@ -471,7 +473,7 @@ export default {
       return resultArr;
     },
     doListFilter(keywords,searchArr,filterArr) {
-      this[filterArr] = this.listFilter(keywords,this[searchArr])
+      this[filterArr] = this.listFilter(keywords,this[searchArr]);
     },
     //分页按钮选择
     choosePageSuppliers(page) {

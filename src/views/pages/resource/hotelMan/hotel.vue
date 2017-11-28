@@ -98,7 +98,6 @@
     </div>
 </template>
 <script>
-import HotelAdd from './hotelAdd';
 export default {
     data() {
         return {
@@ -248,9 +247,6 @@ export default {
             // this.modalState = true;
             this.$router.push({ name: 'hotelAdd' });
         }
-    },
-    components: {
-        HotelAdd
     }
 }
 </script>
