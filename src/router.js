@@ -6,6 +6,13 @@ const routers = [{
     name: '404',
     component: (resolve) => require(['./views/pages/error/404'], resolve)
 }, {
+    path: '/error_page',
+    meta: {
+        title: ''
+    },
+    name: '500',
+    component: (resolve) => require(['./views/pages/error/500'], resolve)
+}, {
     path: '/',
     meta: {
         title: ''
