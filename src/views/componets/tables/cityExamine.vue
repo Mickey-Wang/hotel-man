@@ -413,6 +413,8 @@
                     this.cityValue = '';
                     // 数据更新的时候 scrollTop 变为0
                     this.topDivH.scrollTop = 0;
+                    // 相似列表共计改为0条
+                    this.similarTotalNum = 0;
                 }
                 this.cityApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);

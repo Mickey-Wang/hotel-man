@@ -550,6 +550,8 @@
                     this.similarSupplierCode = null;
                     // 数据更新的时候 scrollTop 变为0
                     this.topDivH.scrollTop = 0;
+                    // 相似列表共计改为0条
+                    this.similarTotalNum = 0;
                 }
                 this.hotelApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);
@@ -784,6 +786,8 @@
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
                             this.hotelValue = '';
+                            // 相似列表共计改为0条
+                            this.similarTotalNum = 0;
                         }else {
 
                         }
