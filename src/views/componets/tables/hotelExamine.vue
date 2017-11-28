@@ -36,7 +36,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div :style="{'height':hotelTableType==10?'86%':'71%'}">
+                    <div ref="topDivH" :style="{'height':hotelTableType==10?'86%':'71%'}">
                         <table v-if="hotelCheckList && hotelApprovalList && hotelApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in hotelApprovalList" :key="index" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
@@ -44,7 +44,7 @@
                                 <td style="cursor: pointer;" @click="getAddressValue(item)">{{item.address}}</td>
                                 <td>{{item.tel}}</td>
                                 <td>{{item.distance}}</td>
-                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl">酒店链接</a></td>
+                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
                                 <td>{{item.hotelId}}</td>
@@ -93,7 +93,7 @@
                                 <td v-html="highlight(item.address, hotelValue)"></td>
                                 <!--<td>{{item.address}}</td>-->
                                 <td>{{item.tel}}</td>
-                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl">酒店链接</a></td>
+                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <!--<td @click="treeShow = true">Tree信息</td>-->
                                 <td @click="getTreeData(item.hotelId)">Tree信息</td>
@@ -165,7 +165,7 @@
                                 <td>{{item.address}}</td>
                                 <td>{{item.tel}}</td>
                                 <td>{{item.distance}}</td>
-                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl">酒店链接</a></td>
+                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
                                 <td>{{item.hotelId}}</td>
@@ -182,7 +182,7 @@
                                 <td>{{item.address}}</td>
                                 <td>{{item.tel}}</td>
                                 <td>{{item.distance}}</td>
-                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl">酒店链接</a></td>
+                                <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
                                 <td>{{item.hotelId}}</td>
@@ -405,7 +405,9 @@
                 similarTotalNum:0,
                 // 相似酒店列表新增 cityId、supplierCode 两个字段
                 similarCityId:null,
-                similarSupplierCode:null
+                similarSupplierCode:null,
+                // 酒店审核列表带有滚动条的div
+                topDivH:null
             }
         },
         created(){
@@ -420,6 +422,8 @@
             this.divWidth1 = this.$refs.w1.offsetWidth;
             this.divWidth2 = this.$refs.w2.offsetWidth;
             this.divWidth3 = this.$refs.w3.offsetWidth;
+            // 酒店审核列表数据跟新时 scrollTop 变为0
+            this.topDivH = this.$refs.topDivH;
             // 相似城市列表添加 scroll 事件
             this.divH = this.$refs.divH;
             this.divH.addEventListener('scroll',this.addMore);
@@ -544,6 +548,8 @@
                     this.hotelValue = '';
                     this.similarCityId = null;
                     this.similarSupplierCode = null;
+                    // 数据更新的时候 scrollTop 变为0
+                    this.topDivH.scrollTop = 0;
                 }
                 this.hotelApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);

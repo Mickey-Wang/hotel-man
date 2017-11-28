@@ -33,7 +33,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div :style="{'height':cityTableType==10?'85%':'71%'}">
+                    <div ref="topDivH" :style="{'height':cityTableType==10?'85%':'71%'}">
                         <table v-if="cityCheckList && cityApprovalList && cityApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in cityApprovalList" :key="index" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
@@ -87,7 +87,6 @@
                                 <td>{{item.cityId}}</td>
                                 <td>{{item.provinceName}}</td>
                                 <td>{{item.countryName}}</td>
-                                <td>{{item.supplierName}}</td>
                             </tr>
                         </table>
                         <div class="noData" v-if="similarCityData==0">
@@ -207,10 +206,6 @@
                     {
                         title: '国家',
                         key: 'countryName'
-                    },
-                    {
-                        title: '供应商名称',
-                        key: 'supplierName'
                     }
                 ],
                 similarCityData: [],
@@ -267,7 +262,9 @@
                 // 总页数
                 pages:null,
                 // 相似数据的条数
-                similarTotalNum:0
+                similarTotalNum:0,
+                // 城市审核列表带有滚动条的div
+                topDivH:null
             }
         },
         created(){
@@ -283,6 +280,8 @@
             // 计算一下初始化第一个表格的宽度
             this.divWidth1 = this.$refs.w1.offsetWidth;
             this.divWidth2 = this.$refs.w2.offsetWidth;
+            // 城市审核列表数据跟新时 scrollTop 变为0
+            this.topDivH = this.$refs.topDivH;
             // 相似城市列表添加 scroll 事件
             this.divH = this.$refs.divH;
             this.divH.addEventListener('scroll',this.addMore);
@@ -412,6 +411,8 @@
                     this.submitData.radioData = [];
                     this.similar = '';
                     this.cityValue = '';
+                    // 数据更新的时候 scrollTop 变为0
+                    this.topDivH.scrollTop = 0;
                 }
                 this.cityApprovalList.forEach((item,index)=>{
                     this.$set(item,'checked',false);
