@@ -512,7 +512,7 @@
                         if(this.pageNum > this.pages){
                             return;
                         }
-                        this.$http.get('/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&pageNum='+this.pageNum+'&pageSize=20').then(res=>{
+                        this.$http.get('/resource/hotel/jdHotelList?hotelName='+this.hotelValue+'&cityId='+this.similarCityId+'&supplierCode='+this.similarSupplierCode+'&pageNum='+this.pageNum+'&pageSize=20').then(res=>{
                             if(res.data.head.code == 200){
                                 this.similarCityData = this.similarCityData.concat(res.data.body.hotelList);
                             }else {
