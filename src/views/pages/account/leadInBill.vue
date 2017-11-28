@@ -1,17 +1,17 @@
 <template>
     <div class="layout-row">
         <Row className="layout-row">
-             <Row style="width:100%">
+             <Row style="width:100%" className="row-border">
                 <Upload
                     :before-upload="handleUpload"
                     action="//"
                     :format="format" 
                     :onFormatError="formatCheck">
-                    <Row type="flex" justify="center" align="middle">
+                    <Row type="flex" justify="center" align="middle" className="row-border">
                       <span>导入对账表：</span><Button type="ghost" icon="ios-cloud-upload-outline">选择文件上传</Button><span v-if="file !== null">文件名称: {{ file.name }} </span><span>支持的文件类型： xls/xlsx</span>
                     </Row>
                 </Upload>
-                <Row>数据要求：账单年（文本）、账单月（文本）</Row>
+                <Row className="row-border">数据要求：账单年（文本）、账单月（文本）</Row>
                 <Button type="primary" @click="upload" :loading="loadingStatus" :disabled="file === null">{{ loadingStatus ? '上传中' : '确认导入' }}</Button>
             </Row>
         </Row>
@@ -36,6 +36,9 @@
   .layout-content-main-right {
     .layout-content-main-base;
   }
+}
+.row-border{
+    border: 1px solid #ddd;
 }
 </style>
 
