@@ -126,8 +126,8 @@
                     <div style="overflow-x: hidden">
                         <table style="width: 767px;" v-if="checkData.length>0">
                             <tr v-for="(item,index) in checkData" :key="index">
-                                <td>{{item.newString}}</td>
                                 <td>{{item.oldString}}</td>
+                                <td>{{item.newString}}</td>
                                 <td>{{item.operateTime}}</td>
                                 <td>{{item.operatorName}}</td>
                             </tr>
@@ -677,7 +677,7 @@
                         this.instance('info','已聚待审');
                     }else {
                         this.modelShow = true;
-                        this.message = '请确认是否将已选择城市提交？';
+                        this.message = '请确认是否将已选择酒店提交？';
                     }
                     console.log('1 20 or 30的设为已审submitData:',this.submitData);
                 }
@@ -685,7 +685,7 @@
                     this.getForData(10);
                     if(this.submitData.checkBoxData.length!=0 && this.submitData.radioData.length!=0){
                         this.modelShow = true;
-                        this.message = '请确认是否将已选择城市提交？';
+                        this.message = '请确认是否将已选择酒店提交？';
                     }else {
                         this.instance('info','未聚待审');
                     }
@@ -703,7 +703,7 @@
                         this.instance('info','已聚已审');
                     }else {
                         this.modelShow = true;
-                        this.message = '请确认是否将已选择城市设为待审？';
+                        this.message = '请确认是否将已选择酒店设为待审？';
                     }
                 }
                 console.log('2 20 or 30 的设为待审submitData:',this.submitData);
@@ -722,7 +722,7 @@
                     this.instance('info','已聚已审');
                 }else {
                     this.modelShow = true;
-                    this.message = '请确认是否将已选择城市设为待审？';
+                    this.message = '请确认是否将已选择酒店设为待审？';
                 }
             },
             // 单选框对应的值
@@ -797,8 +797,8 @@
                 console.log('点击取消');
             },
             instance (type,status) {
-                const content1 = '<p style="font-size: 16px;">请必须选择一个京东城市和至少一个(含)供应商城市"'+status+'"的数据</p>';
-                const content2 = '<p style="font-size: 16px;">请输入城市名称</p>';
+                const content1 = '<p style="font-size: 16px;">请必须选择一个京东酒店和至少一个(含)供应商酒店"'+status+'"的数据</p>';
+                const content2 = '<p style="font-size: 16px;">请输入酒店名称</p>';
                 switch (type) {
                     case 'info':
                         this.$Modal.info({
