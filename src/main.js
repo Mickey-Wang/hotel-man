@@ -40,7 +40,7 @@ const RouterConfig = {
     mode: 'history',
     routes: Routers,
     // base:'/hotelman'
-};
+};  
 const router = new VueRouter(RouterConfig);
 
 router.beforeEach((to, from, next) => {

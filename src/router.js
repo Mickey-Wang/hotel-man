@@ -5,86 +5,135 @@ const routers = [{
     },
     name: '404',
     component: (resolve) => require(['./views/pages/error/404'], resolve)
-},{
+}, {
     path: '/',
     meta: {
         title: ''
     },
-    name:'index',
+    name: 'index',
     component: (resolve) => require(['./views/pages/index.vue'], resolve)
-},{
+}, {
     path: '/Mapping/hotel',
     meta: {
         title: '酒店聚合'
     },
-    name:'hotel',
+    name: 'hotel',
     component: (resolve) => require(['./views/pages/Mapping/hotelMapping.vue'], resolve)
-},{
+}, {
     path: '/Mapping/city',
     meta: {
         title: '城市聚合'
     },
-    name:'city',
+    name: 'city',
     component: (resolve) => require(['./views/pages/Mapping/cityMapping.vue'], resolve)
-},{
+}, {
     path: '/Mapping/room',
     meta: {
         title: '房型聚合'
     },
-    name:'room',
+    name: 'room',
     component: (resolve) => require(['./views/pages/Mapping/roomMapping.vue'], resolve)
-},{
+}, {
+    path: '/promotion/promotionMan',
+    meta: {
+        title: '促销管理'
+    },
+    name: 'promotionMan',
+    component: (resolve) => require(['./views/pages/promotion'], resolve)
+}, {
     path: '/resource/destination',
     meta: {
         title: '目的地管理'
     },
-    name:'destinationMan',
+    name: 'destinationMan',
     component: (resolve) => require(['./views/pages/resource/destination/destinationManagement'], resolve)
-},{
+}, {
     path: '/resource/picture',
     meta: {
         title: '图片管理'
     },
-    name:'pictureMan',
+    name: 'pictureMan',
     component: (resolve) => require(['./views/pages/resource/picture/pictureManagement'], resolve)
-},{
+}, {
+    path: '/resource/hotelMan',
+    meta: {
+        title: '酒店管理'
+    },
+    name: 'hotelMan',
+    component: (resolve) => require(['./views/pages/resource/hotelMan/hotel'], resolve)
+}, {
+    path: '/resource/hotelAdd',
+    meta: {
+        title: '新增酒店'
+    },
+    name: 'hotelAdd',
+    component: (resolve) => require(['./views/pages/resource/hotelMan/hotelAdd'], resolve)
+}, {
+    path: '/resource/hotelMapping',
+    meta: {
+        title: '酒店管理'
+    },
+    name: 'hotelMapping',
+    component: (resolve) => require(['./views/pages/resource/hotelMan/mapping'], resolve)
+}, {
+    path: '/resource/room',
+    meta: {
+        title: '房型列表'
+    },
+    name: 'roomList',
+    component: (resolve) => require(['./views/pages/resource/hotelMan/room'], resolve)
+}, {
+    path: '/resource/roomAdd',
+    meta: {
+        title: '新增房间'
+    },
+    name: 'roomAdd',
+    component: (resolve) => require(['./views/pages/resource/hotelMan/roomAdd'], resolve)
+}, {
+    path: '/resource/hotelLog',
+    meta: {
+        title: '日志'
+    },
+    name: 'hotelLog',
+    component: (resolve) => require(['./views/pages/resource/hotelMan/log'], resolve)
+}, {
     path: '/supplier',
     meta: {
         title: '供应商信息管理'
     },
-    name:'supplier',
+    name: 'supplier',
     component: (resolve) => require(['./views/pages/Supplier/supplier.vue'], resolve)
-},{
-    path:'/supplierMsg/step1',
-    meta:{
-       title:'供应商信息',
-       activeName: 'supplier'
+}, {
+    path: '/supplierMsg/step1',
+    meta: {
+        title: '供应商信息',
+        activeName: 'supplier'
     },
-    name:'step1',
+    name: 'step1',
     component: (resolve) => require(['./views/pages/Supplier/supplierMsgStep1.vue'], resolve)
-},{
-    path:'/supplierMsg/step2',
-    meta:{
-        title:'供应商信息',
+}, {
+    path: '/supplierMsg/step2',
+    meta: {
+        title: '供应商信息',
         activeName: 'supplier'
     },
-    name:'step2',
+    name: 'step2',
     component: (resolve) => require(['./views/pages/Supplier/supplierMsgStep2.vue'], resolve)
-},{
-    path:'/supplierMsg/customerInfo',
-    meta:{
-        title:'供应商信息',
+}, {
+    path: '/supplierMsg/customerInfo',
+    meta: {
+        title: '供应商信息',
         activeName: 'supplier'
     },
-    name:'customerInfo',
+    name: 'customerInfo',
     component: (resolve) => require(['./views/pages/Supplier/customerInfo.vue'], resolve)
-},{
-    path:'/supplierMsg/check',
-    meta:{
-        title:'供应商信息',
+}, {
+    path: '/supplierMsg/check',
+    meta: {
+        title: '供应商信息',
         activeName: 'supplier'
     },
-    name:'check',
+    name: 'check',
     component: (resolve) => require(['./views/pages/Supplier/checkSupplierMsg.vue'], resolve)
 }, {
     path: '/account/leadinbill',
