@@ -657,7 +657,6 @@ export default {
         });
         return;
       }
-      this.listShow = true;      
       this.isCheckStateByRegionsShow = false;
       if (this.searchID === "cityId") {
         if (!/^[0-9]*$/.test(this.searchInput)) {
@@ -667,6 +666,7 @@ export default {
           });
           return;
         }
+        this.listShow = true;              
         this.$http
           .get(`/mapping/cityMapping/navSearch?cityId=${this.searchInput}`)
           .then(rs => {
@@ -699,6 +699,7 @@ export default {
           });
           return;
         }
+        this.listShow = true;              
         this.$http
           .get(`/mapping/cityMapping/navSearch?cityName=${this.searchInput}`)
           .then(rs => {

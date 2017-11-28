@@ -32,7 +32,7 @@
     .layout-content-main {
         padding: 10px;
         height: @height;
-        overflow-y: auto;
+        // overflow-y: auto;
         .layout-content-main-base {
             height: @height;
             border: 1px dashed #ddd;
@@ -110,7 +110,7 @@
                 <Icon type="ios-home" :size="iconSize"></Icon>
                 <span class="layout-text">首页</span>
                 </MenuItem>
-                <Submenu name="confluence">
+                <Submenu name="Mapping">
                     <template slot="title">
                         <Icon type="funnel" :size="iconSize"></Icon>
                         <span class="layout-text">聚合系统</span>
@@ -128,7 +128,7 @@
                     <MenuItem name="activityMan" class="layout-text">活动管理</MenuItem>
                     <MenuItem name="blacklistMan" class="layout-text">黑名单管理</MenuItem>
                 </Submenu>
-                <Submenu name="static">
+                <Submenu name="resource">
                     <template slot="title">
                         <Icon type="images" :size="iconSize"></Icon>
                         <span class="layout-text">静态基础数据</span>
@@ -204,7 +204,7 @@ export default {
             spanLeft: 5,
             spanRight: 19,
             selected: ['', ''],
-            submenu: ['confluence'],
+            submenu: ['Mapping'],
             nav: [{
                 name: '首页',
                 url: '/'
@@ -227,10 +227,10 @@ export default {
         }
     },
     watch: {
-        $route (val, old) {
+        /* $route (val, old) {
             // console.log(val.path);
             this.submenu = [val.path.split('/')[1]];
-        },
+        }, */
         routerName: function(val, old) {
             this.changeBreadcrumb(val);
         }

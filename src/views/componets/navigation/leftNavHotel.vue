@@ -273,7 +273,7 @@ export default {
       searchProvinceBySuppliers:'',//供应商侧省份筛选入口
       searchProvinceByRegions:'',//jd侧省份筛选入口
       searchCityBySuppliers:'',//供应商侧城市筛选入口
-      searchCityeByRegions:'',//jd侧城市筛选入口
+      searchCityByRegions:'',//jd侧城市筛选入口
       searchHotelBySuppliers:'',//供应商侧酒店筛选入口
       searchHotelByRegions:'',//jd侧酒店筛选入口
       
@@ -509,9 +509,10 @@ export default {
       // console.log(name)
       if (name == "suppliers"){
         this.reset('suppliers');
-        this.checkStateBySuppliers = 20;
-        this.curPageSuppliers = 1;
-        this.hotelTotalSuppliers = 0;
+        this.checkStateBySuppliers = 20;//重置审核类型
+        this.isCheckStateByRegionsShow = true;//重置查询和审核类型显示
+        this.curPageSuppliers = 1;//重置页码
+        this.hotelTotalSuppliers = 0;//重置数量
         this.searchSupplier = "";//供应商筛选入口
         this.searchProvinceBySuppliers = '';//供应商侧省份筛选入口
         this.searchCityBySuppliers = '';//供应商侧城市筛选入口
@@ -525,6 +526,7 @@ export default {
       if (name == "nation"){
         this.reset('regions');
         this.checkStateByRegions = 20;
+        this.isCheckStateByRegionsShow = true;
         this.urPageRegions = 1,
         this.hotelTotalRegions = 0;
         this.searchProvinceByRegions = '';//jd侧省份筛选入口
@@ -762,7 +764,6 @@ export default {
         return;
       }
       this.isCheckStateByRegionsShow = false;
-      this.listShow = true;
       if (this.searchID === "hotelId") {
         if (!/^[0-9]*$/.test(keywords)) {
           this.$Notice.warning({
@@ -771,6 +772,7 @@ export default {
           });
           return;
         }
+        this.listShow = true;
         this.$http
           .get(
             `/mapping/hotelMapping/navSearch`,{params:{
@@ -781,8 +783,8 @@ export default {
             }}
           )
           .then(rs => {
-            this.hotelListChooseByRegionsFilter = this.hotelTotalRegions = rs.data.body.total;
-            this.hotelListChooseByRegions = rs.data.body.statisticList;
+            this.hotelTotalRegions = rs.data.body.total;
+            this.hotelListChooseByRegionsFilter = this.hotelListChooseByRegions = rs.data.body.statisticList;
              if (rs.data.head.code == 200&&!this.hotelListChooseByRegions.length) {
               this.$Notice.warning({
                 title: "没有找到查询结果",
@@ -806,6 +808,7 @@ export default {
           });
           return;
         }
+        this.listShow = true;
         this.$http
           .get(
             `/mapping/hotelMapping/navSearch`,{params:{
