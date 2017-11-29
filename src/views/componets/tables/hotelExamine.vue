@@ -552,8 +552,10 @@
                     this.submitData.radioData = [];
                     this.similar = '';
                     this.hotelValue = '';
-                    this.similarCityId = null;
-                    this.similarSupplierCode = null;
+                    this.similarCityId = this.hotelApprovalList[0].cityId;
+                    this.similarSupplierCode = this.hotelApprovalList[0].supplierCode;
+                    console.log('commit-similarCityId:',this.similarCityId);
+                    console.log('commit-similarSupplierCode:',this.similarSupplierCode);
                     // 数据更新的时候 scrollTop 变为0
                     this.topDivH.scrollTop = 0;
                     // 相似列表共计改为0条
@@ -582,17 +584,6 @@
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
                 this.hotelValue = item.hotelName;
-                if(!item.cityId){
-                    this.similarCityId = null;
-                }else {
-                    this.similarCityId = item.cityId;
-                }
-
-                if(!item.supplierCode){
-                    this.similarSupplierCode = null;
-                }else {
-                    this.similarSupplierCode = item.supplierCode;
-                }
                 console.log('similarCityId==1:',this.similarCityId);
                 console.log('similarSupplierCode==1:',this.similarSupplierCode);
                 this.toSearch();
@@ -600,17 +591,6 @@
             // 点击地址名称赋值到input,然后调取接口
             getAddressValue(item){
                 this.hotelValue = item.address;
-                if(!item.cityId){
-                    this.similarCityId = null;
-                }else {
-                    this.similarCityId = item.cityId;
-                }
-
-                if(!item.supplierCode){
-                    this.similarSupplierCode = null;
-                }else {
-                    this.similarSupplierCode = item.supplierCode;
-                }
                 console.log('similarCityId==2:',this.similarCityId);
                 console.log('similarSupplierCode==2:',this.similarSupplierCode);
                 this.toSearch();
