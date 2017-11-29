@@ -15,7 +15,7 @@
                             <span><em>*</em>供应商名称</span>
                         </div>
                         <div class="right">
-                            <Input v-model="supplierName" placeholder="请输入..." style="width: 260px"></Input>
+                            <Input v-model="supplierName" placeholder="请输入..." style="width: 260px;" :class="{'errTipsBorder':errTips}"></Input>
                         </div>
                     </div>
                     <div class="sameStyle name">
@@ -23,15 +23,15 @@
                             <span><em>*</em>供应商接入方式</span>
                         </div>
                         <div class="right">
-                            <Select v-model="selectAccessType" style="width:260px;margin-right:20px;" placeholder="请选择">
+                            <Select v-model="selectAccessType" style="width:260px;margin-right:20px;" placeholder="请选择" :class="{'errTipsBorder':errTips}">
                                 <Option v-for="item in AccessType" :value="item.value" :key="item.value">{{ item.label }}</Option>
                             </Select>
                             <span><em>*</em>平台名称</span>
-                            <Select :disabled="selectAccessType!=1" v-model="selectPlatformName" style="width:260px;margin-right:20px;" placeholder="请选择">
+                            <Select :disabled="selectAccessType!=1" v-model="selectPlatformName" style="width:260px;margin-right:20px;" placeholder="请选择" :class="{'errTipsBorder':errTips}">
                                 <Option v-for="item in platformName" :value="item.value" :key="item.value"></Option>
                             </Select>
                             <span>平台供应商识别码</span>
-                            <Input :disabled="selectAccessType!=1" v-model="platformCode" placeholder="请输入..." style="width: 260px"></Input>
+                            <Input :disabled="selectAccessType!=1" v-model="platformCode" placeholder="请输入..." style="width: 260px" :class="{'errTipsBorder':errTips}"></Input>
                         </div>
                     </div>
                     <div class="sameStyle name">
@@ -39,7 +39,7 @@
                             <span><em>*</em>报价币种</span>
                         </div>
                         <div class="right">
-                            <Select v-model="selectQuotedCurrency" style="width:260px;margin-right:20px;">
+                            <Select v-model="selectQuotedCurrency" style="width:260px;margin-right:20px;" :class="{'errTipsBorder':errTips}">
                                 <Option v-for="item in quotedCurrency" :value="item.value" :key="item.value">{{ item.label }}</Option>
                             </Select>
                         </div>
@@ -49,11 +49,12 @@
                             <span><em>*</em>结算币种</span>
                         </div>
                         <div class="right">
-                            <Select v-model="selectSettlementCurrency" style="width:260px;margin-right:20px;">
+                            <Select v-model="selectSettlementCurrency" style="width:260px;margin-right:20px;" :class="{'errTipsBorder':errTips}">
                                 <Option v-for="item in settlementCurrency" :value="item.value" :key="item.value">{{ item.label }}</Option>
                             </Select>
                         </div>
                     </div>
+                    <Alert type="error" show-icon style="width: 200px; position: absolute; right: 400px; top: 200px;" v-if="timeErr">请选择服务时间</Alert>
                     <div v-for="(dateLine, index) in dateLines">
                         <div class="sameStyle name serviceTime">
                             <div class="left" style="border-bottom: 1px solid #e9eaec">
@@ -290,6 +291,10 @@ export default {
             // 报价天数
             priceDays:90,
             priceDaysValue:'',
+            // 错误提示框的边框颜色
+            errTips:true,
+            // 控制服务时间错误提示框
+            timeErr:true
         }
     },
     watch: {
@@ -491,6 +496,7 @@ export default {
             .main{
                 height: 100%;
                 width: 100%;
+                position: relative;
                 .sameStyle{
                     border-bottom: 1px solid #e9eaec;
                     height: 50px;
@@ -552,8 +558,9 @@ export default {
             margin: 50px auto 0;
         }
     }
-    .errBorder{
-        border: 1px solid red;
+    .errTipsBorder{
+        border: 1px solid red !important;
+        border-radius: 3px;
     }
 }
 </style>

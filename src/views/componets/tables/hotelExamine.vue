@@ -7,8 +7,9 @@
                 <Button type="primary" disabled v-else>提交</Button>
                 <Button type="primary" @click="toSubmit2" v-if="hotelTableType!=10 && hotelApprovalList.length!=0" :disabled="is20Check">设为待审</Button>
                 <Button type="primary" disabled v-if="hotelApprovalList.length==0">设为待审</Button>
-                <Button type="primary" v-if="hotelApprovalList.length!=0">新增</Button>
-                <Button type="primary" disabled v-else>新增</Button>
+                <!--<Button type="primary" v-if="hotelApprovalList.length!=0">新增</Button>-->
+                <!--<Button type="primary" disabled v-else>新增</Button>-->
+                <Button type="primary" disabled>新增</Button>
             </div>
             <div class="total">共计{{hotelTotalNum}}条</div>
             <div class="table table1 table1Style">
