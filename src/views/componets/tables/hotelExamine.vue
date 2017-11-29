@@ -64,6 +64,10 @@
                     <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
                     <div>Loading</div>
                 </Spin>
+                <Spin fix v-if="hotelLoading">
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>Loading</div>
+                </Spin>
             </div>
         </div>
         <div class="bottomTable">
@@ -407,7 +411,9 @@
                 similarCityId:null,
                 similarSupplierCode:null,
                 // 酒店审核列表带有滚动条的div
-                topDivH:null
+                topDivH:null,
+                // 酒店相似列表新加的一个loading
+                hotelLoading:false
             }
         },
         created(){
@@ -735,11 +741,13 @@
             },
             // 弹框选择确定按钮
             ok () {
+                this.hotelLoading = true;
                 let checkStr = this.submitData.checkBoxData.join(',');
                 let radioStr = this.submitData.radioData[0];
                 // 提交，设为已审按钮(当不是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType!=10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res => {
+                        this.hotelLoading = false;
                         this.modelShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
@@ -754,6 +762,7 @@
                 // 提交，设为已审按钮(当是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType==10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res => {
+                        this.hotelLoading = false;
                         this.modelShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
@@ -768,6 +777,7 @@
                 // 设为待审按钮
                 if(this.buttonType == 2){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr}).then(res=>{
+                        this.hotelLoading = false;
                         this.modelShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
@@ -782,6 +792,7 @@
                 // tree中的设为已聚待审的按钮
                 if(this.buttonType == 3){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr}).then(res=>{
+                        this.hotelLoading = false;
                         this.treeShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
