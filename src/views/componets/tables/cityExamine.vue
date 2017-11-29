@@ -58,6 +58,10 @@
                     <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
                     <div>Loading</div>
                 </Spin>
+                <Spin fix v-if="cityLoading">
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>Loading</div>
+                </Spin>
             </div>
         </div>
         <div class="bottomTable">
@@ -264,7 +268,9 @@
                 // 相似数据的条数
                 similarTotalNum:0,
                 // 城市审核列表带有滚动条的div
-                topDivH:null
+                topDivH:null,
+                // 城市相似列表新加的一个loading
+                cityLoading:false
             }
         },
         created(){
@@ -552,11 +558,13 @@
             },
             // 弹框选择确定按钮
             ok () {
+                this.cityLoading = true;
                 // 提交，设为已审按钮(当不是未聚未审的时候)
                 let checkStr = this.submitData.checkBoxData.join(',');
                 let radioStr = this.submitData.radioData[0];
                 if(this.buttonType==1 && this.cityTableType!=10){
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
+                        this.cityLoading = false;
                         this.modelShow = false;
                         console.log('20 or 30 设为已审的接口');
                         if(res.data.head.code == 200){
@@ -573,6 +581,7 @@
                 if(this.buttonType==1 && this.cityTableType==10){
                     console.log('未聚未审的数据，设为已审');
                     this.$http.post('/mapping/cityMapping/approve',{"geoMapIds":checkStr,"geoId":radioStr}).then(res => {
+                        this.cityLoading = false;
                         this.modelShow = false;
                         if(res.data.head.code == 200){
                             console.log('10 设为已审的接口');
@@ -589,6 +598,7 @@
                 if(this.buttonType == 2){
                     console.log('设为待审');
                     this.$http.post('/mapping/cityMapping/matchedUncheck',{"geoMapIds":checkStr}).then(res=>{
+                        this.cityLoading = false;
                         this.modelShow = false;
                         if(res.data.head.code==200){
                             console.log('20 or 30 设为待审的接口');
