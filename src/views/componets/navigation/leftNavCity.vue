@@ -238,7 +238,7 @@ export default {
       searchProvinceBySuppliers:'',//供应商侧省份筛选入口
       searchProvinceByRegions:'',//jd侧省份筛选入口
       searchCityBySuppliers:'',//供应商侧城市筛选入口
-      searchCityeByRegions:'',//jd侧城市筛选入口
+      searchCityByRegions:'',//jd侧城市筛选入口
 
       //供应商和区域选择按钮是supplier/region
       btnType: "supplier",
@@ -550,7 +550,15 @@ export default {
       this.chooseProvince(this.currentProvinceIdBySuppliers, val);
     },
     chooseCity(index) {
-      if (index == -1) {//响应同步刷新城市列表为空的情况
+      let isOverRange;
+      if (this.searchCityBySuppliers) {
+        isOverRange = index > this.cityListChooseBySuppliersFilter.length-1?true:false;
+        
+      } else {
+        isOverRange = index > this.cityListChooseBySuppliers.length-1?true:false;
+        
+      }
+      if (index == -1 || isOverRange) {//响应同步刷新城市列表为空的情况
         this.$store.commit("CITY_CHECK_LIST", null);//同步刷新
         return this.getDataType = "supplier";
       }
@@ -610,7 +618,15 @@ export default {
       this.chooseProvinceCopy(this.currentProvinceIdByRegions, val);
     },
     chooseCityCopy(index) {
-      if (index == -1 || !this.cityListChooseByRegionsFilter[index].id || !this.cityListChooseByRegionsFilter[index].cityId) {//响应同步刷新城市列表为空的情况
+      let isOverRange;
+      if (this.searchCityByRegions) {
+        isOverRange = index > this.cityListChooseBySuppliersFilter.length-1?true:false;
+        
+      } else {
+        isOverRange = index > this.cityListChooseBySuppliers.length-1?true:false;
+        
+      }
+      if (index == -1 || isOverRange) {//响应同步刷新城市列表为空的情况
         this.$store.commit("CITY_CHECK_LIST", null);
         return this.getDataType = "region";
       }

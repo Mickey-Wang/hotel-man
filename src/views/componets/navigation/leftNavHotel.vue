@@ -582,6 +582,7 @@ export default {
         });
     },
     chooseCity(id, map = 20, page = 1, pageSize = 30) {
+      this.listShow = true;
       this.chooseTabBySuppliers = "hotel";
       this.currentCityIdBySuppliers = id;
       // this.currentCityIdBySuppliers = this.cityListChooseBySuppliers[id].id;
@@ -596,6 +597,7 @@ export default {
           supplierCode: this.currentSupplierId
         })
         .then(rs => {
+          this.listShow = false;
           this.hotelListChooseBySuppliersFilter = this.hotelListChooseBySuppliers = rs.data.body.statisticList;
           this.hotelTotalSuppliers = rs.data.body.total;
           if (this.hotelListChooseBySuppliers.length>0) {//适配同步刷新时本列表为空时提供后续流程的bool
@@ -603,6 +605,9 @@ export default {
           }else{
             return false;
           }
+        })
+        .catch(err=>{
+          this.listShow = false;
         });
     },
     //选择供应商侧城市列表审核状态
@@ -691,6 +696,7 @@ export default {
     },
 
     chooseCityCopy(id, map = 20, page = 1, pageSize = 30) {
+      this.listShow = true;
       this.chooseTabByRegions = "hotel";
       this.currentCityIdByRegions = id;
       return this.$http
@@ -703,6 +709,7 @@ export default {
           pageSize: pageSize
         })
         .then(rs => {
+          this.listShow = false;
           this.hotelListChooseByRegionsFilter = this.hotelListChooseByRegions = rs.data.body.statisticList;
           this.hotelTotalRegions = rs.data.body.total;
           if (this.hotelListChooseByRegions.length>0) {//适配同步刷新时本列表为空时提供后续流程的bool
@@ -710,6 +717,8 @@ export default {
           }else{
             return false;
           }
+        }).catch(err=>{
+          this.listShow = false;
         });
       this.isCheckStateByRegionsShow = true;
     },
@@ -717,7 +726,7 @@ export default {
     chooseStatebyRegion(val) {
       if(this.chooseTabByRegions == 'nation')return;
       this.$store.commit("HOTEL_TABLETYPE", val);
-      this.curPageSuppliers = 1;
+      this.curPageRegions = 1;
       this.chooseCityCopy(this.currentCityIdByRegions, val);
     },
     chooseHotelCopy(index) {
@@ -732,8 +741,8 @@ export default {
         return this.getDataType = "region";
       }
       this.currentHotelIndexByRegions = index;
-      var id = searchHotelByRegions?this.hotelListChooseByRegionsFilter[index].id : this.hotelListChooseByRegionsFilter[index].id,
-        name = searchHotelByRegions?this.hotelListChooseByRegionsFilter[index].name : this.hotelListChooseByRegions[index].name;
+      var id = this.searchHotelByRegions?this.hotelListChooseByRegionsFilter[index].id : this.hotelListChooseByRegionsFilter[index].id,
+        name = this.searchHotelByRegions?this.hotelListChooseByRegionsFilter[index].name : this.hotelListChooseByRegions[index].name;
       if (this.checkStateByRegions == 10) {
         //未聚待审
         return this.$http
