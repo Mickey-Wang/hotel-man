@@ -27,7 +27,7 @@
                                 <td>{{JDHotelApproval.distance}}</td>
                                 <td><a v-if="JDHotelApproval.hotelUrl!=null" :href="JDHotelApproval.hotelUrl">酒店链接</a></td>
                                 <td>{{JDHotelApproval.cityName}}</td>
-                                <td>{{JDHotelApproval.supplierName}}</td>
+                                <td>京东</td>
                                 <td>{{JDHotelApproval.hotelId}}</td>
                                 <td></td>
                                 <td></td>
@@ -43,7 +43,7 @@
                                 <td @click="getInputValue(item)">{{item.hotelName}}</td>
                                 <td style="cursor: pointer;" @click="getAddressValue(item)">{{item.address}}</td>
                                 <td>{{item.tel}}</td>
-                                <td>{{item.distance}}</td>
+                                <td>{{item.distance}}m</td>
                                 <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
@@ -167,7 +167,7 @@
                                 <td>{{item.distance}}</td>
                                 <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
-                                <td>{{item.supplierName}}</td>
+                                <td>京东</td>
                                 <td>{{item.hotelId}}</td>
                                 <td></td>
                                 <td></td>
@@ -181,7 +181,7 @@
                                 <td>{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
                                 <td>{{item.tel}}</td>
-                                <td>{{item.distance}}</td>
+                                <td>{{item.distance}}m</td>
                                 <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>

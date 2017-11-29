@@ -25,7 +25,7 @@
                                 <td>{{JDCityApproval.cityId}}</td>
                                 <td>{{JDCityApproval.provinceName}}</td>
                                 <td>{{JDCityApproval.countryName}}</td>
-                                <td>{{JDCityApproval.supplierName}}</td>
+                                <td>京东</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
