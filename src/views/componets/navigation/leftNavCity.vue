@@ -610,7 +610,7 @@ export default {
       this.chooseProvinceCopy(this.currentProvinceIdByRegions, val);
     },
     chooseCityCopy(index) {
-      if (index == -1) {//响应同步刷新城市列表为空的情况
+      if (index == -1 || !this.cityListChooseByRegionsFilter[index].id || !this.cityListChooseByRegionsFilter[index].cityId) {//响应同步刷新城市列表为空的情况
         this.$store.commit("CITY_CHECK_LIST", null);
         return this.getDataType = "region";
       }
@@ -660,6 +660,7 @@ export default {
         return;
       }
       this.isCheckStateByRegionsShow = false;
+      this.checkStateByRegions = 20;
       if (this.searchID === "cityId") {
         if (!/^[0-9]*$/.test(this.searchInput)) {
           this.$Notice.warning({
