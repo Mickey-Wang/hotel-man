@@ -27,7 +27,7 @@
                                 <td>{{JDHotelApproval.distance}}</td>
                                 <td><a v-if="JDHotelApproval.hotelUrl!=null" :href="JDHotelApproval.hotelUrl">酒店链接</a></td>
                                 <td>{{JDHotelApproval.cityName}}</td>
-                                <td>{{JDHotelApproval.supplierName}}</td>
+                                <td>京东</td>
                                 <td>{{JDHotelApproval.hotelId}}</td>
                                 <td></td>
                                 <td></td>
@@ -43,7 +43,7 @@
                                 <td @click="getInputValue(item)">{{item.hotelName}}</td>
                                 <td style="cursor: pointer;" @click="getAddressValue(item)">{{item.address}}</td>
                                 <td>{{item.tel}}</td>
-                                <td>{{item.distance}}</td>
+                                <td>{{item.distance}}m</td>
                                 <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
@@ -61,6 +61,10 @@
                     </div>
                 </div>
                 <Spin fix v-if="hotelSyncMappingDataState">
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>Loading</div>
+                </Spin>
+                <Spin fix v-if="hotelLoading">
                     <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
                     <div>Loading</div>
                 </Spin>
@@ -167,7 +171,7 @@
                                 <td>{{item.distance}}</td>
                                 <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
-                                <td>{{item.supplierName}}</td>
+                                <td>京东</td>
                                 <td>{{item.hotelId}}</td>
                                 <td></td>
                                 <td></td>
@@ -181,7 +185,7 @@
                                 <td>{{item.hotelName}}</td>
                                 <td>{{item.address}}</td>
                                 <td>{{item.tel}}</td>
-                                <td>{{item.distance}}</td>
+                                <td>{{item.distance}}m</td>
                                 <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
@@ -407,7 +411,9 @@
                 similarCityId:null,
                 similarSupplierCode:null,
                 // 酒店审核列表带有滚动条的div
-                topDivH:null
+                topDivH:null,
+                // 酒店相似列表新加的一个loading
+                hotelLoading:false
             }
         },
         created(){
@@ -546,8 +552,10 @@
                     this.submitData.radioData = [];
                     this.similar = '';
                     this.hotelValue = '';
-                    this.similarCityId = null;
-                    this.similarSupplierCode = null;
+                    this.similarCityId = this.hotelApprovalList[0].cityId;
+                    this.similarSupplierCode = this.hotelApprovalList[0].supplierCode;
+                    console.log('commit-similarCityId:',this.similarCityId);
+                    console.log('commit-similarSupplierCode:',this.similarSupplierCode);
                     // 数据更新的时候 scrollTop 变为0
                     this.topDivH.scrollTop = 0;
                     // 相似列表共计改为0条
@@ -576,17 +584,6 @@
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
                 this.hotelValue = item.hotelName;
-                if(!item.cityId){
-                    this.similarCityId = null;
-                }else {
-                    this.similarCityId = item.cityId;
-                }
-
-                if(!item.supplierCode){
-                    this.similarSupplierCode = null;
-                }else {
-                    this.similarSupplierCode = item.supplierCode;
-                }
                 console.log('similarCityId==1:',this.similarCityId);
                 console.log('similarSupplierCode==1:',this.similarSupplierCode);
                 this.toSearch();
@@ -594,17 +591,6 @@
             // 点击地址名称赋值到input,然后调取接口
             getAddressValue(item){
                 this.hotelValue = item.address;
-                if(!item.cityId){
-                    this.similarCityId = null;
-                }else {
-                    this.similarCityId = item.cityId;
-                }
-
-                if(!item.supplierCode){
-                    this.similarSupplierCode = null;
-                }else {
-                    this.similarSupplierCode = item.supplierCode;
-                }
                 console.log('similarCityId==2:',this.similarCityId);
                 console.log('similarSupplierCode==2:',this.similarSupplierCode);
                 this.toSearch();
@@ -735,11 +721,13 @@
             },
             // 弹框选择确定按钮
             ok () {
+                this.hotelLoading = true;
                 let checkStr = this.submitData.checkBoxData.join(',');
                 let radioStr = this.submitData.radioData[0];
                 // 提交，设为已审按钮(当不是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType!=10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res => {
+                        this.hotelLoading = false;
                         this.modelShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
@@ -754,6 +742,7 @@
                 // 提交，设为已审按钮(当是未聚未审的时候)
                 if(this.buttonType==1 && this.hotelTableType==10){
                     this.$http.post('/mapping/hotelMapping/approve',{"hotelMapIds":checkStr,"jdHotelId":radioStr}).then(res => {
+                        this.hotelLoading = false;
                         this.modelShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
@@ -768,6 +757,7 @@
                 // 设为待审按钮
                 if(this.buttonType == 2){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr}).then(res=>{
+                        this.hotelLoading = false;
                         this.modelShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
@@ -782,6 +772,7 @@
                 // tree中的设为已聚待审的按钮
                 if(this.buttonType == 3){
                     this.$http.post('/mapping/hotelMapping/matchedUncheck',{"hotelMapIds":checkStr}).then(res=>{
+                        this.hotelLoading = false;
                         this.treeShow = false;
                         if(res.data.head.code==200){
                             this.$store.commit('HOTEL_SYNC_MAPPING_DATA_STATE',true);
