@@ -144,7 +144,7 @@
             </Row>
           </Row>
           <Row type="flex" justify="center">
-            <Page :current="curPageSuppliers" :total="hotelTotalSuppliers" :page-size="hotelPageSizeSuppliers" @on-change="choosePageSuppliers" size="small" show-total></Page>
+            <Page :current.sync="curPageSuppliers" :total="hotelTotalSuppliers" :page-size="hotelPageSizeSuppliers" @on-change="choosePageSuppliers" size="small" show-total></Page>
           </Row>
         </TabPane>
       </Tabs>
@@ -212,6 +212,11 @@
           </Row>
         </TabPane>
         <TabPane label="酒店" style="height:94%" name="hotel" :disabled="regionTabDisable[3]">
+          <Row class="check-select">
+            <Select v-model="checkStateByRegions" v-show="isCheckStateByRegionsShow" @on-change="chooseStatebyRegion">
+              <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+          </Row>
           <Row v-if="hotelListChooseByRegions.length>20">
             <Input 
               v-model="searchHotelByRegions" 
@@ -222,11 +227,6 @@
                 'hotelListChooseByRegionsFilter'
                 )">
               </Input>
-          </Row>
-          <Row class="check-select">
-            <Select v-model="checkStateByRegions" v-show="isCheckStateByRegionsShow" @on-change="chooseStatebyRegion">
-              <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>
           </Row>
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseHotelCopy" v-if="hotelListChooseByRegionsFilter.length>0">
@@ -309,7 +309,7 @@ export default {
         },
         {
           value: 10,
-          label: "未聚未审"
+          label: "未聚待审"
         }
       ],
       //当前选中的
@@ -476,8 +476,9 @@ export default {
       this[filterArr] = this.listFilter(keywords,this[searchArr]);
     },
     //分页按钮选择
-    choosePageSuppliers(page) {
-      console.log(page)
+    choosePageSuppliers() {
+       let page = this.curPageSuppliers;
+      // console.log(page)
       this.chooseCity(
         this.currentCityIdBySuppliers,
         this.checkStateBySuppliers,
@@ -486,7 +487,7 @@ export default {
     },
     choosePageRegions() {
       let page = this.curPageRegions;
-      console.log(page)
+      // console.log(page)
       if (this.isCheckStateByRegionsShow) {
         this.chooseCityCopy(
           this.currentCityIdByRegions,
@@ -581,6 +582,7 @@ export default {
         });
     },
     chooseCity(id, map = 20, page = 1, pageSize = 30) {
+      this.listShow = true;
       this.chooseTabBySuppliers = "hotel";
       this.currentCityIdBySuppliers = id;
       // this.currentCityIdBySuppliers = this.cityListChooseBySuppliers[id].id;
@@ -595,6 +597,7 @@ export default {
           supplierCode: this.currentSupplierId
         })
         .then(rs => {
+          this.listShow = false;
           this.hotelListChooseBySuppliersFilter = this.hotelListChooseBySuppliers = rs.data.body.statisticList;
           this.hotelTotalSuppliers = rs.data.body.total;
           if (this.hotelListChooseBySuppliers.length>0) {//适配同步刷新时本列表为空时提供后续流程的bool
@@ -602,6 +605,9 @@ export default {
           }else{
             return false;
           }
+        })
+        .catch(err=>{
+          this.listShow = false;
         });
     },
     //选择供应商侧城市列表审核状态
@@ -613,7 +619,15 @@ export default {
       this.chooseCity(this.currentCityIdBySuppliers, val);
     },
     chooseHotel(index) {
-      if (index == -1) {//响应同步刷新酒店列表为空的情况
+      let isOverRange;
+      if (this.searchHotelBySuppliers) {
+        isOverRange = index > this.hotelListChooseBySuppliersFilter.length-1?true:false;
+        
+      } else {
+        isOverRange = index > this.hotelListChooseBySuppliers.length-1?true:false;
+        
+      }
+      if (index == -1 || isOverRange ) {//响应同步刷新酒店列表为空的情况
         this.$store.commit("HOTEL_CHECK_LIST", null);
         return this.getDataType = "supplier";
       }
@@ -682,6 +696,7 @@ export default {
     },
 
     chooseCityCopy(id, map = 20, page = 1, pageSize = 30) {
+      this.listShow = true;
       this.chooseTabByRegions = "hotel";
       this.currentCityIdByRegions = id;
       return this.$http
@@ -694,6 +709,7 @@ export default {
           pageSize: pageSize
         })
         .then(rs => {
+          this.listShow = false;
           this.hotelListChooseByRegionsFilter = this.hotelListChooseByRegions = rs.data.body.statisticList;
           this.hotelTotalRegions = rs.data.body.total;
           if (this.hotelListChooseByRegions.length>0) {//适配同步刷新时本列表为空时提供后续流程的bool
@@ -701,6 +717,8 @@ export default {
           }else{
             return false;
           }
+        }).catch(err=>{
+          this.listShow = false;
         });
       this.isCheckStateByRegionsShow = true;
     },
@@ -708,19 +726,23 @@ export default {
     chooseStatebyRegion(val) {
       if(this.chooseTabByRegions == 'nation')return;
       this.$store.commit("HOTEL_TABLETYPE", val);
-      this.curPageSuppliers = 1;
+      this.curPageRegions = 1;
       this.chooseCityCopy(this.currentCityIdByRegions, val);
     },
     chooseHotelCopy(index) {
-      if (index == -1) {//响应同步刷新酒店列表为空的情况
+      var isOverRange;
+      if (this.searchHotelBySuppliers) {
+        isOverRange = index > this.hotelListChooseBySuppliersFilter.length-1?true:false;        
+      } else {
+        isOverRange = index > this.hotelListChooseBySuppliers.length-1?true:false;        
+      }
+      if (index == -1 || isOverRange) {//响应同步刷新酒店列表为空的情况和最后一条数据已审为空的情况
         this.$store.commit("HOTEL_CHECK_LIST", null);
         return this.getDataType = "region";
       }
       this.currentHotelIndexByRegions = index;
-      var id =
-          this.hotelListChooseByRegions[index].id ||
-          this.hotelListChooseByRegions[index].hotelId, //兼容搜索
-        name = this.hotelListChooseByRegions[index].name || this.hotelListChooseByRegions[index].hotelName;
+      var id = this.searchHotelByRegions?this.hotelListChooseByRegionsFilter[index].id : this.hotelListChooseByRegionsFilter[index].id,
+        name = this.searchHotelByRegions?this.hotelListChooseByRegionsFilter[index].name : this.hotelListChooseByRegions[index].name;
       if (this.checkStateByRegions == 10) {
         //未聚待审
         return this.$http
@@ -765,7 +787,8 @@ export default {
         });
         return;
       }
-      this.isCheckStateByRegionsShow = false;
+      this.isCheckStateByRegionsShow = false;//关掉选择框
+      this.checkStateByRegions = 20;//重置为待审状态，已应用数据提交格式
       if (this.searchID === "hotelId") {
         if (!/^[0-9]*$/.test(keywords)) {
           this.$Notice.warning({
