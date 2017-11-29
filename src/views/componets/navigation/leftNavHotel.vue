@@ -212,6 +212,11 @@
           </Row>
         </TabPane>
         <TabPane label="酒店" style="height:94%" name="hotel" :disabled="regionTabDisable[3]">
+          <Row class="check-select">
+            <Select v-model="checkStateByRegions" v-show="isCheckStateByRegionsShow" @on-change="chooseStatebyRegion">
+              <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+          </Row>
           <Row v-if="hotelListChooseByRegions.length>20">
             <Input 
               v-model="searchHotelByRegions" 
@@ -222,11 +227,6 @@
                 'hotelListChooseByRegionsFilter'
                 )">
               </Input>
-          </Row>
-          <Row class="check-select">
-            <Select v-model="checkStateByRegions" v-show="isCheckStateByRegionsShow" @on-change="chooseStatebyRegion">
-              <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>
           </Row>
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseHotelCopy" v-if="hotelListChooseByRegionsFilter.length>0">
@@ -309,7 +309,7 @@ export default {
         },
         {
           value: 10,
-          label: "未聚未审"
+          label: "未聚待审"
         }
       ],
       //当前选中的

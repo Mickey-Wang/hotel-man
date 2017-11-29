@@ -273,7 +273,7 @@ export default {
         },
         {
           value: 10,
-          label: "未聚未审"
+          label: "未聚待审"
         }
       ],
       //当前选中的
