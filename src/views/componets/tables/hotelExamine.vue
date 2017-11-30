@@ -37,14 +37,14 @@
                             </tr>
                         </table>
                     </div>
-                    <div ref="topDivH" :style="{'height':hotelTableType==10?'86%':'71%'}">
+                    <div ref="topDivH" :style="{'height':hotelTableType==10?'86%':'68%'}">
                         <table v-if="hotelCheckList && hotelApprovalList && hotelApprovalList.length>0" :style="{'min-width':divWidth1+'px'}">
                             <tr v-for="(item,index) in hotelApprovalList" :key="index" :class="[{trClass: item.mapStatus==20}]">
                                 <td><input v-if="item.mapStatus!=''" @click="clearRadioValue" type="checkbox" v-model="item.checked" :disabled="item.mapStatus==20?isNot20Check:is20Check"></td>
                                 <td @click="getInputValue(item)">{{item.hotelName}}</td>
                                 <td style="cursor: pointer;" @click="getAddressValue(item)">{{item.address}}</td>
                                 <td>{{item.tel}}</td>
-                                <td>{{item.distance}}m</td>
+                                <td v-if="item.distance">{{item.distance}}m</td>
                                 <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
@@ -166,8 +166,8 @@
                             </tr>
                             <tr class="fontColor" v-if="treeJDHotelApproval" v-for="(item,index) in treeJDHotelApproval" :key="index">
                                 <td></td>
-                                <td>{{item.hotelName}}</td>
-                                <td>{{item.address}}</td>
+                                <td style="width: 200px;">{{item.hotelName}}</td>
+                                <td style="width: 200px;">{{item.address}}</td>
                                 <td>{{item.tel}}</td>
                                 <td>{{item.distance}}</td>
                                 <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
@@ -179,14 +179,14 @@
                             </tr>
                         </table>
                     </div>
-                    <div style="overflow-x: hidden">
+                    <div style="overflow-x: hidden; height: 80%;">
                         <table style="width: 1266px;" v-if="treeData.length>0">
                             <tr v-for="(item,index) in treeData" :class="[{trClass: item.mapStatus==20}]" :key="index">
                                 <td><input type="checkbox" v-model="item.checked" :disabled="item.mapStatus!=30"/></td>
-                                <td>{{item.hotelName}}</td>
-                                <td>{{item.address}}</td>
+                                <td style="width: 300px;">{{item.hotelName}}</td>
+                                <td style="width: 300px;">{{item.address}}</td>
                                 <td>{{item.tel}}</td>
-                                <td>{{item.distance}}m</td>
+                                <td v-if="item.distance">{{item.distance}}m</td>
                                 <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
@@ -555,8 +555,8 @@
                     this.hotelValue = '';
                     this.similarCityId = this.hotelApprovalList[0].cityId;
                     this.similarSupplierCode = this.hotelApprovalList[0].supplierCode;
-                    console.log('commit-similarCityId:',this.similarCityId);
-                    console.log('commit-similarSupplierCode:',this.similarSupplierCode);
+                    //console.log('commit-similarCityId:',this.similarCityId);
+                    //console.log('commit-similarSupplierCode:',this.similarSupplierCode);
                     // 数据更新的时候 scrollTop 变为0
                     this.topDivH.scrollTop = 0;
                     // 相似列表共计改为0条
@@ -905,10 +905,10 @@
         width: 60px;
     }
     .table1Style table tr td:nth-of-type(2),.table1Style table tr th:nth-of-type(2){
-        width: 200px;
+        width: 400px;
     }
     .table1Style table tr td:nth-of-type(3),.table1Style table tr th:nth-of-type(3){
-        width: 200px;
+        width: 300px;
     }
     .wrapW1 table tr td:nth-of-type(2){
         cursor: pointer;
@@ -1003,6 +1003,12 @@
     }
     .treeTable div:nth-of-type(2){
         height: 76% !important;
+    }
+    .treeTable .wrap div:nth-of-type(1) table tr th:nth-of-type(2){
+        width: 300px;
+    }
+    .treeTable .wrap div:nth-of-type(1) table tr th:nth-of-type(3){
+        width: 300px;
     }
     .logTable table tr th, .logTable table tr td{
         width: 25%;

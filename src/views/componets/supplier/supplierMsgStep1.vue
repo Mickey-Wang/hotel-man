@@ -453,6 +453,7 @@ export default {
                 priceDays:this.priceDays
             };
             console.log('点击下一步的时候保存信息:',firstStepMsg);
+
             /*this.$router.push({
                 name:'step2'
             });*/
