@@ -2,13 +2,11 @@
 .height100 {
   height: 100%;
 }
-
-.left-nav {
+.left-nav-city{
   height: 100%;
   .ivu-row {
     padding-top: 5px;
   }
-
   .ivu-tabs-bar {
     margin-bottom: 0;
   }
@@ -18,7 +16,7 @@
     height: 82%;
     scroll-behavior: smooth;
     overflow: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
   .menu-box-large {
     .menu-box;
@@ -47,7 +45,7 @@
 }
 </style>
 <template>
-  <section class="left-nav">
+  <section class="left-nav-city">
     <Row :gutter="2">
       <Col span="8">
       <Select v-model="searchID" class="search-top-left">
@@ -97,11 +95,11 @@
             </MenuItem>
           </Menu>
           <Row class-name="bottom-total">
-            <span>共计{{nationListChooseBySuppliers.length}}条</span>
+            <span>共计{{nationListChooseBySuppliers?nationListChooseBySuppliers.length:0}}条</span>
           </Row>
         </TabPane>
         <TabPane label="省份" style="height:94%" name="province" :disabled="supplierTabDisable[2]">
-          <Row v-if="provinceListChooseBySuppliers.length>20">
+          <Row v-if="provinceListChooseBySuppliers&&provinceListChooseBySuppliers.length>20">
             <Input v-model="searchProvinceBySuppliers" placeholder="输入关键词查询" @on-change="doListFilter(searchProvinceBySuppliers,'provinceListChooseBySuppliers','provinceListChooseBySuppliersFilter')"></Input>
           </Row>
           <Row class-name="menu-box-large">
@@ -113,7 +111,7 @@
             </Menu>
           </Row>
           <Row class-name="bottom-total">
-            <span>共计{{provinceListChooseBySuppliersFilter.length}}条</span>
+            <span>共计{{provinceListChooseBySuppliersFilter?provinceListChooseBySuppliersFilter.length:0}}条</span>
           </Row>
         </TabPane>
         <TabPane label="城市" style="height:94%" name="city" :disabled="supplierTabDisable[3]">
@@ -122,7 +120,7 @@
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
-          <Row v-if="cityListChooseBySuppliers.length>20">
+          <Row v-if="cityListChooseBySuppliers&&cityListChooseBySuppliers.length>20">
             <Input v-model="searchCityBySuppliers" placeholder="输入关键词查询" @on-change="doListFilter(searchCityBySuppliers,'cityListChooseBySuppliers','cityListChooseBySuppliersFilter')"></Input>
           </Row>
           <Row class-name="menu-box">
@@ -157,11 +155,11 @@
               暂无数据
           </Row>
           <Row class-name="bottom-total" v-if="nationListChooseByRegions">
-            <span>共计{{nationListChooseByRegions.length}}条</span>
+            <span>共计{{nationListChooseByRegions?nationListChooseByRegions.length:0}}条</span>
           </Row>
         </TabPane>
         <TabPane label="省份" style="height:94%" name="province" :disabled="regionTabDisable[1]">
-          <Row v-if="provinceListChooseByRegions.length>20">
+          <Row v-if="provinceListChooseByRegions&&provinceListChooseByRegions.length>20">
             <Input 
               v-model="searchProvinceByRegions" 
               placeholder="输入关键词查询" 
@@ -181,7 +179,7 @@
             </Menu>
           </Row>
           <Row class-name="bottom-total">
-            <span>共计{{provinceListChooseByRegionsFilter.length}}条</span>
+            <span>共计{{provinceListChooseByRegionsFilter?provinceListChooseByRegionsFilter.length:0}}条</span>
           </Row>
         </TabPane>
         <TabPane label="城市" style="height:94%" name="city" :disabled="regionTabDisable[2]">
@@ -190,7 +188,7 @@
               <Option v-for="item in cityCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
-          <Row v-if="cityListChooseByRegions.length>20">
+          <Row v-if="cityListChooseByRegions&&cityListChooseByRegions.length>20">
             <Input 
               v-model="searchCityByRegions" 
               placeholder="输入关键词查询" 
