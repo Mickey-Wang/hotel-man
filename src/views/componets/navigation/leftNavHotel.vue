@@ -731,10 +731,10 @@ export default {
     },
     chooseHotelCopy(index) {
       var isOverRange;
-      if (this.searchHotelBySuppliers) {
-        isOverRange = index > this.hotelListChooseBySuppliersFilter.length-1?true:false;        
+      if (this.searchHotelByRegions) {
+        isOverRange = index > this.hotelListChooseByRegionsFilter.length-1?true:false;        
       } else {
-        isOverRange = index > this.hotelListChooseBySuppliers.length-1?true:false;        
+        isOverRange = index > this.hotelListChooseByRegions.length-1?true:false;        
       }
       if (index == -1 || isOverRange) {//响应同步刷新酒店列表为空的情况和最后一条数据已审为空的情况
         this.$store.commit("HOTEL_CHECK_LIST", null);
