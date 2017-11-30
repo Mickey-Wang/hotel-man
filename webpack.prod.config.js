@@ -12,7 +12,9 @@ fs.open('./src/config/env.js', 'w', function(err, fd) {
 
 module.exports = merge(webpackBaseConfig, {
     output: {
+        publicPath: '//misc.360buyimg.com/lt/hotelman/',//file.jd.com/hotelman/dist/
         publicPath: '//file.jd.com/hotelman/dist/',
+
         // filename: '[name].[hash].js',
         filename: '[name].js',
         chunkFilename: '[name].chunk.js'
@@ -33,7 +35,8 @@ module.exports = merge(webpackBaseConfig, {
         }),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
-                warnings: false
+                warnings: false,
+                drop_console: true,
             }
         }),
         new HtmlWebpackPlugin({
