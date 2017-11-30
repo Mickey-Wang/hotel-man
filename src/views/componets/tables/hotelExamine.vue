@@ -179,7 +179,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div style="overflow-x: hidden; height: 80%;">
+                    <div style="overflow-x: hidden; height: 70%;">
                         <table style="width: 1266px;" v-if="treeData.length>0">
                             <tr v-for="(item,index) in treeData" :class="[{trClass: item.mapStatus==20}]" :key="index">
                                 <td><input type="checkbox" v-model="item.checked" :disabled="item.mapStatus!=30"/></td>
@@ -1001,9 +1001,9 @@
     .highlightColor{
         color: #2d8cf0 !important;
     }
-    .treeTable div:nth-of-type(2){
-        height: 76% !important;
-    }
+    /*.treeTable div:nth-of-type(2){*/
+        /*height: 76% !important;*/
+    /*}*/
     .treeTable .wrap div:nth-of-type(1) table tr th:nth-of-type(2){
         width: 300px;
     }
