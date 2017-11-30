@@ -210,7 +210,10 @@
             </div>
         </Modal>
         <Modal v-model="modelShow" width="500" :closable="false" @on-ok="ok" @on-cancel="cancel">
-            <p style="font-size: 16px">{{message}}</p>
+            <p style="font-size: 16px">
+                {{message}}
+                <span style="color: red;" v-if="buttonType==2">设为待审后，该供应商的酒店将被置为已聚待审，同时外网不展示报价！</span>
+            </p>
         </Modal>
     </section>
 </template>
@@ -585,15 +588,15 @@
             // 点击城市名称赋值到input，然后调取接口
             getInputValue(item){
                 this.hotelValue = item.hotelName;
-                console.log('similarCityId==1:',this.similarCityId);
-                console.log('similarSupplierCode==1:',this.similarSupplierCode);
+                //console.log('similarCityId==1:',this.similarCityId);
+                //console.log('similarSupplierCode==1:',this.similarSupplierCode);
                 this.toSearch();
             },
             // 点击地址名称赋值到input,然后调取接口
             getAddressValue(item){
                 this.hotelValue = item.address;
-                console.log('similarCityId==2:',this.similarCityId);
-                console.log('similarSupplierCode==2:',this.similarSupplierCode);
+                //console.log('similarCityId==2:',this.similarCityId);
+                //console.log('similarSupplierCode==2:',this.similarSupplierCode);
                 this.toSearch();
             },
             // 点击Go，获取京东相似数据
@@ -602,8 +605,8 @@
                     this.instance('warning');
                     return;
                 }
-                console.log('similarCityId==3:',this.similarCityId);
-                console.log('similarSupplierCode==3:',this.similarSupplierCode);
+                //console.log('similarCityId==3:',this.similarCityId);
+                //console.log('similarSupplierCode==3:',this.similarSupplierCode);
                 this.toSearch();
             },
             toSearch(){

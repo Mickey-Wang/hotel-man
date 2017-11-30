@@ -106,7 +106,10 @@
             </div>
         </div>
         <Modal v-model="modelShow" width="500" :closable="false" @on-ok="ok" @on-cancel="cancel">
-            <p style="font-size: 16px">{{message}}</p>
+            <p style="font-size: 16px">
+                {{message}}
+                <span style="color: red;" v-if="buttonType==2">设为待审后，该供应商这个城市下的所有已聚已审的酒店将被置为已聚待审，同时外网不展示报价！</span>
+            </p>
         </Modal>
         <Modal
                 v-model="checkShow"
@@ -571,6 +574,7 @@
                         if(res.data.head.code == 200){
                             this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
                             this.cityValue = '';
+                            //this.checkAll = false;
                         }else {
 
                         }
@@ -588,6 +592,7 @@
                             console.log('10 设为已审的接口');
                             this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
                             this.cityValue = '';
+                            //this.checkAll = false;
                         }else {
 
                         }
@@ -605,6 +610,7 @@
                             console.log('20 or 30 设为待审的接口');
                             this.$store.commit('CITY_SYNC_MAPPING_DATA_STATE',true);
                             this.cityValue = '';
+                            //this.checkAll = false;
                         }else {
 
                         }
