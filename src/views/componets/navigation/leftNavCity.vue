@@ -70,15 +70,18 @@
       <!-- 供应商 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='supplier'" v-model="chooseTabBySuppliers" @on-click="doClickSupplierTab">
         <TabPane label="供应商" name="suppliers" :disabled="supplierTabDisable[0]">
-          <Row v-if="supplierList.length>20">
+          <Row v-if="supplierList&&supplierList.length>20">
             <Input v-model="searchSupplier" placeholder="输入关键词查询" @on-change="doListFilter(searchSupplier,'supplierList','supplierListFilter')"></Input>
           </Row>
-          <Menu theme="light" width="auto" @on-select="chooseSupplier" ref="supplierMenu"><!--:active-name="supplierMenuSelect"-->
+          <Menu theme="light" width="auto" @on-select="chooseSupplier" ref="supplierMenu" v-if="supplierList&&supplierList.length>0"><!--:active-name="supplierMenuSelect"-->
             <MenuItem :name="index" v-for="(item,index) in supplierListFilter" :key="index">
             <span>{{item.name}}</span>
             <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
+          <Row v-else style="font-size:18px;text-align:center;">
+              暂无数据
+          </Row>
           <Row class-name="bottom-total">
             <span>共计{{supplierList?supplierList.length:0}}条</span>
           </Row>
@@ -140,14 +143,17 @@
       <!-- 区域 -->
       <Tabs type="card" :animated="true" style="height:100%" v-show="btnType=='region'" v-model="chooseTabByRegions" @on-click="doClickRegionTab">
         <TabPane label="国家" name="nation" :disabled="regionTabDisable[0]">
-          <Menu theme="light" width="auto" @on-select="chooseNationCopy">
+          <Menu theme="light" width="auto" @on-select="chooseNationCopy" v-if="nationListChooseByRegions&&nationListChooseByRegions.length>0">
             <!-- :active-name="1" -->
             <MenuItem :name="item.id" v-for="(item,index) in nationListChooseByRegions" :key="index">
             <span>{{item.name}}</span>
             <span>{{`${item.matchedCount}/${item.matchedUncheckCount}/${item.unmatchedCount}`}}</span>
             </MenuItem>
           </Menu>
-          <Row class-name="bottom-total">
+          <Row v-else style="font-size:18px;text-align:center;">
+              暂无数据
+          </Row>
+          <Row class-name="bottom-total" v-if="nationListChooseByRegions">
             <span>共计{{nationListChooseByRegions.length}}条</span>
           </Row>
         </TabPane>
@@ -620,10 +626,10 @@ export default {
     chooseCityCopy(index) {
       let isOverRange;
       if (this.searchCityByRegions) {
-        isOverRange = index > this.cityListChooseBySuppliersFilter.length-1?true:false;
+        isOverRange = index > this.cityListChooseByRegionsFilter.length-1?true:false;
         
       } else {
-        isOverRange = index > this.cityListChooseBySuppliers.length-1?true:false;
+        isOverRange = index > this.cityListChooseByRegions.length-1?true:false;
         
       }
       if (index == -1 || isOverRange) {//响应同步刷新城市列表为空的情况
