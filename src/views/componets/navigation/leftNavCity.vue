@@ -28,6 +28,9 @@
     height: 100%;
     .ivu-tabs-tabpane {
       padding: 2px;
+      .ivu-menu-vertical .ivu-menu-item{
+        padding: 6px 20px;
+      }
     }
     .bottom-total {
       position: absolute;

@@ -15,7 +15,7 @@
   .menu-box {
     position: relative;
     z-index: 10;
-    height: 82%;
+    max-height: 78%;
     scroll-behavior: smooth;
     overflow: hidden;
     overflow-y: scroll;
@@ -24,10 +24,14 @@
     .menu-box;
     height: 90%;
   }
+  
   .ivu-tabs .ivu-tabs-content {
     height: 100%;
     .ivu-tabs-tabpane {
       padding: 2px;
+      .ivu-menu-vertical .ivu-menu-item{
+        padding: 6px 20px;
+      }
     }
     .bottom-total {
       position: absolute;
