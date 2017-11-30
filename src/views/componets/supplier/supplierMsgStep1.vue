@@ -54,7 +54,6 @@
                             </Select>
                         </div>
                     </div>
-                    <Alert type="error" show-icon style="width: 200px; position: absolute; right: 400px; top: 200px;" v-if="timeErr">请选择服务时间</Alert>
                     <div v-for="(dateLine, index) in dateLines">
                         <div class="sameStyle name serviceTime">
                             <div class="left" style="border-bottom: 1px solid #e9eaec">
@@ -72,7 +71,7 @@
                         <div class="sameStyle name" style="border-bottom: 1px solid #e9eaec">
                             <div class="left"></div>
                             <div class="right">
-                                <Checkbox v-model="selectedValue1"></Checkbox>
+                                <Checkbox v-model="selectedValue1" disabled></Checkbox>
                                 <span>每天的</span>
                                 <TimePicker format="HH:mm" :steps="[1, 60]" v-model="dateLine.start" placeholder="选择时间" style="width: 112px"></TimePicker>
                                 <span>到</span>
@@ -272,7 +271,7 @@ export default {
             // 周一到周日默认全部选择
             allDays: [1, 2, 3, 4, 5, 6,7],
             // 循环展示的时间
-            dateLines: [{selectedDays: [1, 2, 3, 4, 5, 6, 7], start: '00:00', end: '23:00'}],
+            dateLines: [{selectedDays: [1, 2, 3, 4, 5, 6, 7], start: '00:00', end: '23:59'}],
             // 日期展示的文字
             dayText:['星期一','星期二','星期三','星期四','星期五','星期六','星期日'],
             // 时间默认值
@@ -292,9 +291,7 @@ export default {
             priceDays:90,
             priceDaysValue:'',
             // 错误提示框的边框颜色
-            errTips:true,
-            // 控制服务时间错误提示框
-            timeErr:true
+            errTips:false
         }
     },
     watch: {
@@ -381,7 +378,14 @@ export default {
             if (this.isAllSelect) {
                 return;
             }
-            this.dateLines.push({selectedDays: [], start: '00:00', end: '23:00'});
+            console.log('服务时间的长度为:',this.dateLines.length);
+            if(this.dateLines.length<4){
+                this.dateLines.push({selectedDays: [], start: '00:00', end: '23:59'});
+                console.log('服务时间小于4的长度:',this.dateLines.length);
+            }else {
+                console.log('服务时间大于4的长度:',this.dateLines.length);
+                return;
+            }
         },
         showDays: function (dateLine) {
             //console.log('showDays. dateLine:', dateLine);
@@ -438,6 +442,13 @@ export default {
         //以上添加的时间的逻辑
         // 下一步
         goToNext(){
+            if(this.supplierName == '' || this.selectAccessType){
+                this.errTips = true;
+            }
+            if(this.selectAccessType==1 && this.selectPlatformName==''){
+                this.errTips = true;
+            }
+
             // 判断一下必填部分，平台供应商识别码和是否含有物理房型不是必须
             let firstStepMsg = {
                 supplierName:this.supplierName,
@@ -453,6 +464,7 @@ export default {
                 priceDays:this.priceDays
             };
             console.log('点击下一步的时候保存信息:',firstStepMsg);
+            this.$store.commit('FIRST_STEP_MSG', firstStepMsg);
 
             /*this.$router.push({
                 name:'step2'

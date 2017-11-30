@@ -11,7 +11,8 @@ import {
     ROOM_CHECK_LIST,
     CITY_SYNC_MAPPING_DATA_STATE,
     HOTEL_SYNC_MAPPING_DATA_STATE,
-    IS_SHRINK_STATUS
+    IS_SHRINK_STATUS,
+    FIRST_STEP_MSG
 }
 from './mutation-type';
 const  mutations={
@@ -59,6 +60,10 @@ const  mutations={
     //获取现在右边是伸展还是收缩
     [IS_SHRINK_STATUS](state,data){
         state.isShrinkStatus = data;
+    },
+    // 供应商管理第一步的信息
+    [FIRST_STEP_MSG](state,data){
+        state.firstStepMsg = data;
     }
 };
 export default mutations;

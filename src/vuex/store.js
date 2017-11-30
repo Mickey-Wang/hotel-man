@@ -23,7 +23,9 @@ let state = {
     citySyncMappingDataState:false,
     hotelSyncMappingDataState:false,
     //获取现在右边是伸展还是收缩
-    isShrinkStatus:false
+    isShrinkStatus:false,
+    //供应商管理第一步存的数据
+    firstStepMsg:{}
 };
 export default new Vuex.Store({
     state,

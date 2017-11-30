@@ -17,3 +17,5 @@ export const citySyncMappingDataState = state =>state.citySyncMappingDataState;
 export const hotelSyncMappingDataState = state =>state.hotelSyncMappingDataState;
 //获取现在右边是伸展还是收缩
 export const isShrinkStatus = state => state.isShrinkStatus;
+//供应商管理第一步的信息
+export const firstStepMsg = state => state.firstStepMsg;
