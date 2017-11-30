@@ -133,8 +133,17 @@
               <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
-          <Row v-if="hotelListChooseBySuppliers&&hotelListChooseBySuppliers.length>20">
-            <Input v-model="searchHotelBySuppliers" placeholder="输入关键词查询" @on-change="doListFilter(searchHotelBySuppliers,'hotelListChooseBySuppliers','hotelListChooseBySuppliersFilter')"></Input>
+          <Row>
+            <Input 
+            v-model="searchHotelBySuppliers" 
+            placeholder="输入关键词查询,按回车可查找更多" 
+            @on-change="doListFilter(
+              searchHotelBySuppliers,
+              'hotelListChooseBySuppliers',
+              'hotelListChooseBySuppliersFilter')"
+            @on-enter="doHotelListFilter(searchHotelBySuppliers,'suppliers')"
+            >
+            </Input>
           </Row>
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseHotel" v-if="hotelListChooseBySuppliersFilter.length>0">
@@ -144,7 +153,7 @@
               </MenuItem>
             </Menu>
             <Row v-else style="font-size:18px;text-align:center;">
-              暂无数据
+              {{hotelListChooseBySuppliers&&hotelListChooseBySuppliers.length>0?'按回车查找更多':"暂无数据"}}
             </Row>
           </Row>
           <Row type="flex" justify="center">
@@ -221,16 +230,19 @@
               <Option v-for="item in hotelCondition" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Row>
-          <Row v-if="hotelListChooseByRegions&&hotelListChooseByRegions.length>20">
+          <Row>
+          <!-- <Row v-if="hotelListChooseByRegions&&hotelListChooseByRegions.length>20"> -->
             <Input 
               v-model="searchHotelByRegions" 
-              placeholder="输入关键词查询" 
+              placeholder="输入关键词查询,按回车可查找更多" 
               @on-change="doListFilter(
                 searchHotelByRegions,
                 'hotelListChooseByRegions',
                 'hotelListChooseByRegionsFilter'
-                )">
-              </Input>
+                )"
+              @on-enter="doHotelListFilter(searchHotelByRegions,'regions')"    
+            >
+            </Input>
           </Row>
           <Row class-name="menu-box">
             <Menu theme="light" width="auto" @on-select="chooseHotelCopy" v-if="hotelListChooseByRegionsFilter.length>0">
@@ -241,7 +253,7 @@
               </MenuItem>
             </Menu>
             <Row v-else style="font-size:18px;text-align:center;">
-              暂无数据
+              {{hotelListChooseByRegions.length>0?'按回车查找更多':'暂无数据'}}
             </Row>
           </Row>
           <Row type="flex" justify="center">
@@ -479,6 +491,27 @@ export default {
     doListFilter(keywords,searchArr,filterArr) {
       this[filterArr] = this.listFilter(keywords,this[searchArr]);
     },
+    doHotelListFilter(keyword,type){
+      if (type == 'suppliers') {
+        this.chooseCity(
+          this.currentCityIdBySuppliers,
+          this.checkStateBySuppliers,
+          1,
+          30,
+          keyword
+        );
+        this.curPageSuppliers = 1;//重置页码
+      } else {
+        this.chooseCityCopy(
+          this.currentCityIdByRegions,
+          this.checkStateByRegions,
+          1,
+          30,
+          keyword
+        );
+        this.curPageRegions = 1;//重置页码
+      }
+    },
     //分页按钮选择
     choosePageSuppliers() {
        let page = this.curPageSuppliers;
@@ -486,7 +519,9 @@ export default {
       this.chooseCity(
         this.currentCityIdBySuppliers,
         this.checkStateBySuppliers,
-        page
+        page,
+        30,
+        this.searchHotelBySuppliers
       );
     },
     choosePageRegions() {
@@ -496,7 +531,9 @@ export default {
         this.chooseCityCopy(
           this.currentCityIdByRegions,
           this.checkStateByRegions,
-          page
+          page,
+          30,
+          this.searchHotelByRegions
         );        
       } else {
         this.searchHotel(this.searchInputCache,page);
@@ -585,7 +622,7 @@ export default {
           this.cityListChooseBySuppliersFilter = this.cityListChooseBySuppliers = rs.data.body.statisticList;
         });
     },
-    chooseCity(id, map = 20, page = 1, pageSize = 30) {
+    chooseCity(id, map = 20, page = 1, pageSize = 30,keyword = "") {
       this.listShow = true;
       this.chooseTabBySuppliers = "hotel";
       this.currentCityIdBySuppliers = id;
@@ -598,7 +635,8 @@ export default {
           mapStatus: map,
           pageNum: page,
           pageSize: pageSize,
-          supplierCode: this.currentSupplierId
+          supplierCode: this.currentSupplierId,
+          keyword:keyword
         })
         .then(rs => {
           this.listShow = false;
@@ -619,6 +657,7 @@ export default {
       if(this.chooseTabBySuppliers == 'suppliers')return;
       this.$store.commit("HOTEL_TABLETYPE", val);
       this.curPageSuppliers = 1;
+      this.searchHotelBySuppliers = '';//重置酒店查询状态
       // console.log(this.currentCityIdBySuppliers)
       this.chooseCity(this.currentCityIdBySuppliers, val);
     },
@@ -699,7 +738,7 @@ export default {
         });
     },
 
-    chooseCityCopy(id, map = 20, page = 1, pageSize = 30) {
+    chooseCityCopy(id, map = 20, page = 1, pageSize = 30, keyword = "") {
       this.listShow = true;
       this.chooseTabByRegions = "hotel";
       this.currentCityIdByRegions = id;
@@ -710,7 +749,8 @@ export default {
           cityCode: this.currentCityIdByRegions,
           mapStatus: map,
           pageNum: page,
-          pageSize: pageSize
+          pageSize: pageSize,
+          keyword: keyword
         })
         .then(rs => {
           this.listShow = false;
@@ -730,7 +770,8 @@ export default {
     chooseStatebyRegion(val) {
       if(this.chooseTabByRegions == 'nation')return;
       this.$store.commit("HOTEL_TABLETYPE", val);
-      this.curPageRegions = 1;
+      this.curPageRegions = 1;//重置页码
+      this.searchHotelByRegions = '';//重置酒店查询内容
       this.chooseCityCopy(this.currentCityIdByRegions, val);
     },
     chooseHotelCopy(index) {
