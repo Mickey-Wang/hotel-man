@@ -684,6 +684,7 @@ export default {
       }
       this.isCheckStateByRegionsShow = false;
       this.checkStateByRegions = 20;
+      this.$store.commit("CITY_TABLETYPE", 20);
       if (this.searchID === "cityId") {
         if (!/^[0-9]*$/.test(this.searchInput)) {
           this.$Notice.warning({

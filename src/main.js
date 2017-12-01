@@ -20,8 +20,11 @@ Vue.use(iView);
 Util.ajax.interceptors.response.use(function (response) {
     // console.log(response);
     //对响应数据做些事
-    if (response.data.head.code !== "200") {
+    if (response.data.head.code !== '200') {
         var msg = response.data.head.message;
+        if (response.data.head.code === '401'){
+            location.href = response.data.head.url;
+        }
         vm.$Notice.warning({
             title: msg,
         });

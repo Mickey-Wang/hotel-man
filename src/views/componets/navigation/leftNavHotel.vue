@@ -834,6 +834,7 @@ export default {
       }
       this.isCheckStateByRegionsShow = false;//关掉选择框
       this.checkStateByRegions = 20;//重置为待审状态，已应用数据提交格式
+      this.$store.commit("HOTEL_TABLETYPE", 20);
       if (this.searchID === "hotelId") {
         if (!/^[0-9]*$/.test(keywords)) {
           this.$Notice.warning({
