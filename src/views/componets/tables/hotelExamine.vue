@@ -44,7 +44,7 @@
                                 <td @click="getInputValue(item)">{{item.hotelName}}</td>
                                 <td style="cursor: pointer;" @click="getAddressValue(item)">{{item.address}}</td>
                                 <td>{{item.tel}}</td>
-                                <td v-if="item.distance">{{item.distance}}m</td>
+                                <td><span v-if="item.distance">{{item.distance}}m</span></td>
                                 <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
@@ -186,7 +186,7 @@
                                 <td style="width: 300px;">{{item.hotelName}}</td>
                                 <td style="width: 300px;">{{item.address}}</td>
                                 <td>{{item.tel}}</td>
-                                <td v-if="item.distance">{{item.distance}}m</td>
+                                <td><span v-if="item.distance">{{item.distance}}m</span></td>
                                 <td><a v-if="item.hotelUrl!=null" :href="item.hotelUrl" target="_blank">酒店链接</a></td>
                                 <td>{{item.cityName}}</td>
                                 <td>{{item.supplierName}}</td>
